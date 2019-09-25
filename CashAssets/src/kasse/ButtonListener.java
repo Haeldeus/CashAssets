@@ -101,11 +101,11 @@ public class ButtonListener implements ActionListener {
     field = (JTextField)layout.getComp(KassenLayout.cashNecessityEuroTF);
     field.setEditable(b);
     
-    @SuppressWarnings("unchecked") //can be done, since it will always be an Integer-ComboBox
+    @SuppressWarnings("unchecked") //can be done, since it will always be an String-ComboBox
     JComboBox<String> intBox = (JComboBox<String>)layout.getComp(KassenLayout.dateDayDropdown);
     intBox.setEnabled(b);
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //see above
     JComboBox<String> stringBox = (JComboBox<String>)layout.getComp(KassenLayout.dateMonthDropdown);
     stringBox.setEnabled(b);
     field = (JTextField)layout.getComp(KassenLayout.dateYearTextField);
@@ -116,7 +116,8 @@ public class ButtonListener implements ActionListener {
   }
 
   /**
-   * Calculates the total amount of money in the counted purses.
+   * Calculates the total amount of money in the counted purses. Updates all Labels in the Frame as 
+   * well.
    * @since 1.0
    */
   private void calculate() {
