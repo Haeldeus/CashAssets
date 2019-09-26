@@ -184,6 +184,7 @@ public class Interface {
     
     JButton btExport = new JButton("Export");
     btExport.setEnabled(false);
+    btExport.addActionListener(new ExportButtonListener(c));
     c.add(KassenLayout.exportButton, btExport);
   }
   

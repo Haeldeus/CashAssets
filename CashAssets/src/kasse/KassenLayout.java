@@ -15,112 +15,228 @@ import java.util.HashMap;
 public class KassenLayout implements LayoutManager {
 
   /**
-   * The Label, that displays the Value "Datum:".
+   * The JLabel, that displays the Value "Datum:".
    */
   public static final String dateLabel = "Date Label";
   
+  /**
+   * The JComboBox, that displays the Day of the Date, this Counting of the purses was made for.
+   */
   public static final String dateDayDropdown = "Date Day Dropdown";
-  public static final String dateMonthDropdown = "Date Month Dropdown";
-  public static final String dateYearTextField = "Date Year TextField";
   
   /**
-   * The Label, that displays the Value "1ct".
+   * The JComboBox, that displays the Month of the Date, this Counting of the purses was made for.
+   */
+  public static final String dateMonthDropdown = "Date Month Dropdown";
+  
+  /**
+   * The JTextField, where the User can enter the Year of the Date, this Counting of the purses was 
+   * made for.
+   */
+  public static final String dateYearTextField = "Date Year TextField";
+  
+  
+  /**
+   * The JLabel, that displays the Value "1ct".
    */
   public static final String oneCentLabel = "One Cent";
   
   /**
-   * The Label, that displays the Value "2ct".
+   * The JLabel, that displays the Value "2ct".
    */
   public static final String twoCentLabel = "Two Cent";
   
   /**
-   * The Label, that displays the Value "5ct".
+   * The JLabel, that displays the Value "5ct".
    */
   public static final String fiveCentLabel = "Five Cent";
   /**
-   * The Label, that displays the Value "10ct".
+   * The JLabel, that displays the Value "10ct".
    */
   public static final String tenCentLabel = "Ten Cent";
   
   /**
-   * The Label, that displays the Value "20ct".
+   * The JLabel, that displays the Value "20ct".
    */
   public static final String twentyCentLabel = "Twenty Cent";
   
   /**
-   * The Label, that displays the Value "50ct".
+   * The JLabel, that displays the Value "50ct".
    */
   public static final String fiftyCentLabel = "Fifty Cent";
   
   /**
-   * The Label, that displays the Value "1€".
+   * The JLabel, that displays the Value "1€".
    */
   public static final String oneEuroLabel = "One Euro";
   
   /**
-   * The Label, that displays the Value "2€".
+   * The JLabel, that displays the Value "2€".
    */
   public static final String twoEuroLabel = "Two Euro";
  
   
   /**
-   * The Label, that displays the Value "5€".
+   * The JLabel, that displays the Value "5€".
    */
   public static final String fiveEuroLabel = "Five Euro";
   
   /**
-   * The Label, that displays the Value "10€".
+   * The JLabel, that displays the Value "10€".
    */
   public static final String tenEuroLabel = "Ten Euro";
   
   /**
-   * The Label, that displays the Value "20€".
+   * The JLabel, that displays the Value "20€".
    */
   public static final String twentyEuroLabel = "Twenty Euro";
   
   /**
-   * The Label, that displays the Value "50€".
+   * The JLabel, that displays the Value "50€".
    */
   public static final String fiftyEuroLabel = "Fifty Euro";
   
   /**
-   * The Label, that displays the Value "100€".
+   * The JLabel, that displays the Value "100€".
    */
   public static final String hundredEuroLabel = "Hundred Euro";
   
   /**
-   * The Label, that displays the Value "200€".
+   * The JLabel, that displays the Value "200€".
    */
   public static final String twohundredEuroLabel = "Twohundred Euro";
   
   /**
-   * The Label, that displays the Value "500€".
+   * The JLabel, that displays the Value "500€".
    */
   public static final String fivehundredEuroLabel = "Fivehundred Euro";
   
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 1ct coins. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String oneCentSumLabel = "One Cent Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 2ct coins. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String twoCentSumLabel = "Two Cent Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 5ct coins. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String fiveCentSumLabel = "Five Cent Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 10ct coins. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String tenCentSumLabel = "Ten Cent Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 20ct coins. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String twentyCentSumLabel = "Twenty Cent Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 50ct coins. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String fiftyCentSumLabel = "Fifty Cent Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 1€ coins. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String oneEuroSumLabel = "One Euro Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 2€ coins. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String twoEuroSumLabel = "Two Euro Sum";
   
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 5€ Bills. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String fiveEuroSumLabel = "Five Euro Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 10€ Bills. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String tenEuroSumLabel = "Ten Euro Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 20€ Bills. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String twentyEuroSumLabel = "Twenty Euro Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 50€ Bills. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String fiftyEuroSumLabel = "Fifty Euro Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 100€ Bills. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String hundredEuroSumLabel = "Hundred Euro Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 200€ Bills. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String twohundredEuroSumLabel = "Twohundred Euro Sum";
+  
+  /**
+   * The JLabel, that displays the Sum of all counted 500€ Bills. When opening the Application, 
+   * this JLabel simply shows "=".
+   */
   public static final String fivehundredEuroSumLabel = "Fivehundred Euro Sum";
   
+  /**
+   * The JLabel, that shows the Value "Gezählt:".
+   */
   public static final String purseLabel = "Purse";
   
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 1ct coins, that 
+   * where counted.
+   */
   public static final String oneCentTF = "One Cent TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 2ct coins, that 
+   * where counted.
+   */
   public static final String twoCentTF = "Two Cent TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 5ct coins, that 
+   * where counted.
+   */
   public static final String fiveCentTF = "Five Cent TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 10ct coins, that 
+   * where counted.
+   */
   public static final String tenCentTF = "Ten Cent TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 20ct coins, that 
+   * where counted.
+   */
   public static final String twentyCentTF = "Twenty Cent TF";
   public static final String fiftyCentTF = "Fifty Cent TF";
   public static final String oneEuroTF = "One Euro TF";
