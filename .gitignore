@@ -3,6 +3,16 @@ Thumbs.db
 ehthumbs.db
 ehthumbs_vista.db
 
+# Unnecessary Library files
+*.html
+*.png
+*.gif
+*.css
+*.jpg
+*.rss
+*.ico
+*.xml
+
 # Folder config file
 Desktop.ini
 
@@ -21,3 +31,6 @@ $RECYCLE.BIN/
 # =========================
 # Operating System Files
 # =========================
+
+# Class Files
+*.class
