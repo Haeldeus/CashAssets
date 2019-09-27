@@ -238,55 +238,242 @@ public class KassenLayout implements LayoutManager {
    * where counted.
    */
   public static final String twentyCentTF = "Twenty Cent TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 50ct coins, that 
+   * where counted.
+   */
   public static final String fiftyCentTF = "Fifty Cent TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 1€ coins, that 
+   * where counted.
+   */
   public static final String oneEuroTF = "One Euro TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 2€ coins, that 
+   * where counted.
+   */
   public static final String twoEuroTF = "Two Euro TF";
   
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 5€ bills, that 
+   * where counted.
+   */
   public static final String fiveEuroTF = "Five Euro TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 10€ bills, that 
+   * where counted.
+   */
   public static final String tenEuroTF = "Ten Euro TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 20€ bills, that 
+   * where counted.
+   */
   public static final String twentyEuroTF = "Twenty Euro TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 50€ bills, that 
+   * where counted.
+   */
   public static final String fiftyEuroTF = "Fifty Euro TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 100€ bills, that 
+   * where counted.
+   */
   public static final String hundredEuroTF = "Hundred Euro TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 200€ bills, that 
+   * where counted.
+   */
   public static final String twohundredEuroTF = "Twohundred Euro TF";
+  
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of 500€ bills, that 
+   * where counted.
+   */
   public static final String fivehundredEuroTF = "Fivehundred Euro TF";
   
+  /**
+   * The JTextField, where the User can enter a Value, that displays the amount of purses, that 
+   * where counted.
+   */
   public static final String purseTF = "Purse TF";
   
-  public static final String seperatorOne = "Seperator One";
-  public static final String seperatorTwo = "Seperator Two";
-  public static final String seperatorThree = "Seperator Three";
+  /**
+   * The JLabel, that separates the Part of the GUI, where the User puts in the first values from 
+   * the Part where he enters the total amount of money, that should be in the purses.
+   */
+  public static final String separatorOne = "Separator One";
   
+  /**
+   * The JLabel, that separates the Part of the GUI, where the User puts in the total amount of 
+   * money, that should be in the purses from the Part, where the Application will enter it's 
+   * calculated values for the total amount of coinage and bills.
+   */
+  public static final String separatorTwo = "Separator Two";
+  
+  /**
+   * The JLabel, that separates the Part of the GUI, where the Application will enter it's 
+   * calculated values for the total amount of coinage and bills from the Part, where the 
+   * application will display the other statistics.
+   */
+  public static final String separatorThree = "Separator Three";
+  
+  /**
+   * The JLabel, that displays "Kassenschnitt Bar:".
+   */
   public static final String cashNecessityLabel = "Cash Necessity Label";
+  
+  /**
+   * The JLabel, that displays "€", located after the first JTextField of the Input area for the 
+   * total amount of money, that should be in the purses.
+   */
   public static final String cashNecessityEuroLabel = "Cash Necessity Euro Label";
+  
+  /**
+   * The JLabel, that displays "ct", located after the second JTextField of the Input area for the 
+   * total amount of money, that should be in the purses.
+   */
   public static final String cashNecessityCentLabel = "Cash Necessity Cent Label";
   
+  /**
+   * The JTextField, where the User can enter the amount of Euro, that should be in the purses, 
+   * according to the register system.
+   */
   public static final String cashNecessityEuroTF = "Cash Necessity Euro TF";
+  
+  /**
+   * The JTextField, where the User can enter the amount of Cents, that should be in the purses,
+   * according to the register system.
+   */
   public static final String cashNecessityCentTF = "Cash Necessity Cent TF";
   
+  /**
+   * The JButton, that the User can press to calculate with the given values.
+   */
   public static final String calcButton = "Calc Button";
+  
+  /**
+   * The JButton, that resets the GUI to the starting point, making all JTextFields editable again
+   * and reseting the JLabels, where the Calculation's results were displayed in. For QoL-Reasons,
+   * this will not reset the values in the JTextFields, as they will most of the time either be the
+   * right ones or just slightly off, so that reseting these would lower QoL.
+   */
   public static final String resetButton = "Reset Button";
+  
+  /**
+   * The JButton, that can be used by the User to export the Calculation's result and their values 
+   * into a new Excel-Sheet.
+   */
   public static final String exportButton = "Export Button";
   
+  /**
+   * The JLabel, that displays "Kleingeld:".
+   */
   public static final String coinageLabel = "Coinage Label";
+  
+  /**
+   * The JLabel, that displays the amount of coinage, which was calculated by the application.
+   */
   public static final String coinageSumLabel = "Coinage Sum Label";
+  
+  /**
+   * The JLabel, that displays "Scheine:".
+   */
   public static final String billsLabel = "Bills Label";
+  
+  /**
+   * The JLabel, that displays the amount of bills, which was calculated by the application.
+   */
   public static final String billsSumLabel = "Bills Sum Label";
+  
+  /**
+   * The JLabel, that displays "Gesamt:".
+   */
   public static final String totalLabel = "Total Label";
+  
+  /**
+   * The JLabel, that displays the total amount of money, which was calculated by the application.
+   */
   public static final String totalSumLabel = "Total Sum Label";
+  
+  /**
+   * The JLabel, that displays "Muss Kleingeld:".
+   */
   public static final String coinageNecessityLabel = "Coinage Necessity Label";
+  
+  /**
+   * The JLabel, that displays the amount of coinage, that should be in the purses for the next 
+   * day. For now it's (amount of purses) * (25€).
+   */
   public static final String coinageNecessitySumLabel = "Coinage Necessity Sum Label";
+  
+  /**
+   * The JLabel, that displays "Differenz Kleingeld:".
+   */
   public static final String coinageDifferenceLabel = "Coinage Difference Label";
+  
+  /**
+   * The JLabel, that displays the difference between the coinage in the purses and how much 
+   * coinage has to be in it for the next day.
+   */
   public static final String coinageDifferenceSumLabel = "Coinage Difference Sum Label";
+  
+  /**
+   * The JLabel, that displays "Kassenschnitt:".
+   */
   public static final String totalCashNecessityLabel = "Total Cash Necessity Label";
+  
+  /**
+   * The JLabel, that displays the amount of money, that should be in the purses according to the 
+   * User's input.
+   */
   public static final String totalCashNecessitySumLabel = "Total Cash Necessity Sum Label";
+  
+  /**
+   * The JLabel, that displays "Einnahmen incl Tip:".
+   */
   public static final String revenuesWithTipLabel = "Revenues With Tip Label";
+  
+  /**
+   * The JLabel, that displays the revenues inclusive the amount of tips given. This is the same 
+   * value as stored in {@link #totalSumLabel}.
+   */
   public static final String revenuesWithTipSumLabel = "Revenues With Tip Sum Label";
+  
+  /**
+   * The JLabel, that displays "Rest Tip:".
+   */
   public static final String tipLabel = "Tip Label";
+  
+  /**
+   * The total amount of tips given, as calculated by the application by subtracting the amount of 
+   * money, that should be in the purses from the total amount of money that IS in the purses.
+   */
   public static final String tipSumLabel = "Tip Sum Label";
   
-  public static final Dimension dim = new Dimension(600, 700);
+  /**
+   * The {@link Dimension}, which this Layout prefers.
+   */
+  private static final Dimension dim = new Dimension(600, 700);
+  
+  /**
+   * All added components in a HashMap of Strings and Components, with the indentifier-String as 
+   * key and the Component as value.
+   * @see HashMap
+   */
   private HashMap<String, Component> comps;
   
+  /**
+   * Creates a new Layout and instantiates a new HashMap for the Components.
+   */
   public KassenLayout() {
     comps = new HashMap<String, Component>();
   }
@@ -481,8 +668,8 @@ public class KassenLayout implements LayoutManager {
       comps.get(purseTF).setBackground(Color.orange);
     }
     
-    if (comps.get(seperatorOne) != null) {
-      comps.get(seperatorOne).setBounds(20, 280, 600, 20);
+    if (comps.get(separatorOne) != null) {
+      comps.get(separatorOne).setBounds(20, 280, 600, 20);
     }
     
     if (comps.get(cashNecessityLabel) != null) {
@@ -505,8 +692,8 @@ public class KassenLayout implements LayoutManager {
       comps.get(cashNecessityCentLabel).setBounds(320, 310, 30, 20);
     }
     
-    if (comps.get(seperatorTwo) != null) {
-      comps.get(seperatorTwo).setBounds(20, 340, 600, 20);
+    if (comps.get(separatorTwo) != null) {
+      comps.get(separatorTwo).setBounds(20, 340, 600, 20);
     }
     
     if (comps.get(coinageLabel) != null) {
@@ -533,8 +720,8 @@ public class KassenLayout implements LayoutManager {
       comps.get(totalSumLabel).setBounds(160, 400, 120, 20);
     }
     
-    if (comps.get(seperatorThree) != null) {
-      comps.get(seperatorThree).setBounds(20, 430, 600, 20);
+    if (comps.get(separatorThree) != null) {
+      comps.get(separatorThree).setBounds(20, 430, 600, 20);
     }
     
     if (comps.get(coinageNecessityLabel) != null) {
@@ -633,5 +820,14 @@ public class KassenLayout implements LayoutManager {
       System.out.println("This Component is not implemented yet.");
       return null;
     }
+  }
+  
+  /**
+   * Returns a new Dimension with the preferred Size of this Layout.
+   * @return A new {@link Dimension}, that has the preferred size of this Layout.
+   * @since 1.0
+   */
+  public static Dimension getDimension() {
+    return new Dimension(dim.getSize());
   }
 }

@@ -30,7 +30,7 @@ public class Interface {
   @SuppressWarnings("static-access")
   private void runGui() {
     JFrame frame = new JFrame();
-    frame.setSize(KassenLayout.dim);
+    frame.setSize(KassenLayout.getDimension());
     frame.setTitle("Kassenbestand - v1.0");
     frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
     frame.getContentPane().setLayout(new KassenLayout());
@@ -86,14 +86,14 @@ public class Interface {
     
     c.add(KassenLayout.purseLabel, new JLabel("Gezählt:"));
     
-    c.add(KassenLayout.seperatorOne, new JLabel("--------------------------------------------------"
+    c.add(KassenLayout.separatorOne, new JLabel("--------------------------------------------------"
         + "-------------------------------------------------------------------------------------"));
     
     c.add(KassenLayout.cashNecessityLabel, new JLabel("Kassenschnitt Bar: "));
     c.add(KassenLayout.cashNecessityEuroLabel, new JLabel("€"));
     c.add(KassenLayout.cashNecessityCentLabel, new JLabel("ct"));
     
-    c.add(KassenLayout.seperatorTwo, new JLabel("--------------------------------------------------"
+    c.add(KassenLayout.separatorTwo, new JLabel("--------------------------------------------------"
         + "-------------------------------------------------------------------------------------"));
     
     c.add(KassenLayout.coinageLabel, new JLabel("Kleingeld: "));
@@ -103,7 +103,7 @@ public class Interface {
     c.add(KassenLayout.totalLabel, new JLabel("Gesamt: "));
     c.add(KassenLayout.totalSumLabel, new JLabel("0,00€"));
     
-    c.add(KassenLayout.seperatorThree, 
+    c.add(KassenLayout.separatorThree, 
         new JLabel("------------------------------------------------------------------------------"
             + "---------------------------------------------------------"));
     
