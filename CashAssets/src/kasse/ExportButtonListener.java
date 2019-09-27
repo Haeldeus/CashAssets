@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -496,8 +497,10 @@ public class ExportButtonListener implements ActionListener {
     cell.setCellStyle(csUnderscoreBorder);
     
     try {
-      workbook.write(new FileOutputStream(getDate().replaceAll("\\.", "x") + ".xlsx"));
+      String s = getDate().replaceAll("\\.", "x") + ".xlsx";
+      workbook.write(new FileOutputStream(s));
       workbook.close();
+      Runtime.getRuntime().exec("explorer.exe /select," + s);   //TODO: add setting for this
     } catch (IOException e) {
       e.printStackTrace();
     }
