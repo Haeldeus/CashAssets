@@ -1,6 +1,10 @@
 package kasse;
 
 import java.awt.Container;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -125,7 +129,8 @@ public class Interface {
    * @since 1.0
    */
   private void addTextFields(Container c) {
-    c.add(KassenLayout.dateYearTextField, new JTextField("20"));
+    Calendar cal = Calendar.getInstance(Locale.GERMANY);
+    c.add(KassenLayout.dateYearTextField, new JTextField("" + (cal.get(Calendar.YEAR))));
     c.add(KassenLayout.oneCentTF, new JTextField("0"));
     c.add(KassenLayout.twoCentTF, new JTextField("0"));
     c.add(KassenLayout.fiveCentTF, new JTextField("0"));
@@ -154,17 +159,20 @@ public class Interface {
    * @param c The ContentPane of the Frame.
    * @since 1.0
    */
-  private void addComboBoxes(Container c) {    
+  private void addComboBoxes(Container c) {
+    Calendar cal = Calendar.getInstance(Locale.GERMANY);
     JComboBox<String> intBox = new JComboBox<String>();
     for (int i = 1; i <= 31; i++) {
       intBox.addItem(i + ".");
     }
+    intBox.setSelectedIndex(cal.get(Calendar.DATE));
     c.add(KassenLayout.dateDayDropdown, intBox);
     
     intBox = new JComboBox<String>();
     for (int i = 1; i <= 12; i++) {
       intBox.addItem(i + ".");
     }
+    intBox.setSelectedIndex(cal.get(Calendar.MONTH));
     c.add(KassenLayout.dateMonthDropdown, intBox);
   }
   
