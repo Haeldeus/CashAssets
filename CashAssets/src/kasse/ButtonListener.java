@@ -335,6 +335,7 @@ public class ButtonListener implements ActionListener {
       label.setText(totalEuros + ",0" + coinageCentMoney + "€");
     }
     
+    //TODO: Subtract CoinageMoney from the final result.
     
     label = (JLabel)layout.getComp(KassenLayout.tipSumLabel);
     field = (JTextField)layout.getComp(KassenLayout.cashNecessityEuroTF);
