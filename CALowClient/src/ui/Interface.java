@@ -2,7 +2,9 @@ package ui;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,7 +27,7 @@ public class Interface {
    * @since 1.0
    */
   public void build() {
-    //System.out.println(new Date(System.currentTimeMillis()));
+    Calendar cal = Calendar.getInstance(Locale.GERMANY);
     JFrame frame = new JFrame();
     frame.setSize(new Dimension(600, 500));
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

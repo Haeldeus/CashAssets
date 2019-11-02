@@ -2,9 +2,7 @@ package kasse;
 
 import java.awt.Container;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -129,8 +127,8 @@ public class Interface {
    * @since 1.0
    */
   private void addTextFields(Container c) {
-    Calendar cal = Calendar.getInstance(Locale.GERMANY);
-    c.add(KassenLayout.dateYearTextField, new JTextField("" + (cal.get(Calendar.YEAR))));
+    Calendar cal = Calendar.getInstance(Locale.GERMANY);  
+    c.add(KassenLayout.dateYearTextField, new JTextField("" + cal.get(Calendar.YEAR)));
     c.add(KassenLayout.oneCentTF, new JTextField("0"));
     c.add(KassenLayout.twoCentTF, new JTextField("0"));
     c.add(KassenLayout.fiveCentTF, new JTextField("0"));
@@ -165,7 +163,7 @@ public class Interface {
     for (int i = 1; i <= 31; i++) {
       intBox.addItem(i + ".");
     }
-    intBox.setSelectedIndex(cal.get(Calendar.DATE));
+    intBox.setSelectedIndex(cal.get(Calendar.DAY_OF_MONTH) - 1);
     c.add(KassenLayout.dateDayDropdown, intBox);
     
     intBox = new JComboBox<String>();
