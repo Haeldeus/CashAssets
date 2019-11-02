@@ -421,7 +421,7 @@ public class ButtonListener implements ActionListener {
   }
   
   /**
-   * Resets all Label-Texts to their default value, in case their were altered by the 
+   * Resets all Label-Texts to their default value, in case they were altered by the 
    * Calculate-Button.
    * @since 1.0
    */
