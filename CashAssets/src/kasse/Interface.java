@@ -158,7 +158,7 @@ public class Interface {
    * @since 1.0
    */
   private void addComboBoxes(Container c) {
-    Calendar cal = Calendar.getInstance(Locale.GERMANY);  
+    Calendar cal = Calendar.getInstance(Locale.GERMANY);
     JComboBox<String> intBox = new JComboBox<String>();
     for (int i = 1; i <= 31; i++) {
       intBox.addItem(i + ".");
