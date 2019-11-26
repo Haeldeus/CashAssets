@@ -3,6 +3,7 @@ package kasse;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -121,302 +122,131 @@ public class ButtonListener implements ActionListener {
    * @since 1.0
    */
   private void calculate() {
-    JTextField field = (JTextField)layout.getComp(KassenLayout.oneCentTF);
-    String txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
     JLabel label = (JLabel)layout.getComp(KassenLayout.oneCentSumLabel);
-    int[] arr = getSumCent(txt, label, 1);
-    int coinageCentMoney = 0;
-    int coinageEuroMoney = 0;
-    coinageEuroMoney += arr[0];
-    coinageCentMoney += arr[1];
-    if (coinageCentMoney >= 100) {
-      coinageEuroMoney++;
-      coinageCentMoney -= 100;
-    }
+    BigDecimal coinageMoney = new BigDecimal("0.00");
+    coinageMoney = coinageMoney.add(calculateSetComponents(
+        (JTextField)layout.getComp(KassenLayout.oneCentTF), label, new BigDecimal("0.01")));
     
-    field = (JTextField)layout.getComp(KassenLayout.twoCentTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
     label = (JLabel)layout.getComp(KassenLayout.twoCentSumLabel);
-    arr = getSumCent(txt, label, 2);
-    coinageEuroMoney += arr[0];
-    coinageCentMoney += arr[1];
-    if (coinageCentMoney >= 100) {
-      coinageEuroMoney++;
-      coinageCentMoney -= 100;
-    }
+    coinageMoney = coinageMoney.add(calculateSetComponents(
+        (JTextField)layout.getComp(KassenLayout.twoCentTF), label, new BigDecimal("0.02")));
     
-    field = (JTextField)layout.getComp(KassenLayout.fiveCentTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
     label = (JLabel)layout.getComp(KassenLayout.fiveCentSumLabel);
-    arr = getSumCent(txt, label, 5);
-    coinageEuroMoney += arr[0];
-    coinageCentMoney += arr[1];
-    if (coinageCentMoney >= 100) {
-      coinageEuroMoney++;
-      coinageCentMoney -= 100;
-    }
-    
-    field = (JTextField)layout.getComp(KassenLayout.tenCentTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    coinageMoney = coinageMoney.add(calculateSetComponents(
+        (JTextField)layout.getComp(KassenLayout.fiveCentTF), label, new BigDecimal("0.05")));
+
     label = (JLabel)layout.getComp(KassenLayout.tenCentSumLabel);
-    arr = getSumCent(txt, label, 10);
-    coinageEuroMoney += arr[0];
-    coinageCentMoney += arr[1];
-    if (coinageCentMoney >= 100) {
-      coinageEuroMoney++;
-      coinageCentMoney -= 100;
-    }
+    coinageMoney = coinageMoney.add(calculateSetComponents(
+        (JTextField)layout.getComp(KassenLayout.tenCentTF), label, new BigDecimal("0.1")));
     
-    field = (JTextField)layout.getComp(KassenLayout.twentyCentTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
     label = (JLabel)layout.getComp(KassenLayout.twentyCentSumLabel);
-    arr = getSumCent(txt, label, 20);
-    coinageEuroMoney += arr[0];
-    coinageCentMoney += arr[1];
-    if (coinageCentMoney >= 100) {
-      coinageEuroMoney++;
-      coinageCentMoney -= 100;
-    }
-    
-    field = (JTextField)layout.getComp(KassenLayout.fiftyCentTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    coinageMoney = coinageMoney.add(calculateSetComponents(
+        (JTextField)layout.getComp(KassenLayout.twentyCentTF), label, new BigDecimal("0.2")));
+
     label = (JLabel)layout.getComp(KassenLayout.fiftyCentSumLabel);
-    arr = getSumCent(txt, label, 50);
-    coinageEuroMoney += arr[0];
-    coinageCentMoney += arr[1];
-    if (coinageCentMoney >= 100) {
-      coinageEuroMoney++;
-      coinageCentMoney -= 100;
-    }
+    coinageMoney = coinageMoney.add(calculateSetComponents(
+        (JTextField)layout.getComp(KassenLayout.fiftyCentTF), label, new BigDecimal("0.5")));
     
-    field = (JTextField)layout.getComp(KassenLayout.oneEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
     label = (JLabel)layout.getComp(KassenLayout.oneEuroSumLabel);
-    coinageEuroMoney += getSumEuro(txt, label, 1);
-    
-    field = (JTextField)layout.getComp(KassenLayout.twoEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    coinageMoney = coinageMoney.add(calculateSetComponents(
+        (JTextField)layout.getComp(KassenLayout.oneEuroTF), label, new BigDecimal("1.0")));
+
     label = (JLabel)layout.getComp(KassenLayout.twoEuroSumLabel);
-    coinageEuroMoney += getSumEuro(txt, label, 2);
+    coinageMoney = coinageMoney.add(calculateSetComponents(
+        (JTextField)layout.getComp(KassenLayout.twoEuroTF), label, new BigDecimal("2.0")));
     
-    field = (JTextField)layout.getComp(KassenLayout.fiveEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    String txt = setField((JTextField)layout.getComp(KassenLayout.fiveEuroTF));
     label = (JLabel)layout.getComp(KassenLayout.fiveEuroSumLabel);
+    //TODO: Change billMoney to BigDecimal to ensure correct calculation.
     int billMoney = 0;
     billMoney += getSumEuro(txt, label, 5);
     
-    field = (JTextField)layout.getComp(KassenLayout.tenEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    txt = setField((JTextField)layout.getComp(KassenLayout.tenEuroTF));
     label = (JLabel)layout.getComp(KassenLayout.tenEuroSumLabel);
     billMoney += getSumEuro(txt, label, 10);
     
-    field = (JTextField)layout.getComp(KassenLayout.twentyEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    txt = setField((JTextField)layout.getComp(KassenLayout.twentyEuroTF));
     label = (JLabel)layout.getComp(KassenLayout.twentyEuroSumLabel);
     billMoney += getSumEuro(txt, label, 20);
     
-    field = (JTextField)layout.getComp(KassenLayout.fiftyEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    txt = setField((JTextField)layout.getComp(KassenLayout.fiftyEuroTF));
     label = (JLabel)layout.getComp(KassenLayout.fiftyEuroSumLabel);
     billMoney += getSumEuro(txt, label, 50);
     
-    field = (JTextField)layout.getComp(KassenLayout.hundredEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    txt = setField((JTextField)layout.getComp(KassenLayout.hundredEuroTF));
     label = (JLabel)layout.getComp(KassenLayout.hundredEuroSumLabel);
     billMoney += getSumEuro(txt, label, 100);
     
-    field = (JTextField)layout.getComp(KassenLayout.twohundredEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    txt = setField((JTextField)layout.getComp(KassenLayout.twohundredEuroTF));
     label = (JLabel)layout.getComp(KassenLayout.twohundredEuroSumLabel);
     billMoney += getSumEuro(txt, label, 200);
     
-    field = (JTextField)layout.getComp(KassenLayout.fivehundredEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    txt = setField((JTextField)layout.getComp(KassenLayout.fivehundredEuroTF));
     label = (JLabel)layout.getComp(KassenLayout.fivehundredEuroSumLabel);
     billMoney += getSumEuro(txt, label, 500);
     
     label = (JLabel)layout.getComp(KassenLayout.coinageSumLabel);
-    if (coinageCentMoney >= 10) {
-      label.setText(coinageEuroMoney + "," + coinageCentMoney + "€");
-    } else {
-      label.setText(coinageEuroMoney + ",0" + coinageCentMoney + "€");
-    }
+    label.setText(("" + coinageMoney + "€").replaceAll("\\.", ","));
+    
     
     label = (JLabel)layout.getComp(KassenLayout.billsSumLabel);
     label.setText(billMoney + ",00€");
     
-    int totalEuros = billMoney + coinageEuroMoney;
+    
+    BigDecimal totalEuros = coinageMoney.add(new BigDecimal(billMoney));
     
     label = (JLabel)layout.getComp(KassenLayout.totalSumLabel);
-    if (coinageCentMoney >= 10) {
-      label.setText(totalEuros + "," + coinageCentMoney + "€");
-    } else {
-      label.setText(totalEuros + ",0" + coinageCentMoney + "€");
-    }
+
+    label.setText((totalEuros + "€").replaceAll("\\.", ","));
     
-    field = (JTextField)layout.getComp(KassenLayout.purseTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
+    txt = setField((JTextField)layout.getComp(KassenLayout.purseTF));
     int coinNecessity = Integer.parseInt(txt) * 25;
     label = (JLabel)layout.getComp(KassenLayout.coinageNecessitySumLabel);
     label.setText(coinNecessity + ",00€");
     
-    int coinageDiffEuro = coinageEuroMoney - coinNecessity;
+    BigDecimal coinageDiff = coinageMoney.subtract(new BigDecimal(coinNecessity));
     label = (JLabel)layout.getComp(KassenLayout.coinageDifferenceSumLabel);
     
-    if (coinageDiffEuro < 0) {
-      int centDiff;
-      if (coinageCentMoney != 0) {
-        centDiff = 100 - coinageCentMoney;
-        coinageDiffEuro++;
-      } else {
-        centDiff = coinageCentMoney;
-      }
-      if (centDiff >= 10) {
-        if (coinageDiffEuro != 0) {
-          label.setText("<html><font color='red'>" + coinageDiffEuro + "," + centDiff + "€" 
-              + "</font></html>");
-        } else {
-          label.setText("<html><font color='red'>-" + coinageDiffEuro + "," + centDiff + "€" 
-              + "</font></html>");
-        }
-      } else {
-        if (coinageDiffEuro != 0) {
-          label.setText("<html><font color='red'>" + coinageDiffEuro + ",0" + centDiff + "€" 
-              + "</font></html>");
-        } else {
-          label.setText("<html><font color='red'>-" + coinageDiffEuro + ",0" + centDiff + "€" 
-              + "</font></html>");
-        }
-      }
+    if (coinageDiff.compareTo(new BigDecimal("0.0")) == -1) {
+      label.setText("<html><font color='red'>" + coinageDiff.toString()
+          .replaceAll("\\.", ",") + "€" + "</font></html>");
     } else {
-      if (coinageCentMoney >= 10) {
-        label.setText(coinageDiffEuro + "," + coinageCentMoney + "€");
-      } else {
-        label.setText(coinageDiffEuro + ",0" + coinageCentMoney + "€");
-      }    
+      label.setText(coinageDiff.toString().replaceAll("\\.", ",") + "€");
     }
     
-    label = (JLabel)layout.getComp(KassenLayout.revenuesWithTipSumLabel);
-    if (coinageCentMoney >= 10) {
-      label.setText(totalEuros + "," + coinageCentMoney + "€");
-    } else {
-      label.setText(totalEuros + ",0" + coinageCentMoney + "€");
-    }
+    label = (JLabel)layout.getComp(KassenLayout.afterCoinageFixSumLabel);
     
-    //TODO: Subtract CoinageMoney from the final result.
-    
-    label = (JLabel)layout.getComp(KassenLayout.tipSumLabel);
-    field = (JTextField)layout.getComp(KassenLayout.cashNecessityEuroTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
-    final int resEuros = Integer.parseInt(txt);
-    
-    field = (JTextField)layout.getComp(KassenLayout.cashNecessityCentTF);
-    txt = field.getText();
-    txt = removeNonDigits(txt);
-    field.setText(txt);
-    final int resCents = Integer.parseInt(txt);
-    
-    int x = totalEuros - resEuros;
-    int y = coinageCentMoney - resCents;
-    
-    if (totalEuros > resEuros) {
-      if (coinageCentMoney >= resCents) {
-        if (y >= 10) {
-          label.setText(x + "," + y + "€");
-        } else {
-          label.setText(x + ",0" + y + "€");
-        }
-      } else {
-        if (y + 100 >= 10) {
-          label.setText((x - 1) + "," + (y + 100) + "€");
-        } else {
-          label.setText((x - 1) + ",0" + (y + 100) + "€");
-        }
-      }
-    } else if (totalEuros == resEuros) {
-      if (coinageCentMoney >= resCents) {
-        if (y >= 10) {
-          label.setText(x + "," + y + "€");
-        } else {
-          label.setText(x + ",0" + y + "€");
-        }
-      } else {
-        if ((y * (-1)) >= 10) {
-          label.setText("<html><font color='red'>-" + x + "," + y * (-1) + "€" + "</font></html>");
-        } else {
-          label.setText("<html><font color='red'>-" + x + ",0" + y * (-1) + "€" + "</font></html>");
-        }
-      }
-    } else {
-      if (coinageCentMoney > resCents) {
-        int tmpX = x + 1;
-        if (tmpX == 0) {
-          if (((y - 100) * (-1)) >= 10) {
-            label.setText("<html><font color='red'>-" + tmpX + "," + ((y - 100) * (-1)) 
-                + "€" + "</font></html>");
-          } else {
-            label.setText("<html><font color='red'>-" + tmpX + ",0" + ((y - 100) * (-1)) 
-                + "€" + "</font></html>");
-          }
-        } else {
-          if (((y - 100) * (-1)) >= 10) {
-            label.setText("<html><font color='red'>" + tmpX + "," + ((y - 100) * (-1)) 
-                + "€" + "</font></html>");
-          } else {
-            label.setText("<html><font color='red'>" + tmpX + ",0" + ((y - 100) * (-1)) 
-                + "€" + "</font></html>");
-          }
-        }
-      } else if (coinageCentMoney == resCents) {
-        label.setText("<html><font color='red'>" + x + ",0" + y + "€" + "</font></html>");
-      } else {
-        if ((y * (-1)) >= 10) {
-          label.setText("<html><font color='red'>" + x + "," + (y * (-1)) + "€" + "</font></html>");
-        } else {
-          label.setText("<html><font color='red'>" + x + ",0" + (y * (-1)) + "€</font></html>");
-        }
-      }
-    }
+    BigDecimal revenueWithTips = totalEuros.subtract(coinageDiff);
+    label.setText(revenueWithTips.toString().replaceAll("\\.", ",") + "€");
     
     label = (JLabel)layout.getComp(KassenLayout.totalCashNecessitySumLabel);
-    if (resCents >= 10) {
-      label.setText(resEuros + "," + resCents + "€");
+    
+    txt = setField((JTextField)layout.getComp(KassenLayout.cashNecessityEuroTF));
+    
+    final int cashNecessityEuro = Integer.parseInt(txt);
+    
+    txt = setField((JTextField)layout.getComp(KassenLayout.cashNecessityCentTF));
+    BigDecimal cashNecessity;
+    int i = Integer.parseInt(txt);
+    if (Integer.parseInt(txt) >= 100) {
+      while (i >= 100) {
+        i /= 10;
+      }
+      cashNecessity = new BigDecimal(cashNecessityEuro + "." + i);
+    } else if (i < 10) {
+      cashNecessity = new BigDecimal(cashNecessityEuro + ".0" + i);
     } else {
-      label.setText(resEuros + ",0" + resCents + "€");
+      cashNecessity = new BigDecimal(cashNecessityEuro + "." + Integer.parseInt(txt));
+    }
+    label.setText(cashNecessity.toString().replaceAll("\\.", ",") + "€");
+    
+    label = (JLabel)layout.getComp(KassenLayout.tipSumLabel);
+    BigDecimal tips = revenueWithTips.subtract(cashNecessity);
+    if (tips.compareTo(new BigDecimal("0.0")) < 0) {
+      label.setText("<html><font color='red'>" + tips.toString().replaceAll("\\.", ",") + "€" 
+          + "</font></html>");
+    } else {
+      label.setText(tips.toString().replaceAll("\\.", ",") + "€");
     }
   }
   
@@ -441,7 +271,7 @@ public class ButtonListener implements ActionListener {
     label = (JLabel)layout.getComp(KassenLayout.coinageDifferenceSumLabel);
     label.setText("0,00€");
     
-    label = (JLabel)layout.getComp(KassenLayout.revenuesWithTipSumLabel);
+    label = (JLabel)layout.getComp(KassenLayout.afterCoinageFixSumLabel);
     label.setText("0,00€");
     
     label = (JLabel)layout.getComp(KassenLayout.totalCashNecessitySumLabel);
@@ -452,30 +282,51 @@ public class ButtonListener implements ActionListener {
   }
   
   /**
-   * Calculates, how much Money in Euro and cents the given String with the given factor is. The 
-   * result will be printed in the given JLabel and returned as an Array of Integer.
-   * @param txt The String, that represents the amount of times, a coin of this type was counted 
-   *      in the machine.
+   * Calculates, how much money the given Coin-TextField multiplied by the given factor is. The 
+   * result will be printed in the given JLabel and returned as a BigDecimal. Also, the given 
+   * JTextField will be, if necessary,  altered to display a correct Integer Value (e.g.: "1a" 
+   * will be altered to "1").
+   * @param field   The JTextField, which contains the amount of coins or bills counted. Will be 
+   *      altered if necessary.
    * @param label The JLabel, that will display the result.
-   * @param factor  The factor, the given Text will be multiplied with. In practical terms: The 
-   *      value of the coin in cents.
-   * @return  The amount of Money, all coins or bills of this type has made in an Array with the 
-   *      fixed length of 2, where the amount of Euro is at 0 and the amount of cents is at 1.
+   * @param factor  The Factor, the given amount will be multiplied by.
+   * @return The amount of money all coins of this type result in. Also, the Label will be set to 
+   *      display this result.
    * @since 1.0
    */
-  private int[] getSumCent(String txt, JLabel label, int factor) {
-    int euro = 0;
-    int cent = factor * Integer.parseInt(txt);
-    while (cent >= 100) {
-      euro++;
-      cent -= 100;
-    }
-    if (cent >= 10) {
-      label.setText("= " + euro + "," + cent + "€");
+  private BigDecimal calculateSetComponents(JTextField field, JLabel label, BigDecimal factor) {
+    BigDecimal res = new BigDecimal("0.0");
+    int parsed = Integer.parseInt(setField(field));
+    res = res.add(factor.multiply(new BigDecimal(parsed)));
+    
+    String strRes = "= " + res;  
+    if (factor.compareTo(new BigDecimal("0.1")) == 0 || factor.compareTo(new BigDecimal("0.2")) == 0
+        || factor.compareTo(new BigDecimal("0.5")) == 0 
+        || factor.compareTo(new BigDecimal("1.0")) == 0 
+        || factor.compareTo(new BigDecimal("2.0")) == 0 
+        || ((parsed != 0) && (parsed % 10 == 0) && (factor.compareTo(new BigDecimal("0.01")) == 0)) 
+        || ((parsed != 0) && (parsed % 5 == 0) && (factor.compareTo(new BigDecimal("0.02")) == 0)) 
+        || ((parsed != 0) && (parsed % 2 == 0) && (factor.compareTo(new BigDecimal("0.05")) == 0))
+        ) {
+      label.setText(strRes.concat("0€").replaceAll("\\.", ","));
     } else {
-      label.setText("= " + euro + ",0" + cent + "€");
+      label.setText(strRes.concat("€").replaceAll("\\.", ","));
     }
-    return new int[]{euro, cent};
+    return res;
+  }
+  
+  /**
+   * Sets the content of the given Field to a digit only String, so it can be processed by 
+   *    {@link Integer#parseInt(String)}.
+   * @param field The JTextField to be altered.
+   * @return  The altered content of the Field as a String.
+   * @since 1.0
+   */
+  private String setField(JTextField field) {
+    String txt = field.getText();
+    txt = removeNonDigits(txt);
+    field.setText(txt);
+    return txt;
   }
   
   /**

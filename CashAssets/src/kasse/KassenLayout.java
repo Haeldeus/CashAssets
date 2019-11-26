@@ -438,15 +438,14 @@ public class KassenLayout implements LayoutManager {
   public static final String totalCashNecessitySumLabel = "Total Cash Necessity Sum Label";
   
   /**
-   * The JLabel, that displays "Einnahmen incl Tip:".
+   * The JLabel, that displays "Nach Kleingeldausgleich:".
    */
-  public static final String revenuesWithTipLabel = "Revenues With Tip Label";
+  public static final String afterCoinageFixLabel = "After Coinage Fix Label";
   
   /**
-   * The JLabel, that displays the revenues inclusive the amount of tips given. This is the same 
-   * value as stored in {@link #totalSumLabel}.
+   * The JLabel, that displays the revenues inclusive the amount of tips given.
    */
-  public static final String revenuesWithTipSumLabel = "Revenues With Tip Sum Label";
+  public static final String afterCoinageFixSumLabel = "After Coinage Fix Sum Label";
   
   /**
    * The JLabel, that displays "Rest Tip:".
@@ -740,12 +739,12 @@ public class KassenLayout implements LayoutManager {
       comps.get(coinageDifferenceSumLabel).setBounds(160, 490, 200, 20);
     }
     
-    if (comps.get(revenuesWithTipLabel) != null) {
-      comps.get(revenuesWithTipLabel).setBounds(300, 460, 120, 20);
+    if (comps.get(afterCoinageFixLabel) != null) {
+      comps.get(afterCoinageFixLabel).setBounds(300, 460, 120, 20);
     }
     
-    if (comps.get(revenuesWithTipSumLabel) != null) {
-      comps.get(revenuesWithTipSumLabel).setBounds(440, 460, 120, 20);
+    if (comps.get(afterCoinageFixSumLabel) != null) {
+      comps.get(afterCoinageFixSumLabel).setBounds(440, 460, 120, 20);
     }
     
     if (comps.get(totalCashNecessityLabel) != null) {

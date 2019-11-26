@@ -248,7 +248,7 @@ public class ExportButtonListener implements ActionListener {
     createCell(row, 3, getCellValueFromLabel(KassenLayout.coinageNecessitySumLabel), csStandard, 
         null, false);
     createCell(row, 5, "Gesamtsumme:", csRed, null, false);
-    createCell(row, 6, getCellValueFromLabel(KassenLayout.revenuesWithTipSumLabel), csStandard, 
+    createCell(row, 6, getCellValueFromLabel(KassenLayout.afterCoinageFixSumLabel), csStandard, 
         null, false);
     
     //Create the nineteenth Row

@@ -113,8 +113,8 @@ public class Interface {
     c.add(KassenLayout.coinageNecessitySumLabel, new JLabel("0,00€"));
     c.add(KassenLayout.coinageDifferenceLabel, new JLabel("Differenz Kleingeld: "));
     c.add(KassenLayout.coinageDifferenceSumLabel, new JLabel("0,00€"));
-    c.add(KassenLayout.revenuesWithTipLabel, new JLabel("Einnahmen incl Tip:"));
-    c.add(KassenLayout.revenuesWithTipSumLabel, new JLabel("0,00€"));
+    c.add(KassenLayout.afterCoinageFixLabel, new JLabel("Kleingeld bereinigt:"));
+    c.add(KassenLayout.afterCoinageFixSumLabel, new JLabel("0,00€"));
     c.add(KassenLayout.totalCashNecessityLabel, new JLabel("Kassenschnitt:"));
     c.add(KassenLayout.totalCashNecessitySumLabel, new JLabel("0,00€"));
     c.add(KassenLayout.tipLabel, new JLabel("Rest Tip:"));
