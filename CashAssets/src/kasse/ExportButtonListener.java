@@ -335,15 +335,15 @@ public class ExportButtonListener implements ActionListener {
     KassenLayout layout = (KassenLayout)container.getLayout();
     JComboBox<String> box = (JComboBox<String>)layout.getComp(KassenLayout.dateDayDropdown);
     if (Integer.parseInt(box.getSelectedItem().toString().replaceAll("\\.", "")) < 10) {
-      res = res.concat("" + box.getSelectedItem().toString());
-    } else {
       res = res.concat("0" + box.getSelectedItem().toString());
+    } else {
+      res = res.concat("" + box.getSelectedItem().toString());
     }
     box = (JComboBox<String>)layout.getComp(KassenLayout.dateMonthDropdown);
     if (Integer.parseInt(box.getSelectedItem().toString().replaceAll("\\.", "")) < 10) {
-      res = res.concat("" + box.getSelectedItem().toString());
-    } else {
       res = res.concat("0" + box.getSelectedItem().toString());
+    } else {
+      res = res.concat("" + box.getSelectedItem().toString());
     }
     JTextField year = (JTextField)layout.getComp(KassenLayout.dateYearTextField);
     res = res.concat("" + year.getText());
