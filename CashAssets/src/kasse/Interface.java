@@ -33,7 +33,7 @@ public class Interface {
   private void runGui() {
     JFrame frame = new JFrame();
     frame.setSize(KassenLayout.getDimension());
-    frame.setTitle("Kassenbestand - v1.0");
+    frame.setTitle("Kassenbestand - v0.9");
     frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
     frame.getContentPane().setLayout(new KassenLayout());
     addLabels(frame.getContentPane());
