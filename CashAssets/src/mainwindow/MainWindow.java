@@ -45,7 +45,13 @@ public class MainWindow extends Application {
    */
   private final double version = 0.9;
   
-  private double latestVersion;
+  private final MainWindow me;
+  
+  private Label response;
+  
+  public MainWindow() {
+    this.me = this;
+  }
 
   /**
    * The Main-Method to start the Application from a Java Environment without JavaFX.
@@ -148,16 +154,16 @@ public class MainWindow extends Application {
     
     BorderPane bp2 = new BorderPane();
     Insets insets = new Insets(5);
-    Label version = new Label("Version: 0.9");
+    Label version = new Label("Version: " + getVersion());
     version.setMaxHeight(15.0);
     bp2.setLeft(version);
     BorderPane.setMargin(version, insets);
     
-    GridPane gp = new GridPane();
-    
-    Label response = new Label("");
+    response = new Label("");
     response.setMaxHeight(15.0);
     response.setMinWidth(250.0);
+    
+    GridPane gp = new GridPane();
     gp.add(response, 1, 0);
     GridPane.setHalignment(response, HPos.CENTER);
     
@@ -167,58 +173,13 @@ public class MainWindow extends Application {
     
     bp2.setRight(gp);
     
-    
     Button btCheck = new Button("Update");
     btCheck.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent arg0) {
+        UpdateTask task = new UpdateTask(bar, me, response);
         bar.setVisible(true);
         response.setText("Suche nach Updates...");
-        Task<Void> task = new Task<Void>() {
-          @Override 
-          public Void call() {
-            try {
-              // Make a URL to the web page
-              URL url = new URL("https://github.com/Haeldeus/CashAssets/blob/master/version.txt");
-          
-              // Get the input stream through URL Connection
-              URLConnection con = url.openConnection();
-              InputStream is = con.getInputStream();
-          
-              // Once you have the Input Stream, it's just plain old Java IO stuff.
-          
-              // For this case, since you are interested in getting plain-text web page
-              // I'll use a reader and output the text content to System.out.
-          
-              // For binary content, it's better to directly read the bytes from stream and write
-              // to the target file.
-          
-          
-              BufferedReader br = new BufferedReader(new InputStreamReader(is));
-          
-              String line = null;
-              
-              int i = 0;
-              int max = 10000;
-              
-              String s = "";
-              
-              // read each line and write to System.out
-              while ((line = br.readLine()) != null) {
-                s = s.concat(line);
-                i++;
-                updateProgress(i, max);
-              }
-              System.out.println(s.replaceAll("<" + "\\w+" + ">", ""));
-              latestVersion = 0.9;
-            } catch (IOException e) {
-              e.printStackTrace();
-              latestVersion = 0.0;
-            }
-            bar.setVisible(false);
-            return null;
-          }
-        };
         bar.progressProperty().bind(task.progressProperty());
         new Thread(task).start();
       }  
@@ -235,45 +196,23 @@ public class MainWindow extends Application {
      * Sets the Size of the Scene, it's restrictions and the Stylesheet. Afterwards, it displays 
      * the primaryStage to the User.
      */
-    Scene scene = new Scene(bp, 500, 250);
+    Scene scene = new Scene(bp, 600, 250);
     scene.getStylesheets().add("controlStyle1.css");
     primaryStage.setScene(scene);
+    primaryStage.setMinHeight(270);
+    primaryStage.setMinWidth(620);
     primaryStage.show();
   }
   
-  private double versionCheck() {
-    try {
-      // Make a URL to the web page
-      URL url = new URL("https://github.com/Haeldeus/CashAssets/blob/master/version.txt");
+  protected double getVersion() {
+    return version;
+  }
+
+  protected void setResponseText(String text) {
+    response.setText(text);
+  }
   
-      // Get the input stream through URL Connection
-      URLConnection con = url.openConnection();
-      InputStream is = con.getInputStream();
-  
-      // Once you have the Input Stream, it's just plain old Java IO stuff.
-  
-      // For this case, since you are interested in getting plain-text web page
-      // I'll use a reader and output the text content to System.out.
-  
-      // For binary content, it's better to directly read the bytes from stream and write
-      // to the target file.
-  
-  
-      BufferedReader br = new BufferedReader(new InputStreamReader(is));
-  
-      String line = null;
-      
-      int i = 0;
-      int max = 10000;
-      
-      // read each line and write to System.out
-      while ((line = br.readLine()) != null) {
-        System.out.println(line);
-      }
-      return 0.9;
-    } catch (IOException e) {
-      e.printStackTrace();
-      return 0.0;
-    }
+  protected void addResponseHandler(EventHandler<MouseEvent> handler) {
+    response.setOnMouseClicked(handler);
   }
 }
