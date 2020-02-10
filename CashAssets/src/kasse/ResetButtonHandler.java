@@ -31,7 +31,9 @@ public class ResetButtonHandler implements EventHandler<MouseEvent> {
   
   @Override
   public void handle(MouseEvent arg0) {
-    
+    /*
+     * Sets the Text of all editable TextFields to 0.
+     */
     for (TextField tf : cs.getBillsTextFields()) {
       tf.setText("0");
     }

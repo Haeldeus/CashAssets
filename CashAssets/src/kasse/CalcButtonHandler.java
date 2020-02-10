@@ -62,24 +62,53 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
     cs.getExportButton().setDisable(false);
     cs.getResetButton().setDisable(true);
     
+    /*
+     *Gets the Text of the coinage Field and replaces all Non-Digits. 
+     */
     String str = cs.getCoinTextFields()[7].getText();
-    str = str.replaceAll("[\\D&&[^,]]", "");
+    str = str.replaceAll("[\\D&&[^,]&&[^\\.]]", "");
+    /*
+     * If there are more than 1 chars that equal '.' or ',' then make the TextField red to show 
+     * that there was an Error in the input. This will also cancel the operation.
+     */
+    int count = 0;
+    for (char c : str.toCharArray()) {
+      if (c == '.' || c == ',') {
+        count++;
+      }
+      if (count > 1) {
+        cs.getCoinTextFields()[7].getStyleClass().add("wrongTF");
+        return;
+      }
+    }
+    
+    /*
+     * If there was no input or no digits in the Input, set the input to '0'.
+     */
     if (str == null || str.length() == 0) {
       str = "0";
     }
     cs.getCoinTextFields()[7].setText(str);
     
     
-    
+    /*
+     * Creates the BigDecimals that are needed for this Handler.
+     */
     BigDecimal coinageMoney = new BigDecimal("0.00");
     coinageMoney = coinageMoney.add(new BigDecimal(cs.getCoinTextFields()[7].getText()
         .replaceAll(",", "\\.")));
     BigDecimal billMoney = new BigDecimal("0.00");
     
+    /*
+     * Gets all Sums of bills.
+     */
     for (int i = 8; i <= 14; i++) {
       billMoney = addCoinsToDecimal(billMoney, i);
     }
     
+    /*
+     * Sets the Text of the coinage Result Label.
+     */
     cs.getCoinResults()[7].setText("= " + coinageMoney.toString().replaceAll("\\.", ",") + "€");
     
     /*

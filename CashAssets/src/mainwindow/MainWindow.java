@@ -1,20 +1,13 @@
 package mainwindow;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javafx.application.Application;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -45,10 +38,20 @@ public class MainWindow extends Application {
    */
   private final double version = 0.9;
   
+  /**
+   * The instance of this Class. Used for the {@link UpdateTask}.
+   */
   private final MainWindow me;
   
+  /**
+   * The Label, that displays responses of the UpdateTask.
+   */
   private Label response;
   
+  /**
+   * The Constructor for all Objects of this Class. Sets the created Instance as {@link #me}.
+   * @since 1.0
+   */
   public MainWindow() {
     this.me = this;
   }
@@ -84,10 +87,17 @@ public class MainWindow extends Application {
     settingsMenu.getItems().addAll(settingsItem);
     menu.getMenus().addAll(settingsMenu);
     
+    /*
+     * Creates a new Button to launch the CashAssets Application and adds a Handler.
+     */
     Button btCashAssets = new Button("Kassenbestand");
     btCashAssets.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent arg0) {
+        /*
+         * Checks, if there is a Settings File. If not, this will create a new one with the 
+         * default Settings.
+         */
         Path path = Paths.get("Settings.stg");
         if (!Files.exists(path)) {
           PrintWriter writer;
@@ -97,20 +107,36 @@ public class MainWindow extends Application {
             writer.println("openFolder = 1");
             writer.close();
           } catch (FileNotFoundException e) {
+            /*
+             * Just for debugging purposes. This shouldn't be called at any time.
+             */
             e.printStackTrace();
           } catch (UnsupportedEncodingException e) {
+            /*
+             * Just for debugging purposes. Usually this shouldn't be called at any time.
+             */
             e.printStackTrace();
           }
         }
         try {
+          /*
+           * Creates a new Stage for the CashAssets Application. The Modality will be 
+           * set to Application_modal to prevent closing the Main Window before the new one.
+           */
           Stage stage = new Stage();
           stage.initModality(Modality.APPLICATION_MODAL);
           new kasse.MainWindow().start(stage);
         } catch (Exception e) {
+          /*
+           * Just for debugging purposes. Usually this shouldn't be called at any time.
+           */
           e.printStackTrace();
         }
       }
     });
+    /*
+     * Ensures, that the Button for the new Window will scale with the Scene's size.
+     */
     btCashAssets.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     GridPane.setFillHeight(btCashAssets, true);
     GridPane.setFillWidth(btCashAssets, true);
@@ -118,8 +144,14 @@ public class MainWindow extends Application {
     GridPane.setHgrow(btCashAssets, Priority.ALWAYS);
     grid.add(btCashAssets, 0, 0);
     
+    /*
+     * Creates a new Button to launch the Tip Calculator Application.
+     */
     Button btTip = new Button("Tip Rechner");
     //TODO: Add Handler.
+    /*
+     * Ensures, that the Button for the new Window will scale with the Scene's size.
+     */
     btTip.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     GridPane.setFillHeight(btTip, true);
     GridPane.setFillWidth(btTip, true);
@@ -127,8 +159,14 @@ public class MainWindow extends Application {
     GridPane.setHgrow(btTip, Priority.ALWAYS);
     grid.add(btTip, 0, 1);
     
+    /*
+     * Creates a new Button to launch the Outdoor Cash Application.
+     */
     Button btOutdoor = new Button("Außentheken-Bestand");
     //TODO: Add Handler.
+    /*
+     * Ensures, that the Button for the new Window will scale with the Scene's size.
+     */
     btOutdoor.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     GridPane.setFillHeight(btOutdoor, true);
     GridPane.setFillWidth(btOutdoor, true);
@@ -136,6 +174,9 @@ public class MainWindow extends Application {
     GridPane.setHgrow(btOutdoor, Priority.ALWAYS);
     grid.add(btOutdoor, 1, 0);
     
+    /*
+     * Creates a disabled Button to fill the Scene and inform the User, that additions are possible.
+     */
     Button btTodo = new Button("Mögliche Ergänzungen");
     btTodo.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     btTodo.setDisable(true);
@@ -152,43 +193,83 @@ public class MainWindow extends Application {
     bp.setTop(menu);
     bp.setCenter(grid);
     
+    /*
+     * Adds a BorderPane, that will contain the lower part of the Scene.
+     */
     BorderPane bp2 = new BorderPane();
     Insets insets = new Insets(5);
+    /*
+     * Creates the Label, that will display the Version.
+     */
     Label version = new Label("Version: " + getVersion());
     version.setMaxHeight(15.0);
     bp2.setLeft(version);
     BorderPane.setMargin(version, insets);
     
+    /*
+     * Creates the Response Label to display responses from the Version Check.
+     */
     response = new Label("");
     response.setMaxHeight(15.0);
     response.setMinWidth(250.0);
     
+    /*
+     * Creates a GridPane that contains the ProgressBar and Response Label used for the Version 
+     * Check.
+     */
     GridPane gp = new GridPane();
     gp.add(response, 1, 0);
     GridPane.setHalignment(response, HPos.CENTER);
     
+    /*
+     * Creates the ProgressBar to display the Progress of the Version Check.
+     */
     ProgressBar bar = new ProgressBar();
     bar.setVisible(false);
     gp.add(bar, 0, 0);
     
+    /*
+     * Adds the new GridPane to the lower BorderPane.
+     */
     bp2.setRight(gp);
     
+    /*
+     * Creates a new Button for the Version Check and adds a Handler.
+     */
     Button btCheck = new Button("Update");
     btCheck.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent arg0) {
-        UpdateTask task = new UpdateTask(bar, me, response);
+        /*
+         * Creates a new Update Task for the Version Check.
+         */
+        UpdateTask task = new UpdateTask(bar, me);
+        /*
+         * Displays the ProgressBar and the Response Label.
+         */
         bar.setVisible(true);
         response.setText("Suche nach Updates...");
+        /*
+         * Binds the ProhressBar to the progress of the Task.
+         */
         bar.progressProperty().bind(task.progressProperty());
+        /*
+         * Starts the Task in a new Thread.
+         */
         new Thread(task).start();
       }  
     });
     
+    /*
+     * Adds the Button to the lower BorderPane and sets it's alignment.
+     */
     btCheck.setMaxHeight(15.0);
     bp2.setCenter(btCheck);
     BorderPane.setAlignment(btCheck, Pos.CENTER_LEFT);
     
+    /*
+     * Adds the lower BorderPane to the total Pane.
+     */
     bp.setBottom(bp2);
     
     
@@ -204,15 +285,44 @@ public class MainWindow extends Application {
     primaryStage.show();
   }
   
+  /**
+   * Returns the Version of this Class. Used for possible Updates.
+   * @return  The Version, this Class is on.
+   * @since 1.0
+   */
   protected double getVersion() {
     return version;
   }
 
+  /**
+   * Sets the Text of {@link #response} to the given Text.
+   * @param text  The Text to be set as a String.
+   * @since 1.0
+   */
   protected void setResponseText(String text) {
     response.setText(text);
   }
   
+  /**
+   * Adds the given handler to {@link #response}.
+   * @param handler The {@link EventHandler} for a {@link MouseEvent}, that will be added 
+   *     to {@link #response}.
+   * @since 1.0
+   */
   protected void addResponseHandler(EventHandler<MouseEvent> handler) {
     response.setOnMouseClicked(handler);
+  }
+  
+  /**
+   * Removes the EventHandler from {@link #response}.
+   * @see #addResponseHandler(EventHandler)
+   * @since 1.0
+   */
+  protected void removeResponseHandler() {
+    try {
+      response.removeEventHandler(MouseEvent.MOUSE_CLICKED, response.getOnMouseClicked());
+    } catch (NullPointerException e) {
+      //Do nothing since there are no Handlers to remove
+    }
   }
 }

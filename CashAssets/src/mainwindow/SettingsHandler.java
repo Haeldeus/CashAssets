@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import javafx.event.ActionEvent;
@@ -57,25 +56,44 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
 
   @Override
   public void handle(ActionEvent arg0) {
+    /*
+     * Creates a new Stage to display the Settings Scene.
+     */
     final Stage dialog = new Stage();
     dialog.initOwner(primaryStage);
     dialog.initModality(Modality.APPLICATION_MODAL);
+    /*
+     * Creates a new GridPane, that will contain all fields of this Scene.
+     */
     GridPane grid = new GridPane();
     grid.setHgap(10);
     grid.setVgap(10);
+    /*
+     * Creates a Label, that informs the User, that there are Tooltips with further Information.
+     */
     Label desc = new Label("Bewegen Sie die Maus über die einzelnen Textpassagen um im Tooltip "
         + "weitere Informationen zu erhalten.");
     desc.setWrapText(true);
     grid.add(desc, 0, 0);
     GridPane.setColumnSpan(desc, 10);
     GridPane.setRowSpan(desc, 2);
+    /*
+     * Creates a Label, that describes the purpose of the simple Design CheckBox.
+     */
     Label simpleDesign = new Label("Verwende kleines Design");
     simpleDesign.setTooltip(new Tooltip("Statt das gesamte Kleingeld einzugeben muss "
         + "nur die Gesamtsumme eingegeben werden."));
     grid.add(simpleDesign, 0, 3);
     
+    /*
+     * Checks, if there is a Settings File, where previous settings were saved.
+     */
     boolean existingSettings = Files.exists(path);
     
+    /*
+     * Creates a new CheckBox for the simple Design. If a Settings File exists, the setting for 
+     * this will be taken from that, if not this will be set to be selected by default.
+     */
     CheckBox cbSimpleDesign = new CheckBox();
     if (!existingSettings) {
       cbSimpleDesign.setSelected(true);
@@ -84,12 +102,18 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
     }
     grid.add(cbSimpleDesign, 1, 3);
     
+    /*
+     * Creates a Label, that describes the purpose of the open Folder CheckBox.
+     */
     Label openFolder = new Label("Verzeichnis öffnen");
     openFolder.setTooltip(new Tooltip("Nach dem Export der Excel-Tabelle wird das Verzeichnis "
         + "automatisch geöffnet."));
     grid.add(openFolder, 0, 4);
     
-    
+    /*
+     * Creates a new CheckBox for the open Fold Setting. If a Settings File exists, the setting 
+     * for this will be taken from that, if not this will be set to be selected by default.
+     */
     CheckBox cbOpenFolder = new CheckBox();
     if (!existingSettings) {
       cbOpenFolder.setSelected(true);
@@ -98,13 +122,22 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
     }
     grid.add(cbOpenFolder, 1, 4);
     
+    /*
+     * Creates a Button to save the current Settings and adds a Handler to it.
+     */
     Button btSave = new Button("Speichern");
     btSave.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent arg0) {
+        /*
+         * Creates a Writer to write the Settings into the File.
+         */
         PrintWriter writer;
         try {
           writer = new PrintWriter(path.toString(), "UTF-8");
+          /*
+           * Prints the Settings into the File.
+           */
           if (cbSimpleDesign.isSelected()) {
             writer.println("simpleDesign = 1");
           } else {
@@ -116,33 +149,55 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
           } else {
             writer.println("openFolder = 0");
           }
-          
+          /*
+           * Closes the Writer to prevent leakage.
+           */
           writer.close();
         } catch (FileNotFoundException e) {
-          // TODO Auto-generated catch block
+          /*
+           * Just for debugging purposes. Usually this shouldn't be called at any time.
+           */
           e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-          // TODO Auto-generated catch block
+          /*
+           * Just for debugging purposes. Usually this shouldn't be called at any time.
+           */
           e.printStackTrace();
         }
+        /*
+         * Closes the Stage after saving it.
+         */
         dialog.close();
       }   
     });
     grid.add(btSave, 0, 7);
     GridPane.setColumnSpan(btSave, 2);
     
+    /*
+     * Creates a Button to cancel the current changes and adds a Handler to it.
+     */
     Button btCancel = new Button("Abbrechen");
     btCancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent arg0) {
+        /*
+         * Simply closes the Stage without saving.
+         */
         dialog.close();
       }  
     });
     grid.add(btCancel, 2, 7);
     GridPane.setColumnSpan(btCancel, 2);
     
+    /*
+     * Adds a BorderPane to ensure, that the Grid is always at the Top of the Stage.
+     */
     BorderPane bp = new BorderPane();
     bp.setTop(grid);
+    /*
+     * Basic Stage Settings, which control the Stage and it's Dimension. Also, displays 
+     * the Stage to the User.
+     */
     Scene dialogScene = new Scene(bp, 400, 290);
     dialogScene.getStylesheets().add("controlStyle1.css");
     dialog.setScene(dialogScene);
@@ -152,50 +207,102 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
   }
 
   /**
-   * Returns, if the Checkbox for simple design is selected.
-   * @return  {@code true}, if the Checkbox is selected, {@code false} if not.
+   * Returns, if the CheckBox for simple design should be selected. This is determined by 
+   * checking the Settings File.
+   * @return  {@code true}, if the CheckBox should be selected, {@code false} if not.
    * @since 1.0
    */
   private boolean getSimpleDesignSelect() {
     try {
+      /*
+       * Creates a BufferedReader of the given FileReader to read from the File.
+       */
       FileReader fr = new FileReader(path.toString());
       BufferedReader br = new BufferedReader(fr);
+      /*
+       * Reads line 0 and saves it. This line contains the simple Design Setting.
+       */
       String s = readLine(0, br);
+      /*
+       * Creates a new Tokenizer to get the Setting.
+       */
       StringTokenizer st = new StringTokenizer(s, "=");
+      /*
+       * Skips the first Token, since this is only "simpleDesign"
+       */
       st.nextToken();
+      /*
+       * Closes the Reader to prevent leakage.
+       */
       br.close();
+      /*
+       * Returns, if the second Token is 1, which means the simple Design should be used.
+       */
       return st.nextToken().trim().equals("1");
     } catch (FileNotFoundException e) {
+      /*
+       * Just for debugging purposes. Usually this shouldn't be called at any time.
+       */
       e.printStackTrace();
     } catch (IOException e) {
-      e.printStackTrace();
-    } catch (NoSuchElementException e) {
+      /*
+       * Just for debugging purposes. Usually this shouldn't be called at any time.
+       */
       e.printStackTrace();
     }
+    /*
+     * Returns false, in case any error occurred while reading the File.
+     */
     return false;
   }
   
   /**
-   * Returns, if the Checkbox for open folder is selected.
-   * @return  {@code true}, if the Checkbox is selected, {@code false} if not.
+   * Returns, if the CheckBox for open folder should be selected. This is determined by checking 
+   * the Settings File.
+   * @return  {@code true}, if the CheckBox should be selected, {@code false} if not.
    * @since 1.0
    */
   private boolean getOpenFolderSelect() {
     try {
+      /*
+       * Creates a BufferedReader with the given FileReader to read the Settings File.
+       */
       FileReader fr = new FileReader(path.toString());
       BufferedReader br = new BufferedReader(fr);
+      /*
+       * Reads the second Line, which contains the openFolder Setting.
+       */
       String s = readLine(1, br);
+      /*
+       * Creates a Tokenizer to get the Setting.
+       */
       StringTokenizer st = new StringTokenizer(s, "=");
+      /*
+       * Skips the first Token, since this is only "openFolder".
+       */
       st.nextToken();
+      /*
+       * Closes the Reader to prevent leakage.
+       */
       br.close();
+      /*
+       * Returns if the second token is 1, which means the Folder should be opened.
+       */
       return st.nextToken().trim().equals("1");
     } catch (FileNotFoundException e) {
+      /*
+       * Just for debugging purposes. Usually this shouldn't be called at any time.
+       */
       e.printStackTrace();
     } catch (IOException e) {
-      e.printStackTrace();
-    } catch (NoSuchElementException e) {
+      /*
+       * Just for debugging purposes. Usually this shouldn't be called at any time.
+       */
       e.printStackTrace();
     }
+    /*
+     * Returns false, in case an error occurred while reading from the File.
+     */
     return false;
   }
 
@@ -208,17 +315,35 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
    * @since 1.0
    */
   private String readLine(int index, BufferedReader br) {
+    /*
+     * While there are lines before the specified index, this loop while skip them.
+     */
     for (int i = 0; i < index; i++) {
       try {
+        /*
+         * This will skip the Lines that aren't needed.
+         */
         br.readLine();
       } catch (IOException e) {
+        /*
+         * Just for debugging purposes. Usually this shouldn't be called at any time.If it gets 
+         * called however, it returns an empty String for consistency.
+         */
         e.printStackTrace();
+
         return "";
       }
     }
     try {
+      /*
+       * Returns the line specified by the given index.
+       */
       return br.readLine();
     } catch (IOException e) {
+      /*
+       * Just for debugging purposes. Usually this shouldn't be called at any time. If it gets 
+       * called however, it returns an empty Strig for consistency.
+       */
       e.printStackTrace();
       return "";
     }

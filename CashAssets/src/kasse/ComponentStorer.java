@@ -206,7 +206,8 @@ public class ComponentStorer {
   }
 
   /**
-   * Sets the {@link #dayBox} to the given ComboBox for other Objects to access.
+   * Sets the {@link #dayBox}, the ComboBox where the User can enter the Day of the Date to create 
+   * a File of, to the given ComboBox to be accessible by other Objects.
    * @param dayBox The ComboBox, where the User can enter the Day of the Date to create a Sheet for.
    * @since 1.0
    */
@@ -226,7 +227,8 @@ public class ComponentStorer {
   }
 
   /**
-   * Sets the {@link #monthBox} to the given ComboBox for other Objects to access.
+   * Sets the {@link #monthBox}, the ComboBox where the User can enter the Month of the Date to 
+   * create a File of, to the given ComboBox to be accessible by other Objects.
    * @param monthBox The ComboBox, where the User can enter the Month of the Date to create a Sheet 
    *     for.
    * @since 1.0
@@ -247,7 +249,8 @@ public class ComponentStorer {
   }
 
   /**
-   * Sets the {@link #year} to the given TextField for other Objects to access.
+   * Sets the {@link #year}, the TextField where the User can enter the Year of the Date to create 
+   * a new File of, to the given TextField to be accessible by other Objects.
    * @param year The TextField, where the User can enter the Year of the Date to create a Sheet for.
    * @since 1.0
    */
@@ -274,7 +277,8 @@ public class ComponentStorer {
   }
 
   /**
-   * Sets {@link #billsTextFields} to the given Array of TextFields for other Objects to access.
+   * Sets {@link #billsTextFields}, the TextFields where the User can enter the amount of Bills 
+   * counted, to the given Array of TextFields to be accessible by other Objects.
    * @param billsTextFields The TextFields, where the User can enter the amount of Bills counted 
    *     for each type.
    * @since 1.0
@@ -303,7 +307,8 @@ public class ComponentStorer {
   }
 
   /**
-   * Sets {@link #coinTextFields} to the given Array of TextFields for other Objects to access.
+   * Sets {@link #coinTextFields}, the TextFields where the User can enter the amount of each coin, 
+   * to the given Array of TextFields to be accessible by other Objects.
    * @param coinTextFields The TextFields, where the User can enter the amount of Coins counted 
    *     for each type.
    * @since 1.0
@@ -314,8 +319,10 @@ public class ComponentStorer {
 
   /**
    * Returns {@link #billsResults}, The Labels where the Result of the Multiplication for each 
-   * Bill is stored.
-   * @return the billsResults
+   * Bill is stored. Each Bill has an unique index to access it's Label, see 
+   * {@link #getBillsTextFields()} for these indices.
+   * @return The Labels, where the results of the Multiplication are stored, which have to be set 
+   *     beforehand.
    * @throws NullPointerException If the Bills-Results-Labels weren't set before.
    * @since 1.0
    */
@@ -324,8 +331,9 @@ public class ComponentStorer {
   }
 
   /**
-   * Sets {@link #billsResults} to the given Array of Labels for other Objects to access.
-   * @param billsResults the billsResults to set
+   * Sets {@link #billsResults}, the Labels where the Results of the Multiplication are stored, to 
+   * the given Array of Labels to be accessible by other Objects.
+   * @param billsResults The Labels, where the Results of the Multiplication are stored.
    * @since 1.0
    */
   public void setBillsResults(Label[] billsResults) {
@@ -333,203 +341,322 @@ public class ComponentStorer {
   }
 
   /**
-   * @return the coinResults
+   * Returns {@link #coinResults}, the Labels where the Result of the Multiplication for each coin 
+   * is stored.
+   * @return The Labels, where the results of the Multiplication are stored, which have to be set 
+   *     beforehand.
+   * @throws NullPointerException If the Coin-Results-Labels weren't set before.
+   * @since 1.0
    */
   public Label[] getCoinResults() {
     return coinResults;
   }
 
   /**
-   * @param coinResults the coinResults to set
+   * Sets {@link #coinResults}, the Labels where the result of the Multiplication for each coin is 
+   * stored, to the given Array of Labels to be accessible by other Objects.
+   * @param coinResults The Labels, where the Results of the Multiplication are stored.
+   * @since 1.0
    */
   public void setCoinResults(Label[] coinResults) {
     this.coinResults = coinResults;
   }
 
   /**
-   * @return the purseTextField
+   * Returns {@link #purseTextField}, the TextField where the User can enter the amount of purses 
+   * counted.
+   * @return The {@link #purseTextField}, that has to be set beforehand.
+   * @throws NullPointerException If the purse-TextField wasn't set before.
+   * @since 1.0
    */
   public TextField getPurseTextField() {
     return purseTextField;
   }
 
   /**
-   * @param purseTextField the purseTextField to set
+   * Sets {@link #purseTextField}, the TextField where the User can enter the amount of purses 
+   * counted, to the given TextField to be accessible by other Objects.
+   * @param purseTextField The TextField, that contains the amount of purses counted.
+   * @since 1.0
    */
   public void setPurseTextField(TextField purseTextField) {
     this.purseTextField = purseTextField;
   }
 
   /**
-   * @return the cashNecessityTextFields
+   * Returns {@link #cashNecessityCentTextField}, the TextField where the User can enter the 
+   * cent-Part of the Cash-Necessity.
+   * @return The {@link #cashNecessityCentTextField}, that has to be set beforehand.
+   * @throws NullPointerException If the TextField wasn't set before.
+   * @since 1.0
    */
   public TextField getCashNecessityCentTextField() {
     return cashNecessityCentTextField;
   }
 
   /**
-   * @param cashNecessityTextFields the cashNecessityTextFields to set
+   * Sets {@link #cashNecessityCentTextField}, the TextField where the User can enter the cent-Part 
+   * of the Cash-Necessity, to the given TextField to be accessible by other Objects.
+   * @param cashNecessityTextFields The TextField, that contains the cent-Part of the 
+   *     Cash-Necessity.
+   * @since 1.0
    */
   public void setCashNecessityCentTextField(TextField cashNecessityTextFields) {
     this.cashNecessityCentTextField = cashNecessityTextFields;
   }
 
   /**
-   * @return the cashNecessityEuroTextField
+   * Returns {@link #cashNecessityEuroTextField}, the TextField where the User can enter the 
+   * Euro-Part of the Cash-Necessity.
+   * @return The {@link #cashNecessityEuroTextField}, that has to be set beforehand.
+   * @throws NullPointerException If the TextField wasn't set before.
+   * @since 1.0
    */
   public TextField getCashNecessityEuroTextField() {
     return cashNecessityEuroTextField;
   }
 
   /**
-   * @param cashNecessityEuroTextField the cashNecessityEuroTextField to set
+   * Sets {@link #cashNecessityEuroTextField}, the TextField where the User can enter the 
+   * Euro-Part of the Cash-Necessity, to the given TextField to be accessible by other Objects.
+   * @param cashNecessityEuroTextField  The TextField, that contains the Euro-Part of the 
+   *     Cash-Necessity.
+   * @since 1.0
    */
   public void setCashNecessityEuroTextField(TextField cashNecessityEuroTextField) {
     this.cashNecessityEuroTextField = cashNecessityEuroTextField;
   }
 
   /**
-   * @return the coinLabel
+   * Returns {@link #coinSumLabel}, the Label that contains the total Sum of Coinage in 
+   * all Purses counted.
+   * @return The {@link #coinSumLabel}, that has to be set beforehand.
+   * @throws NullPointerException If the Label wasn't set before.
+   * @since 1.0
    */
   public Label getCoinSumLabel() {
     return coinSumLabel;
   }
 
   /**
-   * @param coinSumLabel the coinSumLabel to set
+   * Sets {@link #coinSumLabel}, the Label that displays the total Sum of Coinage in all 
+   * purses counted, to the given Label to be accessible by other Objects.
+   * @param coinSumLabel The Label, that displays the total Sum of Coinage in all purses.
+   * @since 1.0
    */
   public void setCoinSumLabel(Label coinSumLabel) {
     this.coinSumLabel = coinSumLabel;
   }
 
   /**
-   * @return the billLabel
+   * Returns {@link #billSumLabel}, the Label that displays the total amount of Money in 
+   * Bills in all purses.
+   * @return The {@link #billSumLabel}, that has to be set beforehand.
+   * @throws NullPointerException If the Label wasn't set before.
+   * @since 1.0
    */
   public Label getBillSumLabel() {
     return billSumLabel;
   }
 
   /**
-   * @param billSumLabel the billSumLabel to set
+   * Sets {@link #billSumLabel}, the Label that displays the total Sum of Bills in all 
+   * purses counted, to the given Label to be accessible by other Objects.
+   * @param billSumLabel The Label, that displays the total Sum of Bills in all purses.
+   * @since 1.0
    */
   public void setBillSumLabel(Label billSumLabel) {
     this.billSumLabel = billSumLabel;
   }
 
   /**
-   * @return the sumLabel
+   * Returns the {@link #sumLabel}, the Label that displays the total Sum (coinage + Bills) 
+   * in all purses.
+   * @return The {@link #sumLabel}, that has to be set beforehand.
+   * @throws NullPointerException If the Label wasn't set before.
+   * @since 1.0
    */
   public Label getSumLabel() {
     return sumLabel;
   }
 
   /**
-   * @param sumLabel the sumLabel to set
+   * Sets {@link #sumLabel}, the Label that displays the total Sum (coinage + Bills) in all purses, 
+   * to the given Label to be accessible by other Objects.
+   * @param sumLabel The Label, that displays the total Sum in all purses.
+   * @since 1.0
    */
   public void setSumLabel(Label sumLabel) {
     this.sumLabel = sumLabel;
   }
 
   /**
-   * @return the coinNecessityLabel
+   * Returns the {@link #coinNecessityLabel}, the Label that displays the amount of coinage, that 
+   * was in the purses before the business day.
+   * @return The {@link #coinNecessityLabel}, that has to be set beforehand.
+   * @throws NullPointerException If the Label wasn't set before.
+   * @since 1.0
    */
   public Label getCoinNecessityLabel() {
     return coinNecessityLabel;
   }
 
   /**
-   * @param coinNecessityLabel the coinNecessityLabel to set
+   * Sets {@link #coinNecessityLabel}, the Label that displays the amount of coinage that was in 
+   * the purses before the business day, to the given Label to be accessible by other Objects.
+   * @param coinNecessityLabel The Label, that displays the amount of coinage that was in the 
+   *     purses before the business day.
+   * @since 1.0
    */
   public void setCoinNecessityLabel(Label coinNecessityLabel) {
     this.coinNecessityLabel = coinNecessityLabel;
   }
 
   /**
-   * @return the coinCleanedLabel
+   * Returns the {@link #coinCleanedLabel}, the Label that displays the amount of Money that have 
+   * to be in the purses after subtracting the coin-Difference from the total Sum.
+   * @return The {@link #coinCleanedLabel}, that has to be set beforehand.
+   * @throws NullPointerException If the Label wasn't set before.
+   * @since 1.0
    */
   public Label getCoinCleanedLabel() {
     return coinCleanedLabel;
   }
 
   /**
-   * @param coinCleanedLabel the coinCleanedLabel to set
+   * Sets {@link #coinCleanedLabel}, the Label that displays the amount of Money that have to be in 
+   * the purses after subtracting the coin-Difference from the total Sum, to the given Label to be 
+   * accessible by other Objects.
+   * @param coinCleanedLabel The Label, that displays the amount of Money that has to be in all 
+   *     Purses after subtracting the coin-Difference from the total Sum.
+   * @since 1.0
    */
   public void setCoinCleanedLabel(Label coinCleanedLabel) {
     this.coinCleanedLabel = coinCleanedLabel;
   }
 
   /**
-   * @return the coinDifferenceLabel
+   * Returns the {@link #coinDifferenceLabel}, the Label that displays the difference between the 
+   * needed coinage Money and the coinage Money, that was in the purses.
+   * @return The {@link #coinDifferenceLabel}, that has to be set beforehand.
+   * @throws NullPointerException If the Label wasn't set before.
+   * @since 1.0
    */
   public Label getCoinDifferenceLabel() {
     return coinDifferenceLabel;
   }
 
   /**
-   * @param coinDifferenceLabel the coinDifferenceLabel to set
+   * Sets {@link #coinDifferenceLabel}, the Label that displays the difference between the needed 
+   * coinage Money and the coinage Money that was in the purses, to the given Label to be 
+   * accessible by other Objects.
+   * @param coinDifferenceLabel The Label, that displays the difference between the needed coinage 
+   *     Money and the coinage Money that was in the purses.
+   * @since 1.0
    */
   public void setCoinDifferenceLabel(Label coinDifferenceLabel) {
     this.coinDifferenceLabel = coinDifferenceLabel;
   }
 
   /**
-   * @return the cashNecessityLabel
+   * Returns the {@link #cashNecessityLabel}, the Label that displays the total Money needed after 
+   * the business day.
+   * @return The {@link #cashNecessityLabel}, that has to be set beforehand.
+   * @throws NullPointerException If the Label wasn't set before.
+   * @since 1.0
    */
   public Label getCashNecessityLabel() {
     return cashNecessityLabel;
   }
 
   /**
-   * @param cashNecessityLabel the cashNecessityLabel to set
+   * Sets {@link #cashNecessityLabel}, the Label that displays the total Money needed after the 
+   * business day, to the given Label to be accessible by other Objects.
+   * @param cashNecessityLabel The Label, that displays the total Money needed.
+   * @since 1.0
    */
   public void setCashNecessityLabel(Label cashNecessityLabel) {
     this.cashNecessityLabel = cashNecessityLabel;
   }
 
   /**
-   * @return the tipSumLabel
+   * Returns the {@link #tipSumLabel}, the Label that displays the excess Money, that was in the 
+   * purses. This is calculated by subtracting the Cash Necessity from the total Sum of Money in 
+   * the purses. This excess is the Tip of the business day.
+   * @return The {@link #tipSumLabel}, that has to be set beforehand
+   * @throws NullPointerException If the Label wasn't set before.
+   * @since 1.0
    */
   public Label getTipSumLabel() {
     return tipSumLabel;
   }
 
   /**
-   * @param tipSumLabel the tipSumLabel to set
+   * Sets {@link #tipSumLabel}, the Label that displays the excess Money that was in the Purses 
+   * (the Tip of the business day), to the given Label to be accessible by other Objects.
+   * @param tipSumLabel The Label that displays the excess Money in the Purses (the Tip).
+   * @since 1.0
    */
   public void setTipSumLabel(Label tipSumLabel) {
     this.tipSumLabel = tipSumLabel; 
   }
 
   /**
-   * @return the exportButton
+   * Returns the {@link #exportButton}, the Button used to export the calculated data to an 
+   * Excel-Sheet.
+   * @return The {@link #exportButton}, that has to be set beforehand.
+   * @throws NullPointerException If the Button wasn't set before.
+   * @since 1.0
    */
   public Button getExportButton() {
     return exportButton;
   }
 
   /**
-   * @param exportButton the exportButton to set
+   * Sets {@link #exportButton}, the Button used to export the calculated data to an Excel-Sheet, 
+   * to the given Button to be accessible by other Objects.
+   * @param exportButton The Button, that will export the data to an Excel-Sheet.
+   * @since 1.0
    */
   public void setExportButton(Button exportButton) {
     this.exportButton = exportButton;   
   }
 
   /**
-   * @return
+   * Returns the {@link #resetButton}, the Button used to reset all TextFields altered by User 
+   * input to their default values.
+   * @return The {@link #resetButton}, that has to be set beforehand.
+   * @throws NullPointerException If the Button wasn't set before.
+   * @since 1.0
    */
   public Button getResetButton() {
     return resetButton;
   }
 
   /**
-   * @param resetButton
+   * Sets {@link #resetButton}, the Button used to reset all TextFields altered by User input to 
+   * their default values, to the given Button to be accessible by other Objects.
+   * @param resetButton The Button, that will reset the User input.
+   * @since 1.0
    */
   public void setResetButton(Button resetButton) {
     this.resetButton = resetButton;
   }
 
   /**
-   * @return
+   * Returns all Labels, that are alterable. These are: <br>
+   * - {@link #coinSumLabel} <br>
+   * - {@link #billSumLabel} <br>
+   * - {@link #sumLabel} <br>
+   * - {@link #coinNecessityLabel} <br>
+   * - {@link #coinCleanedLabel} <br>
+   * - {@link #coinDifferenceLabel} <br>
+   * - {@link #cashNecessityLabel} <br>
+   * - {@link #tipSumLabel} <br>
+   * They have to be set beforehand.
+   * @return An Array with the Size of 8, that contains all alterable Labels.
+   * @throws NullPointerException If any of the Labels weren't set before.
+   * @since 1.0
    */
   public Label[] getAlterableLabels() {
     return new Label[] {coinSumLabel, billSumLabel, sumLabel, coinNecessityLabel, 
@@ -538,7 +665,7 @@ public class ComponentStorer {
 
   /**
    * Updates all ToolTips to show their Value as a Tooltip. This is used to maintain 
-   * usability when entered big values.
+   * usability when big values were entered.
    * @since 1.0
    */
   public void updateToolTips() {
