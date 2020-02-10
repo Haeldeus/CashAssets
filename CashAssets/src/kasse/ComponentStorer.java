@@ -5,61 +5,140 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.cell.ComboBoxListCell;
 
+/**
+ * A Class which Objects stores all editable Components of the Application.
+ * With the given getter- and setter-Methods, the Button Handlers can manipulate these 
+ * Components to show desired texts.
+ * @author Haeldeus
+ * @version 1.0
+ */
 public class ComponentStorer {
   
+  /**
+   * The ComboBox, that is used as the Box to select the Day in the Application.
+   */
   private ComboBox<String> dayBox;
   
+  /**
+   * The ComboBox, that is used as the Box to select the Month in the Application.
+   */
   private ComboBox<String> monthBox;
   
+  /**
+   * The TextField, where the User can enter the Year in the Application.
+   */
   private TextField year;
 
+  /**
+   * All TextFields, where the User can enter the values of counted Bills of each type.
+   */
   private TextField[] billsTextFields;
   
+  /**
+   * All TextFields, where the User can enter the values of counted coins of each type.
+   */
   private TextField[] coinTextFields;
   
+  /**
+   * All Labels, that show the total sum of all Bills of this type for each type.
+   */
   private Label[] billsResults;
   
+  /**
+   * All Labels, that show the total sum of all Coins of this type for each type.
+   */
   private Label[] coinResults;
   
+  /**
+   * The TextField, where the User enters the amount of counted purses.
+   */
   private TextField purseTextField;
   
+  /**
+   * The TextField, where the User enters the cent-part of the Cash Necessity.
+   */
   private TextField cashNecessityCentTextField;
   
+  /**
+   * The TextField, where the User enters the Euro-Part of the Cash Necessity.
+   */
   private TextField cashNecessityEuroTextField;
   
+  /**
+   * The Label, that displays the total amount of coinage Money in all purses.
+   */
   private Label coinSumLabel;
   
+  /**
+   * The Label that displays the total amount of bill Money in all purses.
+   */
   private Label billSumLabel;
   
+  /**
+   * The Label that displays the total amount of Money in all Purses (coinSum + billSum).
+   */
   private Label sumLabel;
   
+  /**
+   * The Label, that displays the amount of coinage that has to be in the purses.
+   */
   private Label coinNecessityLabel;
   
+  /**
+   * The Label, that displays the amount of Money, that should be in the purses after subtracting 
+   * the coin difference.
+   */
   private Label coinCleanedLabel;
   
+  /**
+   * The Label, that displays the difference between the coinage Money that should be in the purses 
+   * and the actual amount of coinage Money, that was in the purses.
+   */
   private Label coinDifferenceLabel;
   
+  /**
+   * The Label, that displays the amount of Money, that should be in the purses (excluding tips) 
+   * according to the electronic system.
+   */
   private Label cashNecessityLabel;
   
+  /**
+   * The Label, that displays the total Sum of Tips left in the purses after subtracting the Cash 
+   * Necessity from the total Money in the Purses.
+   */
   private Label tipSumLabel;
   
+  /**
+   * The Button to export the Data to an Excel Sheet when pressed.
+   */
   private Button exportButton;
   
+  /**
+   * The Button, which resets all User input to default values.
+   */
   private Button resetButton;
   
+  /**
+   * The default Constructor for this Class. Creates a new ComponentStorer.
+   * @since 1.0
+   */
   public ComponentStorer() {
   }
   
   /**
-   * 
-   * @param bool  The boolean value, if the fields should be editable or not.
+   * Disables or enables all fields, where the User can enter values, depending on the given 
+   * Boolean.
+   * @param editable  The boolean value, if the fields should be editable or not.
+   * @since 1.0
    */
-  public void setFieldsEditable(boolean bool) {
+  public void setFieldsEditable(boolean editable) {
+    /*
+     * Sets all TextFields editability to the given Boolean and sets their Styles accordingly.
+     */
     for (TextField tf : billsTextFields) {
-      tf.setEditable(bool);
-      if (bool) {
+      tf.setEditable(editable);
+      if (editable) {
         tf.getStyleClass().clear();
         tf.getStyleClass().addAll("text-field", "text-input", "enabledTF");
       } else {
@@ -68,8 +147,8 @@ public class ComponentStorer {
       }
     }
     for (TextField tf : coinTextFields) {
-      tf.setEditable(bool);
-      if (bool) {
+      tf.setEditable(editable);
+      if (editable) {
         tf.getStyleClass().clear();
         tf.getStyleClass().addAll("text-field", "text-input", "enabledTF");
       } else {
@@ -77,13 +156,24 @@ public class ComponentStorer {
         tf.getStyleClass().addAll("text-field", "text-input", "disabledTF");
       }
     }
-    dayBox.setDisable(!bool);
-    monthBox.setDisable(!bool);
-    year.setEditable(bool);
-    purseTextField.setEditable(bool);
-    cashNecessityCentTextField.setEditable(bool);
-    cashNecessityEuroTextField.setEditable(bool);
-    if (bool) {
+    /*
+     * Sets the ComboBoxes editability to the given Boolean.
+     */
+    dayBox.setDisable(!editable);
+    monthBox.setDisable(!editable);
+    
+    /*
+     * Sets the TextFields editability to the given Boolean.
+     */
+    year.setEditable(editable);
+    purseTextField.setEditable(editable);
+    cashNecessityCentTextField.setEditable(editable);
+    cashNecessityEuroTextField.setEditable(editable);
+    
+    /*
+     * Sets the Styles of all TextFields accordingly to the Boolean.
+     */
+    if (editable) {
       year.getStyleClass().clear();
       year.getStyleClass().addAll("text-field", "text-input", "enabledTF");
       purseTextField.getStyleClass().clear();
@@ -105,84 +195,138 @@ public class ComponentStorer {
   }
 
   /**
-   * @return the dayBox
+   * Returns the {@link #dayBox}, the ComboBox, where the User can enter the Day of the Date, a 
+   * new File should be created of.
+   * @return The DayBox that has to be set beforehand.
+   * @throws NullPointerException If dayBox wasn't set before.
+   * @since 1.0
    */
   public ComboBox<String> getDayBox() {
     return dayBox;
   }
 
   /**
-   * @param dayBox the dayBox to set
+   * Sets the {@link #dayBox} to the given ComboBox for other Objects to access.
+   * @param dayBox The ComboBox, where the User can enter the Day of the Date to create a Sheet for.
+   * @since 1.0
    */
   public void setDayBox(ComboBox<String> dayBox) {
     this.dayBox = dayBox;
   }
 
   /**
-   * @return the monthBox
+   * Returns the {@link #monthBox}, the ComboBox, where the User can enter the Month of the Date, a 
+   * new Sheet should be created of.
+   * @return The MonthBox that has to be set beforehand.
+   * @throws NullPointerException If monthBox wasn't set before.
+   * @since 1.0
    */
   public ComboBox<String> getMonthBox() {
     return monthBox;
   }
 
   /**
-   * @param monthBox the monthBox to set
+   * Sets the {@link #monthBox} to the given ComboBox for other Objects to access.
+   * @param monthBox The ComboBox, where the User can enter the Month of the Date to create a Sheet 
+   *     for.
+   * @since 1.0
    */
   public void setMonthBox(ComboBox<String> monthBox) {
     this.monthBox = monthBox;
   }
 
   /**
-   * @return the year
+   * Returns the {@link #year}, the TextField, where the User can enter the Year of the Date, a new 
+   * Sheet should be created of.
+   * @return The Year-TextField that has to be set beforehand
+   * @throws NullPointerException If the Year-TextField wasn't set before.
+   * @since 1.0
    */
   public TextField getYear() {
     return year;
   }
 
   /**
-   * @param year the year to set
+   * Sets the {@link #year} to the given TextField for other Objects to access.
+   * @param year The TextField, where the User can enter the Year of the Date to create a Sheet for.
+   * @since 1.0
    */
   public void setYear(TextField year) {
     this.year = year;
   }
 
   /**
-   * @return the billsTextFields
+   * Returns {@link #billsTextFields}, all TextFields, where the User can enter the amount of Bills 
+   * counted. Each Bill has an unique index to access it's TextField: <br>
+   * 0 <=> 5€ Bills <br>
+   * 1 <=> 10€ Bills <br>
+   * 2 <=> 20€ Bills <br>
+   * 3 <=> 50€ Bills <br>
+   * 4 <=> 100€ Bills <br>
+   * 5 <=> 200€ Bills <br>
+   * 6 <=> 500€ Bills <br>
+   * @return The Array {@link #billsTextFields} that has to be set beforehand.
+   * @throws NullPointerException If the Array wasn't set before.
+   * @since 1.0
    */
   public TextField[] getBillsTextFields() {
     return billsTextFields;
   }
 
   /**
-   * @param billsTextFields the billsTextFields to set
+   * Sets {@link #billsTextFields} to the given Array of TextFields for other Objects to access.
+   * @param billsTextFields The TextFields, where the User can enter the amount of Bills counted 
+   *     for each type.
+   * @since 1.0
    */
   public void setBillsTextFields(TextField[] billsTextFields) {
     this.billsTextFields = billsTextFields;
   }
 
   /**
-   * @return the coinTextFields
+   * Returns the {@link #coinTextFields}, the Array of TextFields, where the User can enter the 
+   * amount of Coins counted. Each Coin has an unique index to access it's TextField: <br>
+   * 0 <=> 1ct Coins <br>
+   * 1 <=> 2ct Coins <br>
+   * 2 <=> 5ct Coins <br>
+   * 3 <=> 10ct Coins <br>
+   * 4 <=> 20ct Coins <br>
+   * 5 <=> 50ct Coins <br>
+   * 6 <=> 1€ Coins <br>
+   * 7 <=> 2€ Coins <br>
+   * @return The Array {@link #coinTextFields}, that has to be set beforehand.
+   * @throws NullPointerException If the Coin-TextFields weren't set before.
+   * @since 1.0
    */
   public TextField[] getCoinTextFields() {
     return coinTextFields;
   }
 
   /**
-   * @param coinTextFields the coinTextFields to set
+   * Sets {@link #coinTextFields} to the given Array of TextFields for other Objects to access.
+   * @param coinTextFields The TextFields, where the User can enter the amount of Coins counted 
+   *     for each type.
+   * @since 1.0
    */
   public void setCoinTextFields(TextField[] coinTextFields) {
     this.coinTextFields = coinTextFields;
   }
 
   /**
+   * Returns {@link #billsResults}, The Labels where the Result of the Multiplication for each 
+   * Bill is stored.
    * @return the billsResults
+   * @throws NullPointerException If the Bills-Results-Labels weren't set before.
+   * @since 1.0
    */
   public Label[] getBillsResults() {
     return billsResults;
   }
 
   /**
+   * Sets {@link #billsResults} to the given Array of Labels for other Objects to access.
    * @param billsResults the billsResults to set
+   * @since 1.0
    */
   public void setBillsResults(Label[] billsResults) {
     this.billsResults = billsResults;
@@ -393,13 +537,14 @@ public class ComponentStorer {
   }
 
   /**
-   * 
+   * Updates all ToolTips to show their Value as a Tooltip. This is used to maintain 
+   * usability when entered big values.
+   * @since 1.0
    */
   public void updateToolTips() {
     for (Label l : getBillsResults()) {
       l.setTooltip(new Tooltip(l.getText()));
     }
-    
     for (Label l : getCoinResults()) {
       l.setTooltip(new Tooltip(l.getText()));
     }

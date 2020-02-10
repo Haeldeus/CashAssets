@@ -1,7 +1,14 @@
 package kasse;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -32,22 +39,13 @@ import javafx.stage.Stage;
  * @version 1.0
  */
 public class MainWindow extends Application {
-  
-  /**
-   * The Main-Method to start the Application from a Java Environment without JavaFX.
-   * @param args  The Arguments to be passed.
-   * @since 1.0
-   */
-  public static void main(String[] args) {
-    launch(args);
-  }
     
   @Override
   public void start(Stage primaryStage) throws Exception {
     /*
      * Basic Scenery Settings.
      */
-    primaryStage.setTitle("Kassenbestand - v0.9");
+    primaryStage.setTitle("Kassenbestand");
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
     grid.setHgap(10);
@@ -80,13 +78,15 @@ public class MainWindow extends Application {
             + System.lineSeparator() + "Nun können Sie auf \"Berechnen\" drücken und das "
             + "Programm rechnet Ihnen alle unten aufgeführten Werte aus."
             + System.lineSeparator() + "Falls Ihnen bei der Eingabe ein Fehler unterlaufen ist, "
-            + "können Sie die Eingabe korrigieren, nachdem Sie den \"Reset\"-Button gedrückt "
-            + "haben." + System.lineSeparator() + "Mit dem \"Export\"-Button können Sie das "
+            + "können Sie die Eingabe korrigieren, nachdem Sie den \"Edit\"-Button gedrückt "
+            + "haben." + System.lineSeparator() + "Mit dem \"Reset\"-Button können Sie die "
+                + "komplette Eingabe zurücksetzen." 
+            + System.lineSeparator() + "Mit dem \"Export\"-Button können Sie das "
             + "Ergebnis in eine neue Excel-Datei übertragen lassen, die in dem Ordner, wo dieses "
             + "Programm ausgeführt wird, erstellt wird." + System.lineSeparator() + "Dieser Button "
             + "ist erst verfügbar, nachdem das Programm eine Berechnung ausgeführt hat.");
         dialogVbox.getChildren().add(t);
-        Scene dialogScene = new Scene(dialogVbox, 300, 260);
+        Scene dialogScene = new Scene(dialogVbox, 300, 290);
         t.setWrappingWidth(dialogScene.getWidth());
         dialogScene.getStylesheets().add("controlStyle1.css");
         dialog.setScene(dialogScene);
@@ -103,6 +103,10 @@ public class MainWindow extends Application {
     Label date = new Label("Datum:");
     grid.add(date, 2, 0);
     
+    /*
+     * Adding a Calendar to get the Current Date. This will be used in the afterwards added 
+     * ComboBoxes for the Day and Month.
+     */
     Calendar cal = Calendar.getInstance(Locale.GERMANY);
     ComboBox<String> dayBox = new ComboBox<String>();
     for (int i = 1; i <= 31; i++) {
@@ -123,41 +127,85 @@ public class MainWindow extends Application {
     cs.setMonthBox(monthBox);
     grid.add(monthBox, 4, 0);
     
+    /*
+     * Adds a TextField to input the Year.
+     */
     TextField year = new TextField("" + cal.get(Calendar.YEAR));
     year.setMaxWidth(50.0);
     cs.setYear(year);
     grid.add(year, 5, 0);
+
+    /*
+     * Checks, if the simple design should be used.
+     */
+    boolean simple = checkSimple();
     
+    /*
+     * Creates the Export Button.
+     */
     Image img2 = new Image(getClass().getResourceAsStream("/res/export.png"));
     ImageView imageview = new ImageView(img2);
     Button export = new Button("Export", imageview);
     export.setDisable(true);
-    export.addEventFilter(MouseEvent.MOUSE_RELEASED, new ExportButtonHandler(cs));
+    export.addEventFilter(MouseEvent.MOUSE_RELEASED, new ExportButtonHandler(cs, simple, 
+        checkOpen()));
     grid.add(export, 7, 0);
     
+    /*
+     * Creates String-Arrays with the Text for the Labels as content.
+     * This is used to create these Labels in a for-Loop to save some space.
+     */
     final String[] coinLabelText = new String[] {"1ct:", "2ct:", "5ct:", "10ct:", 
         "20ct:", "50ct:", "1€:", "2€:"};
     final String[] billLabelText = new String[] {"5€:", "10€:", "20€:", "50€:", 
         "100€:", "200€:", "500€:", "Gezählt:"};
+    
+    /*
+     * Creates some Arrays where the created Labels and Textfields, that can be altered 
+     * by the User, can be stored into.
+     */
     Label[] resultLabelCoin = new Label[8];
     TextField[] coinTfs = new TextField[8];
     TextField[] billTfs = new TextField[7];
     Label[] resultLabelBill = new Label[7];
     
+    /*
+     * Creates all needed TextFields and Labels for the user to input the counted Money.
+     */
     for (int i = 0; i <= 7; i++) {
-      Label coinLabel = new Label(coinLabelText[i]);
-      grid.add(coinLabel, 0, i + 1);
-      TextField coinTf = new TextField("0");
-      coinTf.setTooltip(new Tooltip("Geben Sie hier die Anzahl der " 
-          + coinLabelText[i].replaceAll(":", "") + "-Münzen ein."));
-      coinTf.setMaxWidth(50.0);
-      coinTfs[i] = coinTf;
-      grid.add(coinTf, 1, i + 1);
-      Label resLabelCoin = new Label("=");
-      resultLabelCoin[i] = resLabelCoin;
-      resLabelCoin.setMinWidth(65.0);
-      resLabelCoin.setMaxWidth(65.0);
-      grid.add(resLabelCoin, 2, i + 1);
+      if (!simple) {
+        Label coinLabel = new Label(coinLabelText[i]);
+        grid.add(coinLabel, 0, i + 1);
+        TextField coinTf = new TextField("0");
+        coinTf.setTooltip(new Tooltip("Geben Sie hier die Anzahl der " 
+            + coinLabelText[i].replaceAll(":", "") + "-Münzen ein."));
+        coinTf.setMaxWidth(50.0);
+        coinTfs[i] = coinTf;
+        grid.add(coinTf, 1, i + 1);
+        Label resLabelCoin = new Label("=");
+        resultLabelCoin[i] = resLabelCoin;
+        resLabelCoin.setMinWidth(65.0);
+        resLabelCoin.setMaxWidth(65.0);
+        grid.add(resLabelCoin, 2, i + 1);
+      } else if (i == 7) {
+        Label coinLabel = new Label("Kleingeld:");
+        grid.add(coinLabel, 0, i + 1);
+        TextField coinTf = new TextField("0");
+        coinTf.setTooltip(new Tooltip("Geben Sie hier die Summe des Kleingelds ein"));
+        coinTfs[i] = coinTf;
+        grid.add(coinTf, 1, i + 1);
+        GridPane.setColumnSpan(coinTf, 2);
+        Label resLabelCoin = new Label("=");
+        resultLabelCoin[i] = resLabelCoin;
+        resLabelCoin.setMinWidth(65.0);
+        resLabelCoin.setMaxWidth(65.0);
+        grid.add(resLabelCoin, 3, i + 1);
+      } else {
+        TextField empty = new TextField("0");
+        coinTfs[i] = empty;
+        Label lbEmpty = new Label("= 0,00€");
+        resultLabelCoin[i] = lbEmpty;
+      }
       Label billLabel = new Label(billLabelText[i]);
       grid.add(billLabel, 4, i + 1);
       TextField billTf = new TextField("0");
@@ -180,20 +228,34 @@ public class MainWindow extends Application {
       grid.add(billTf, 5, i + 1);
     }
     
+    /*
+     * Stores all needed Components in the ComponentStorer, so they can be updated by the Buttons 
+     * later on.
+     */
     cs.setCoinResults(resultLabelCoin);
     cs.setBillsResults(resultLabelBill);
     cs.setCoinTextFields(coinTfs);
     cs.setBillsTextFields(billTfs);
     cs.setExportButton(export);
     
+    /*
+     * Creates a Separator to separate the input of the Money and the Cash Necessity.
+     */
     final Separator sep1 = new Separator();
     sep1.setValignment(VPos.CENTER);
     GridPane.setConstraints(sep1, 0, 1);
     GridPane.setColumnSpan(sep1, 11);
     grid.add(sep1, 0, 9);
     
+    /*
+     * Creates the Area for the Cash Necessity.
+     */
     Label cashNecessity = new Label("Kassenschnitt Bar:");
-    GridPane.setColumnSpan(cashNecessity, 2);
+    if (!simple) {
+      GridPane.setColumnSpan(cashNecessity, 2);
+    } else {
+      GridPane.setColumnSpan(cashNecessity, 3);
+    }
     grid.add(cashNecessity, 0, 10);
     
     TextField cashNecessityEuro = new TextField("0");
@@ -214,9 +276,15 @@ public class MainWindow extends Application {
     cashCent.add(labelCashCent, 1, 0);
     grid.add(cashCent, 3, 10);
     
+    /*
+     * Adds the needed Components to the ComponentStorer.
+     */
     cs.setCashNecessityEuroTextField(cashNecessityEuro);
     cs.setCashNecessityCentTextField(cashNecessityCent);
     
+    /*
+     * Adds a Reset Button to reset all TextFields and Labels to their original value.
+     */
     Button reset = new Button("Reset");
     reset.setMaxSize(1000, 1000);
     GridPane.setColumnSpan(reset, 2);
@@ -226,12 +294,19 @@ public class MainWindow extends Application {
     cs.setResetButton(reset);
     grid.add(reset, 7, 10);
     
+    /*
+     * Creates a second Separator to separate the Cash Necessity Area from the Area of the 
+     * calculated Money Results.
+     */
     final Separator sep2 = new Separator();
     sep2.setValignment(VPos.CENTER);
     GridPane.setConstraints(sep2, 0, 1);
     GridPane.setColumnSpan(sep2, 11);
     grid.add(sep2, 0, 11);
     
+    /*
+     * All Labels for the calculated Values of the Money to be stored in.
+     */
     Label coinage = new Label("Kleingeld:");
     GridPane.setColumnSpan(coinage, 2);
     grid.add(coinage, 0, 12);
@@ -256,12 +331,18 @@ public class MainWindow extends Application {
     cs.setSumLabel(totalSum);
     grid.add(totalSum, 2, 13);
     
+    /*
+     * A last Separator to separate the Money-Info Area from the advanced Information Area.
+     */
     final Separator sep3 = new Separator();
     sep3.setValignment(VPos.CENTER);
     GridPane.setConstraints(sep3, 0, 1);
     GridPane.setColumnSpan(sep3, 11);
     grid.add(sep3, 0, 14);
     
+    /*
+     * Adds all Labels for the advanced Information to be stored in.
+     */
     Label coinageNecessity = new Label("Muss Kleingeld:");
     GridPane.setColumnSpan(coinageNecessity, 2);
     grid.add(coinageNecessity, 0, 15);
@@ -279,6 +360,11 @@ public class MainWindow extends Application {
     grid.add(coinageClearedLabel, 6, 15);
     
     Label coinageDifference = new Label("Differenz Kleingeld:");
+    if (simple) {
+      coinageDifference.setText("Diff. Kleingeld:");
+      coinageDifference.setTooltip(new Tooltip("Differenz Kleingeld"));
+    }
+    coinageDifference.setMinWidth(150.0);
     GridPane.setColumnSpan(coinageDifference, 2);
     grid.add(coinageDifference, 0, 16);
     
@@ -302,15 +388,22 @@ public class MainWindow extends Application {
     cs.setTipSumLabel(tipSumLabel);
     grid.add(tipSumLabel, 6, 17);
     
+    /*
+     * Creates the Button for the User to press to calculate all Information from the given input.
+     */
     Button calc = new Button("Berechne");
     calc.setMaxSize(1000, 1000);
     GridPane.setColumnSpan(calc, 4);
     GridPane.setRowSpan(calc, 2);
     GridPane.setFillHeight(calc, true);
     GridPane.setFillWidth(calc, true);
-    calc.addEventFilter(MouseEvent.MOUSE_RELEASED, new CalcButtonHandler(cs));
+    calc.addEventFilter(MouseEvent.MOUSE_RELEASED, new CalcButtonHandler(cs, simple));
     grid.add(calc, 0, 20);
     
+    /*
+     * Creates a Button that allows the User to edit his Input after calculating with a set of 
+     * given values.
+     */
     Button edit = new Button("Edit");
     edit.setMaxSize(1000, 1000);
     GridPane.setColumnSpan(edit, 4);
@@ -320,16 +413,75 @@ public class MainWindow extends Application {
     edit.addEventFilter(MouseEvent.MOUSE_RELEASED, new EditButtonHandler(cs));
     grid.add(edit, 4, 20);
     
+    /*
+     * Adds a BorderPane to the Scene, so the Grid will always be displayed at the Top of the Scene.
+     */
     BorderPane bp = new BorderPane();
     bp.setTop(grid);
     
+    /*
+     * Updates the ToolTips for all Labels in the Application.
+     */
     cs.updateToolTips();
     
+    /*
+     * Sets the Size of the Scene, it's restrictions and the Stylesheet. Afterwards, it displays 
+     * the primaryStage to the User.
+     */
     Scene scene = new Scene(bp, 500, 550);
     scene.getStylesheets().add("controlStyle1.css");
     primaryStage.setScene(scene);
     primaryStage.setMinHeight(595.0);
     primaryStage.setMinWidth(615.0);
     primaryStage.show();
+  }
+
+  /**
+   * Checks, if the Simple design of this application should be used.
+   * @return The boolean value, if the simple design should be used.
+   * @since 1.0
+   */
+  private boolean checkSimple() {
+    Path path = Paths.get("Settings.stg");
+    FileReader fr;
+    try {
+      fr = new FileReader(path.toString());
+      BufferedReader br = new BufferedReader(fr);
+      String s = br.readLine();
+      StringTokenizer st = new StringTokenizer(s, "=");
+      st.nextToken();
+      br.close();
+      return st.nextToken().trim().equals("1");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+  
+  /**
+   * Checks, if the Directory should be opened after exporting.
+   * @return  The boolean value, if the Directory should be opened.
+   * @since 1.0
+   */
+  private boolean checkOpen() {
+    Path path = Paths.get("Settings.stg");
+    FileReader fr;
+    try {
+      fr = new FileReader(path.toString());
+      BufferedReader br = new BufferedReader(fr);
+      br.readLine();
+      String s = br.readLine();
+      StringTokenizer st = new StringTokenizer(s, "=");
+      st.nextToken();
+      br.close();
+      return st.nextToken().trim().equals("1");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return false;
   }
 }

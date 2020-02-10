@@ -12,13 +12,13 @@
 	<classpathentry exported="true" kind="lib" path="libs/poi-bin-3.17-20170915/poi-3.17/poi-ooxml-3.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/poi-bin-3.17-20170915/poi-3.17/poi-ooxml-schemas-3.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/poi-bin-3.17-20170915/poi-3.17/lib/commons-collections4-4.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Frederic/Documents/GitHub/CashAssets/CashAssets/libs/javafx/javafx.base.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Frederic/Documents/GitHub/CashAssets/CashAssets/libs/javafx/javafx.controls.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Frederic/Documents/GitHub/CashAssets/CashAssets/libs/javafx/javafx.fxml.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Frederic/Documents/GitHub/CashAssets/CashAssets/libs/javafx/javafx.graphics.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Frederic/Documents/GitHub/CashAssets/CashAssets/libs/javafx/javafx.media.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Frederic/Documents/GitHub/CashAssets/CashAssets/libs/javafx/javafx.swing.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Frederic/Documents/GitHub/CashAssets/CashAssets/libs/javafx/javafx.web.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Frederic/Documents/GitHub/CashAssets/CashAssets/libs/javafx/javafx-swt.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javafx/javafx-swt.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javafx/javafx.base.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javafx/javafx.controls.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javafx/javafx.fxml.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javafx/javafx.graphics.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javafx/javafx.media.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javafx/javafx.swing.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/javafx/javafx.web.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

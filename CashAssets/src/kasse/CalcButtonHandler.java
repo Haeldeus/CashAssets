@@ -3,7 +3,6 @@ package kasse;
 import java.math.BigDecimal;
 
 import javafx.event.EventHandler;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -21,22 +20,164 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
    * Handler.
    */
   private ComponentStorer cs;
-
+  
+  /**
+   * The boolean value that determines, if the simple design is used in the Application.
+   */
+  private final boolean simple;
   
   /**
    * Creates a new Handler with the given ComponentStorer. The ComponentStorer has to be the 
-   * Storer, that contains all modifiable of this Application.
-   * @param cs  The ComponentStorer, where all changing Components are stored.
+   * Storer, that contains all modifiable Components of this Application.
+   * @param cs  The ComponentStorer, where all modifiable Components are stored.
+   * @param simple  The boolean value, that determines, if the simple design is used.
    * @since 1.0
    * @throws NullPointerException If a Component wasn't stored in the given Storer or the Storer 
    *     is {@code null}.
    */
-  public CalcButtonHandler(ComponentStorer cs) {
+  public CalcButtonHandler(ComponentStorer cs, boolean simple) {
     this.cs = cs;
+    this.simple = simple;
   }
   
   @Override
   public void handle(MouseEvent arg0) {
+    if (simple) {
+      handleSimple();
+    } else {
+      handleBig();
+    }
+  }
+
+  /**
+   * Handles the Event if the simple design is used.
+   * @since 1.0
+   */
+  private void handleSimple() {
+    /*
+     * Make all Fields uneditable, so they cannot be altered after calculation. This is needed to 
+     * make sure, that the export will be correct. 
+     */
+    cs.setFieldsEditable(false);
+    cs.getExportButton().setDisable(false);
+    cs.getResetButton().setDisable(true);
+    
+    String str = cs.getCoinTextFields()[7].getText();
+    str = str.replaceAll("[\\D&&[^,]]", "");
+    if (str == null || str.length() == 0) {
+      str = "0";
+    }
+    cs.getCoinTextFields()[7].setText(str);
+    
+    
+    
+    BigDecimal coinageMoney = new BigDecimal("0.00");
+    coinageMoney = coinageMoney.add(new BigDecimal(cs.getCoinTextFields()[7].getText()
+        .replaceAll(",", "\\.")));
+    BigDecimal billMoney = new BigDecimal("0.00");
+    
+    for (int i = 8; i <= 14; i++) {
+      billMoney = addCoinsToDecimal(billMoney, i);
+    }
+    
+    cs.getCoinResults()[7].setText("= " + coinageMoney.toString().replaceAll("\\.", ",") + "€");
+    
+    /*
+     * A new BigDecimal for the total amount of Money in the purses.
+     */
+    BigDecimal totalEuros = coinageMoney.add(billMoney);
+    
+    /*
+     * Sets the Text of the Labels, that display each of the BigDecimals value.
+     */
+    cs.getCoinSumLabel().setText(("" + coinageMoney + "€").replaceAll("\\.", ","));
+    cs.getBillSumLabel().setText(("" + billMoney + "€").replaceAll("\\.", ","));
+    cs.getSumLabel().setText(("" + totalEuros + "€").replaceAll("\\.", ","));
+
+    /*
+     * Calculates the amount of coinage, that has to be in each purse and was in it beforehand.
+     */
+    int coinNecessity = Integer.parseInt(setField(cs.getPurseTextField())) * 25;
+    /*
+     * Sets the Text of the Label, that displays the amount of coinage needed.
+     */
+    cs.getCoinNecessityLabel().setText(coinNecessity + ",00€");
+    
+    /*
+     * Creates a new BigDecimal to calculate the difference between the coinage in the purses and 
+     * the amount of needed coinage.
+     */
+    BigDecimal coinageDiff = coinageMoney.subtract(new BigDecimal(coinNecessity));
+    /*
+     * Sets the Text of the Label, that displays the BigDecimal for the coinage difference.
+     */
+    cs.getCoinDifferenceLabel().setText(coinageDiff.toString().replaceAll("\\.", ",") + "€");
+    
+    /*
+     * Compares the coinage difference BigDecimal to 0 to check if it's negative or positive. If 
+     * it's negative, the Label will display it's Text in red, else in normal black.
+     */
+    if (coinageDiff.compareTo(new BigDecimal("0.0")) == -1) {
+      cs.getCoinDifferenceLabel().getStyleClass().clear();
+      cs.getCoinDifferenceLabel().getStyleClass().addAll("label", "minusLabel");
+    } else {
+      cs.getCoinDifferenceLabel().getStyleClass().clear();
+      cs.getCoinDifferenceLabel().getStyleClass().addAll("label");
+    }
+    
+    /*
+     * Since the coinage will be either added to the purses or taken out of them, we have to 
+     * add this difference from the total amount of Money in the purses to get the final 
+     * revenue. The result will be displayed in the belonging Label.
+     */
+    BigDecimal revenueWithTips = totalEuros.add(coinageDiff);
+    cs.getCoinCleanedLabel().setText(revenueWithTips.toString().replaceAll("\\.", ",") + "€");
+    
+    /*
+     * This one is simply parsing the Input of the Euro-Field of the CashNecessity to an Integer.
+     */
+    final int cashNecessityEuro = Integer.parseInt(setField(cs.getCashNecessityEuroTextField()));
+    
+    /*
+     * Calculates the total CashNecessity by adding cashNecessityEuro with the Input of the 
+     * cent-Field after cleaning it from potential Input-Errors (input >= 100, input contains 
+     * non-Digits).
+     */
+    BigDecimal cashNecessity;
+    int tmpCashNecessityCent = Integer.parseInt(setField(cs.getCashNecessityCentTextField()));
+    if (tmpCashNecessityCent >= 100) {
+      while (tmpCashNecessityCent >= 100) {
+        tmpCashNecessityCent /= 10;
+      }
+      cashNecessity = new BigDecimal(cashNecessityEuro + "." + tmpCashNecessityCent);
+    } else if (tmpCashNecessityCent < 10) {
+      cashNecessity = new BigDecimal(cashNecessityEuro + ".0" + tmpCashNecessityCent);
+    } else {
+      cashNecessity = new BigDecimal(cashNecessityEuro + "." + tmpCashNecessityCent);
+    }
+    cs.getCashNecessityLabel().setText(cashNecessity.toString().replaceAll("\\.", ",") + "€");
+    
+    /*
+     * Calculates the tip in the Purses by subtracting Cash Necessity from the revenue calculated 
+     * before.
+     */
+    BigDecimal tips = revenueWithTips.subtract(cashNecessity);
+    cs.getTipSumLabel().setText(tips.toString().replaceAll("\\.", ",") + "€");
+    if (tips.compareTo(new BigDecimal("0.0")) < 0) {
+      cs.getTipSumLabel().getStyleClass().clear();
+      cs.getTipSumLabel().getStyleClass().addAll("label", "minusLabel");
+    } else {
+      cs.getTipSumLabel().getStyleClass().clear();
+      cs.getTipSumLabel().getStyleClass().addAll("label");
+    }
+    cs.updateToolTips();
+  }
+  
+  /**
+   * Handles the Event if the standard design is used.
+   * @since 1.0
+   */
+  private void handleBig() {
     /*
      * Make all Fields uneditable, so they cannot be altered after calculation. This is needed to 
      * make sure, that the export will be correct. 
@@ -153,7 +294,7 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
     }
     cs.updateToolTips();
   }
-
+  
   /**
    * Adds a new BigDecimal to the given {@code decimal}. The new BigDecimal is created by 
    * multiplying a factor depending on {@code index} with the Text of the TextField at 

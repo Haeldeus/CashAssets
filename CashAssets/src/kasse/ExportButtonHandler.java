@@ -35,19 +35,35 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
   private final ComponentStorer componentStorer;
   
   /**
+   * The boolean value that determines, if the simple Design is used. In this case, 
+   * there are a few Cells that have to be created differently.
+   */
+  private final boolean simple;
+  
+  /**
+   * The boolean value that determines, if the Directory should be opened after exporting.
+   */
+  private final boolean open;
+  
+  /**
    * Creates a new Handler for the Export Button. The componentStorer is used to 
    * access the TextFields and Labels in the primaryStage of the Application.
    * @param componentStorer The ComponentStorer of the Application, which handles all 
    *     Components, that are of use for this Handler.
+   * @param simple  The boolean value, if the simple design is used.
+   * @param open  The boolean value, if the directory should be opened.
    * @since 1.0
    */
-  public ExportButtonHandler(ComponentStorer componentStorer) {
+  public ExportButtonHandler(ComponentStorer componentStorer, boolean simple, boolean open) {
     this.componentStorer = componentStorer;
+    this.simple = simple;
+    this.open = open;
   }
 
   @Override
   public void handle(MouseEvent arg0) {
     //TODO Shorten this Method with for-loops for the actual input of the User to the Excel Sheet.
+    //TODO add a Password to check permission before exporting?
     //Create a new Workbook
     XSSFWorkbook workbook = new XSSFWorkbook();
     
@@ -223,10 +239,15 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     row = sheet.createRow(13);
     
     createCell(row, 1, "2€", csStandardBorder, null, false);
-    createCell(row, 2, componentStorer.getCoinTextFields()[7].getText(), csStandardBorder, null, 
-        false);
-    createCell(row, 3, componentStorer.getCoinResults()[7].getText().substring(2), 
-        csStandardBorder, null, false);
+    if (!simple) {
+      createCell(row, 2, componentStorer.getCoinTextFields()[7].getText(), csStandardBorder, null, 
+          false);
+      createCell(row, 3, componentStorer.getCoinResults()[7].getText().substring(2), 
+          csStandardBorder, null, false);
+    } else {
+      createCell(row, 2, "0", csStandardBorder, null, false);
+      createCell(row, 3, "0,00€", csStandardBorder, null, false);
+    }
     for (int i = 4; i <= 6; i++) {
       createCell(row, i, null, csStandardBorder, null, false);
     }
@@ -368,7 +389,9 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
        * Opens the Folder that contains the newly created File and selects it to let the User 
        * open it immediately after creation.
        */
-      Runtime.getRuntime().exec("explorer.exe /select," + s);   //TODO: add setting for this
+      if (open) {
+        Runtime.getRuntime().exec("explorer.exe /select," + s);
+      }
     } catch (IOException e) {
       e.printStackTrace();
     }
