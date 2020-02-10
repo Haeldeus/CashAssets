@@ -1,5 +1,9 @@
-Current - 0.9
+#Begin Version File
+Current
+0.9
+
 Old
 0.81
 0.8
 0.7
+#End Version File
