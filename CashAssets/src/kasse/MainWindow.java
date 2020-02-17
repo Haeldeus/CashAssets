@@ -424,12 +424,18 @@ public class MainWindow extends Application {
      */
     cs.updateToolTips();
     
+    boolean nightmode = checkNightmode();
+    
     /*
      * Sets the Size of the Scene, it's restrictions and the Stylesheet. Afterwards, it displays 
      * the primaryStage to the User.
      */
     Scene scene = new Scene(bp, 500, 550);
-    scene.getStylesheets().add("controlStyle1.css");
+    if (nightmode) {
+      scene.getStylesheets().add("nightControlStyle1.css");
+    } else {
+      scene.getStylesheets().add("controlStyle1.css");
+    }
     primaryStage.setScene(scene);
     primaryStage.setMinHeight(595.0);
     primaryStage.setMinWidth(615.0);
@@ -442,7 +448,7 @@ public class MainWindow extends Application {
    * @since 1.0
    */
   private boolean checkSimple() {
-    Path path = Paths.get("Settings.stg");
+    Path path = Paths.get("data/Settings.stg");
     FileReader fr;
     try {
       fr = new FileReader(path.toString());
@@ -456,6 +462,11 @@ public class MainWindow extends Application {
       e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
+    } catch (NullPointerException e) {
+      /*
+       * This happens, if there is no String to be tokenized by st. In this case there 
+       * is no Setting for this and false will be returned by default.
+       */
     }
     return false;
   }
@@ -466,7 +477,7 @@ public class MainWindow extends Application {
    * @since 1.0
    */
   private boolean checkOpen() {
-    Path path = Paths.get("Settings.stg");
+    Path path = Paths.get("data/Settings.stg");
     FileReader fr;
     try {
       fr = new FileReader(path.toString());
@@ -481,6 +492,42 @@ public class MainWindow extends Application {
       e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
+    } catch (NullPointerException e) {
+      /*
+       * This happens, if there is no String to be tokenized by st. In this case there 
+       * is no Setting for this and false will be returned by default.
+       */
+    }
+    return false;
+  }
+  
+  /**
+   * Checks, if the Nightmode design of this application should be used.
+   * @return The boolean value, if the Nightmode design should be used.
+   * @since 1.0
+   */
+  private boolean checkNightmode() {
+    Path path = Paths.get("data/Settings.stg");
+    FileReader fr;
+    try {
+      fr = new FileReader(path.toString());
+      BufferedReader br = new BufferedReader(fr);
+      br.readLine();
+      br.readLine();
+      String s = br.readLine();
+      StringTokenizer st = new StringTokenizer(s, "=");
+      st.nextToken();
+      br.close();
+      return st.nextToken().trim().equals("1");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (NullPointerException e) {
+      /*
+       * This happens, if there is no String to be tokenized by st. In this case there 
+       * is no Setting for this and false will be returned by default.
+       */
     }
     return false;
   }

@@ -1,11 +1,16 @@
 package mainwindow;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.StringTokenizer;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -19,10 +24,13 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -49,11 +57,17 @@ public class MainWindow extends Application {
   private Label response;
   
   /**
+   * Determines, if the Nightmode of the Application should be used while displaying.
+   */
+  private final boolean nightmode;
+  
+  /**
    * The Constructor for all Objects of this Class. Sets the created Instance as {@link #me}.
    * @since 1.0
    */
   public MainWindow() {
     this.me = this;
+    this.nightmode = checkNightmode();
   }
 
   /**
@@ -98,8 +112,12 @@ public class MainWindow extends Application {
          * Checks, if there is a Settings File. If not, this will create a new one with the 
          * default Settings.
          */
-        Path path = Paths.get("Settings.stg");
+        Path path = Paths.get("data" + File.separator + "Settings.stg");
         if (!Files.exists(path)) {
+          File directory = new File("data");
+          if (!directory.exists()) {
+            directory.mkdir();
+          }
           PrintWriter writer;
           try {
             writer = new PrintWriter(path.toString(), "UTF-8");
@@ -278,11 +296,16 @@ public class MainWindow extends Application {
      * the primaryStage to the User.
      */
     Scene scene = new Scene(bp, 600, 250);
-    scene.getStylesheets().add("controlStyle1.css");
+    if (nightmode) {
+      scene.getStylesheets().add("nightControlStyle1.css");
+    } else {
+      scene.getStylesheets().add("controlStyle1.css");
+    }
     primaryStage.setScene(scene);
     primaryStage.setMinHeight(270);
     primaryStage.setMinWidth(620);
     primaryStage.show();
+    showUpdate(primaryStage);
   }
   
   /**
@@ -324,5 +347,91 @@ public class MainWindow extends Application {
     } catch (NullPointerException e) {
       //Do nothing since there are no Handlers to remove
     }
+  }
+  
+  /**
+   * Checks, if the Nightmode design of this application should be used.
+   * @return The boolean value, if the Nightmode design should be used.
+   * @since 1.0
+   */
+  private boolean checkNightmode() {
+    Path path = Paths.get("data/Settings.stg");
+    FileReader fr;
+    try {
+      fr = new FileReader(path.toString());
+      BufferedReader br = new BufferedReader(fr);
+      br.readLine();
+      br.readLine();
+      String s = br.readLine();
+      StringTokenizer st = new StringTokenizer(s, "=");
+      st.nextToken();
+      br.close();
+      return st.nextToken().trim().equals("1");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (NullPointerException e) {
+      /*
+       * This happens, if there is no String to be tokenized by st. In this case there 
+       * is no Setting for this and false will be returned by default.
+       */
+    }
+    return false;
+  }
+  
+  private void updateUser(Stage primary) {
+    Path path = Paths.get("data/appdata.apd");
+    FileReader fr;
+    try {
+      fr = new FileReader(path.toString());
+      BufferedReader br = new BufferedReader(fr);
+      String s = br.readLine();
+      StringTokenizer st = new StringTokenizer(s, "=");
+      st.nextToken();
+      br.close();
+      double lastUsed = Double.parseDouble(st.nextToken().trim());
+      if (version > lastUsed) {
+        showUpdate(primary);
+      }
+      PrintWriter writer = new PrintWriter(path.toString(), "UTF-8");
+      writer.println("lastVersion = " + version);
+      writer.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (NullPointerException e) {
+      /*
+       * This happens, if there is no String to be tokenized by st. In this case there 
+       * is no Setting for this and false will be returned by default.
+       */
+    }
+  }
+  
+  private void showUpdate(Stage primary) {
+    final Stage dialog = new Stage();
+    dialog.initModality(Modality.APPLICATION_MODAL);
+    dialog.initOwner(primary);
+    ScrollPane sp = new ScrollPane();
+    Text t = new Text(getUpdates());
+    sp.setContent(t);
+    sp.setFitToWidth(true);
+    Scene dialogScene = new Scene(sp, 300, 150);
+    t.wrappingWidthProperty().bind(sp.widthProperty().subtract(15));
+    if (nightmode) {
+      dialogScene.getStylesheets().add("nightControlStyle1.css");
+      t.setId("text");
+    } else {
+      dialogScene.getStylesheets().add("controlStyle1.css");     
+    }
+    dialog.setTitle("Neuerungen in dieser Version");
+    dialog.setScene(dialogScene);
+    dialog.setResizable(true);
+    dialog.show();
+  }
+  
+  private String getUpdates() {
+    return "";
   }
 }

@@ -1,6 +1,7 @@
 package mainwindow;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
    */
   public SettingsHandler(Stage primary) {
     this.primaryStage = primary;
-    path = Paths.get("Settings.stg");
+    path = Paths.get("data" + File.separator + "Settings.stg");
   }
 
   @Override
@@ -111,7 +112,7 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
     grid.add(openFolder, 0, 4);
     
     /*
-     * Creates a new CheckBox for the open Fold Setting. If a Settings File exists, the setting 
+     * Creates a new CheckBox for the open Folder Setting. If a Settings File exists, the setting 
      * for this will be taken from that, if not this will be set to be selected by default.
      */
     CheckBox cbOpenFolder = new CheckBox();
@@ -121,6 +122,26 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
       cbOpenFolder.setSelected(getOpenFolderSelect());
     }
     grid.add(cbOpenFolder, 1, 4);
+    
+    /*
+     * Creates a Label, that describes the purpose of the Nightmode-CheckBox.
+     */
+    Label nightmode = new Label("Nachtmodus benutzen");
+    nightmode.setTooltip(new Tooltip("Dunklere Farben zur Darstellung benutzen. Erfordert Neustart "
+        + "der Anwendung."));
+    grid.add(nightmode, 0, 5);
+    
+    /*
+     * Creates a new CheckBox for the Nightmode Setting. If a Settings File exists, the setting 
+     * for this will be taken from that, if not this will be set to be selected by default.
+     */
+    CheckBox cbNightmode = new CheckBox();
+    if (!existingSettings) {
+      cbNightmode.setSelected(true);
+    } else {
+      cbNightmode.setSelected(getNightmodeSelect());
+    }
+    grid.add(cbNightmode, 1, 5);
     
     /*
      * Creates a Button to save the current Settings and adds a Handler to it.
@@ -134,6 +155,10 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
          */
         PrintWriter writer;
         try {
+          File directory = new File("data");
+          if (!directory.exists()) {
+            directory.mkdir();
+          }
           writer = new PrintWriter(path.toString(), "UTF-8");
           /*
            * Prints the Settings into the File.
@@ -148,6 +173,12 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
             writer.println("openFolder = 1");
           } else {
             writer.println("openFolder = 0");
+          }
+          
+          if (cbNightmode.isSelected()) {
+            writer.println("nightMode = 1");
+          } else {
+            writer.println("nightMode = 0");
           }
           /*
            * Closes the Writer to prevent leakage.
@@ -170,7 +201,7 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
         dialog.close();
       }   
     });
-    grid.add(btSave, 0, 7);
+    grid.add(btSave, 0, 8);
     GridPane.setColumnSpan(btSave, 2);
     
     /*
@@ -186,7 +217,7 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
         dialog.close();
       }  
     });
-    grid.add(btCancel, 2, 7);
+    grid.add(btCancel, 2, 8);
     GridPane.setColumnSpan(btCancel, 2);
     
     /*
@@ -249,6 +280,11 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
        * Just for debugging purposes. Usually this shouldn't be called at any time.
        */
       e.printStackTrace();
+    } catch (NullPointerException e) {
+      /*
+       * This happens, if there is no String to be tokenized by st. In this case there 
+       * is no Setting for this and false will be returned by default.
+       */
     }
     /*
      * Returns false, in case any error occurred while reading the File.
@@ -299,13 +335,73 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
        * Just for debugging purposes. Usually this shouldn't be called at any time.
        */
       e.printStackTrace();
+    } catch (NullPointerException e) {
+      /*
+       * This happens, if there is no String to be tokenized by st. In this case there 
+       * is no Setting for this and false will be returned by default.
+       */
     }
     /*
      * Returns false, in case an error occurred while reading from the File.
      */
     return false;
   }
-
+  
+  /**
+   * Returns, if the CheckBox for Nightmode should be selected. This is determined by checking 
+   * the Settings File.
+   * @return  {@code true}, if the CheckBox should be selected, {@code false} if not.
+   * @since 1.0
+   */
+  private boolean getNightmodeSelect() {
+    try {
+      /*
+       * Creates a BufferedReader with the given FileReader to read the Settings File.
+       */
+      FileReader fr = new FileReader(path.toString());
+      BufferedReader br = new BufferedReader(fr);
+      /*
+       * Reads the second Line, which contains the openFolder Setting.
+       */
+      String s = readLine(2, br);
+      /*
+       * Creates a Tokenizer to get the Setting.
+       */
+      StringTokenizer st = new StringTokenizer(s, "=");
+      /*
+       * Skips the first Token, since this is only "openFolder".
+       */
+      st.nextToken();
+      /*
+       * Closes the Reader to prevent leakage.
+       */
+      br.close();
+      /*
+       * Returns if the second token is 1, which means the Folder should be opened.
+       */
+      return st.nextToken().trim().equals("1");
+    } catch (FileNotFoundException e) {
+      /*
+       * Just for debugging purposes. Usually this shouldn't be called at any time.
+       */
+      e.printStackTrace();
+    } catch (IOException e) {
+      /*
+       * Just for debugging purposes. Usually this shouldn't be called at any time.
+       */
+      e.printStackTrace();
+    } catch (NullPointerException e) {
+      /*
+       * This happens, if there is no String to be tokenized by st. In this case there 
+       * is no Setting for this and false will be returned by default.
+       */
+    }
+    /*
+     * Returns false, in case an error occurred while reading from the File.
+     */
+    return false;
+  }
+  
   /**
    * Reads the line specified by index (first line equals 0) from the given BufferedReader and 
    * returns it. All Lines before this index are deleted.

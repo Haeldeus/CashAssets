@@ -1,0 +1,7 @@
+#Begin Updates File
+- Nachtmodus hinzugefügt
+- Export-Button minimal verändert. Hintergrund ist nun transparent
+- Settings-Datei verschoben
+- Tip-Rechner angefangen, jedoch noch nicht in die Hauptanwendung integriert
+- Update-Fenster hinzugefügt
+#End Updates File
