@@ -1,18 +1,15 @@
 package mainwindow;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.StringTokenizer;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -29,10 +26,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import util.Util;
 
 /**
  * The Class which Objects display the Application's Window.
@@ -44,7 +41,7 @@ public class MainWindow extends Application {
   /**
    * The Current version of the Application.
    */
-  private final double version = 0.9;
+  private final double version = 0.91;
   
   /**
    * The instance of this Class. Used for the {@link UpdateTask}.
@@ -62,12 +59,17 @@ public class MainWindow extends Application {
   private final boolean nightmode;
   
   /**
+   * The primary Stage of the Application.
+   */
+  private Stage primary;
+  
+  /**
    * The Constructor for all Objects of this Class. Sets the created Instance as {@link #me}.
    * @since 1.0
    */
   public MainWindow() {
     this.me = this;
-    this.nightmode = checkNightmode();
+    this.nightmode = Util.checkNightmode();
   }
 
   /**
@@ -84,6 +86,7 @@ public class MainWindow extends Application {
     /*
      * Basic Scenery Settings.
      */
+    this.primary = primaryStage;
     primaryStage.setTitle("Weyher-Calculator");
     GridPane grid = new GridPane();
     grid.setAlignment(Pos.CENTER);
@@ -101,6 +104,19 @@ public class MainWindow extends Application {
     settingsMenu.getItems().addAll(settingsItem);
     menu.getMenus().addAll(settingsMenu);
     
+    /*
+     * Adds the News Item to the MenuBar
+     */
+    final Menu newsMenu = new Menu("News");
+    final MenuItem newsItem = new MenuItem("Änderungen");
+    newsItem.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent arg0) {
+        new Thread(new NewsTask(me)).start();      
+      } 
+    });
+    newsMenu.getItems().addAll(newsItem);
+    menu.getMenus().addAll(newsMenu);
     /*
      * Creates a new Button to launch the CashAssets Application and adds a Handler.
      */
@@ -123,6 +139,7 @@ public class MainWindow extends Application {
             writer = new PrintWriter(path.toString(), "UTF-8");
             writer.println("simpleDesign = 1");
             writer.println("openFolder = 1");
+            writer.println("nightMode = 0");
             writer.close();
           } catch (FileNotFoundException e) {
             /*
@@ -143,7 +160,7 @@ public class MainWindow extends Application {
            */
           Stage stage = new Stage();
           stage.initModality(Modality.APPLICATION_MODAL);
-          new kasse.MainWindow().start(stage);
+          new kasse.CashAssetsWindow().start(stage);
         } catch (Exception e) {
           /*
            * Just for debugging purposes. Usually this shouldn't be called at any time.
@@ -290,7 +307,6 @@ public class MainWindow extends Application {
      */
     bp.setBottom(bp2);
     
-    
     /*
      * Sets the Size of the Scene, it's restrictions and the Stylesheet. Afterwards, it displays 
      * the primaryStage to the User.
@@ -305,7 +321,6 @@ public class MainWindow extends Application {
     primaryStage.setMinHeight(270);
     primaryStage.setMinWidth(620);
     primaryStage.show();
-    showUpdate(primaryStage);
   }
   
   /**
@@ -350,71 +365,16 @@ public class MainWindow extends Application {
   }
   
   /**
-   * Checks, if the Nightmode design of this application should be used.
-   * @return The boolean value, if the Nightmode design should be used.
+   * Displays the Stage, where the user gets informed about the latest changes to the Application.
+   * @param s The Text, that will be displayed in the Stage.
    * @since 1.0
    */
-  private boolean checkNightmode() {
-    Path path = Paths.get("data/Settings.stg");
-    FileReader fr;
-    try {
-      fr = new FileReader(path.toString());
-      BufferedReader br = new BufferedReader(fr);
-      br.readLine();
-      br.readLine();
-      String s = br.readLine();
-      StringTokenizer st = new StringTokenizer(s, "=");
-      st.nextToken();
-      br.close();
-      return st.nextToken().trim().equals("1");
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (NullPointerException e) {
-      /*
-       * This happens, if there is no String to be tokenized by st. In this case there 
-       * is no Setting for this and false will be returned by default.
-       */
-    }
-    return false;
-  }
-  
-  private void updateUser(Stage primary) {
-    Path path = Paths.get("data/appdata.apd");
-    FileReader fr;
-    try {
-      fr = new FileReader(path.toString());
-      BufferedReader br = new BufferedReader(fr);
-      String s = br.readLine();
-      StringTokenizer st = new StringTokenizer(s, "=");
-      st.nextToken();
-      br.close();
-      double lastUsed = Double.parseDouble(st.nextToken().trim());
-      if (version > lastUsed) {
-        showUpdate(primary);
-      }
-      PrintWriter writer = new PrintWriter(path.toString(), "UTF-8");
-      writer.println("lastVersion = " + version);
-      writer.close();
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (NullPointerException e) {
-      /*
-       * This happens, if there is no String to be tokenized by st. In this case there 
-       * is no Setting for this and false will be returned by default.
-       */
-    }
-  }
-  
-  private void showUpdate(Stage primary) {
+  protected void showUpdate(String s) {
     final Stage dialog = new Stage();
     dialog.initModality(Modality.APPLICATION_MODAL);
     dialog.initOwner(primary);
     ScrollPane sp = new ScrollPane();
-    Text t = new Text(getUpdates());
+    Text t = new Text(s);
     sp.setContent(t);
     sp.setFitToWidth(true);
     Scene dialogScene = new Scene(sp, 300, 150);
@@ -429,9 +389,5 @@ public class MainWindow extends Application {
     dialog.setScene(dialogScene);
     dialog.setResizable(true);
     dialog.show();
-  }
-  
-  private String getUpdates() {
-    return "";
   }
 }

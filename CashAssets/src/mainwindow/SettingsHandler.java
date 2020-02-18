@@ -24,6 +24,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import util.Util;
 
 /**
  * The EventHandler for the Settings MenuItem. This will create a new Window to show all possible 
@@ -230,7 +231,11 @@ public class SettingsHandler implements EventHandler<ActionEvent> {
      * the Stage to the User.
      */
     Scene dialogScene = new Scene(bp, 400, 290);
-    dialogScene.getStylesheets().add("controlStyle1.css");
+    if (Util.checkNightmode()) {
+      dialogScene.getStylesheets().add("nightControlStyle1.css");
+    } else {
+      dialogScene.getStylesheets().add("controlStyle1.css");
+    }
     dialog.setScene(dialogScene);
     dialog.setResizable(false);
     dialog.setTitle("Settings");
