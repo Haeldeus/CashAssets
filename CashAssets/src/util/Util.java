@@ -1,11 +1,13 @@
 package util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 /**
@@ -20,6 +22,7 @@ public class Util {
   /**
    * Checks, if the Nightmode should be used.
    * @return  {@code true}, if the Nightmode should be used, {@code false} if not.
+   * @since 1.0
    */
   public static boolean checkNightmode() {
     Path path = Paths.get("data/Settings.stg");
@@ -45,5 +48,70 @@ public class Util {
        */
     }
     return false;
+  }
+  
+  /**
+   * Returns all Staff Members, located in the File at data/Staff.stg.
+   * @return  All Staff Members, that are saved in Staff.stg.
+   * @since 1.0
+   */
+  public static ArrayList<String> getStaffMembers() {
+    /*
+     * Creates a new, empty ArrayList, which will be filled and returned.
+     */
+    ArrayList<String> res = new ArrayList<String>();
+    
+    /*
+     * The Path to the Staff-File.
+     */
+    Path path = Paths.get("data" + File.separator + "Staff.stg");
+    try {
+      /*
+       * Creates a BufferedReader with the given FileReader to read the Settings File.
+       */
+      FileReader fr = new FileReader(path.toString());
+      BufferedReader br = new BufferedReader(fr);
+      
+      /*
+       * Reads all Lines of the File. Each of these represent a Staff Member.
+       */
+      String s = br.readLine();
+      while (s != null) {
+        res.add(s);
+        s = br.readLine();
+      }
+      /*
+       * Closes the Reader to prevent leakage.
+       */
+      br.close();
+      /*
+       * Returns if the second token is 1, which means the Folder should be opened.
+       */
+    } catch (FileNotFoundException e) {
+      /*
+       * In case there is no Staff Members File. In this case the empty ArrayList will be 
+       * returned so the User can add the Staff Members to the List.
+       */
+      return res;
+    } catch (IOException e) {
+      /*
+       * Just for debugging purposes. Usually this shouldn't be called at any time.
+       */
+      e.printStackTrace();
+    }
+    return res;
+  }
+  
+  /**
+   * Returns the Control Style, that should be used.
+   * @return  The Control Style, as a String.
+   * @since 1.0
+   */
+  public static String getControlStyle() {
+    if (checkNightmode()) {
+      return "nightControlStyle1.css";
+    } else {
+      return "controlStyle1.css";
+    }
   }
 }

@@ -7,8 +7,14 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -29,6 +35,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import mainwindow.handlers.SettingsHandler;
+import mainwindow.tasks.NewsTask;
+import mainwindow.tasks.UpdateTask;
 import util.Util;
 
 /**
@@ -112,7 +121,19 @@ public class MainWindow extends Application {
     newsItem.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent arg0) {
-        new Thread(new NewsTask(me)).start();      
+        //new Thread(new NewsTask(me)).start();  
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+          executor.submit(new NewsTask(me)).get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+          Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+              showUpdate("Zeitüberschreitung");
+            }         
+          });
+        } 
+        executor.shutdown();   
       } 
     });
     newsMenu.getItems().addAll(newsItem);
@@ -183,7 +204,18 @@ public class MainWindow extends Application {
      * Creates a new Button to launch the Tip Calculator Application.
      */
     Button btTip = new Button("Tip Rechner");
-    //TODO: Add Handler.
+    btTip.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent arg0) {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        try {
+          new tipcalculator.TipWindow().start(stage);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }      
+      }    
+    });
     /*
      * Ensures, that the Button for the new Window will scale with the Scene's size.
      */
@@ -283,7 +315,7 @@ public class MainWindow extends Application {
          * Displays the ProgressBar and the Response Label.
          */
         bar.setVisible(true);
-        response.setText("Suche nach Updates...");
+        response.setText("Suche nach Updates..."); 
         /*
          * Binds the ProhressBar to the progress of the Task.
          */
@@ -312,11 +344,7 @@ public class MainWindow extends Application {
      * the primaryStage to the User.
      */
     Scene scene = new Scene(bp, 600, 250);
-    if (nightmode) {
-      scene.getStylesheets().add("nightControlStyle1.css");
-    } else {
-      scene.getStylesheets().add("controlStyle1.css");
-    }
+    scene.getStylesheets().add(Util.getControlStyle());
     primaryStage.setScene(scene);
     primaryStage.setMinHeight(270);
     primaryStage.setMinWidth(620);
@@ -328,7 +356,7 @@ public class MainWindow extends Application {
    * @return  The Version, this Class is on.
    * @since 1.0
    */
-  protected double getVersion() {
+  public double getVersion() {
     return version;
   }
 
@@ -337,7 +365,7 @@ public class MainWindow extends Application {
    * @param text  The Text to be set as a String.
    * @since 1.0
    */
-  protected void setResponseText(String text) {
+  public void setResponseText(String text) {
     response.setText(text);
   }
   
@@ -347,7 +375,7 @@ public class MainWindow extends Application {
    *     to {@link #response}.
    * @since 1.0
    */
-  protected void addResponseHandler(EventHandler<MouseEvent> handler) {
+  public void addResponseHandler(EventHandler<MouseEvent> handler) {
     response.setOnMouseClicked(handler);
   }
   
@@ -356,7 +384,7 @@ public class MainWindow extends Application {
    * @see #addResponseHandler(EventHandler)
    * @since 1.0
    */
-  protected void removeResponseHandler() {
+  public void removeResponseHandler() {
     try {
       response.removeEventHandler(MouseEvent.MOUSE_CLICKED, response.getOnMouseClicked());
     } catch (NullPointerException e) {
@@ -369,7 +397,7 @@ public class MainWindow extends Application {
    * @param s The Text, that will be displayed in the Stage.
    * @since 1.0
    */
-  protected void showUpdate(String s) {
+  public void showUpdate(String s) {
     final Stage dialog = new Stage();
     dialog.initModality(Modality.APPLICATION_MODAL);
     dialog.initOwner(primary);
@@ -379,11 +407,9 @@ public class MainWindow extends Application {
     sp.setFitToWidth(true);
     Scene dialogScene = new Scene(sp, 300, 150);
     t.wrappingWidthProperty().bind(sp.widthProperty().subtract(15));
+    dialogScene.getStylesheets().add(Util.getControlStyle());
     if (nightmode) {
-      dialogScene.getStylesheets().add("nightControlStyle1.css");
       t.setId("text");
-    } else {
-      dialogScene.getStylesheets().add("controlStyle1.css");     
     }
     dialog.setTitle("Neuerungen in dieser Version");
     dialog.setScene(dialogScene);

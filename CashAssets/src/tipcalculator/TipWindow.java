@@ -10,6 +10,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import tipcalculator.handler.StaffHandler;
+import util.Util;
 
 /**
  * A Class which Objects will display the Window for the Tip Calculation.
@@ -17,17 +19,6 @@ import javafx.stage.Stage;
  * @version 1.0
  */
 public class TipWindow extends Application {
-
-  //TODO: Delete this later on.
-  /**
-   * The Main Method for this Class. Used for testing to not start this from the Application's Main 
-   * Window.
-   * @param args  Unused.
-   * @since 1.0
-   */
-  public static void main(String[] args) {
-    TipWindow.launch(args);
-  }
   
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -51,7 +42,8 @@ public class TipWindow extends Application {
     borderPane.setCenter(grid);
     
     Scene scene = new Scene(borderPane, 600, 250);
-    scene.getStylesheets().add("controlStyle1.css");
+
+    scene.getStylesheets().add(Util.getControlStyle());
     primaryStage.setScene(scene);
     primaryStage.setMinHeight(270);
     primaryStage.setMinWidth(620);

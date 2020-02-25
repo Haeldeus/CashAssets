@@ -1,4 +1,4 @@
-package mainwindow;
+package mainwindow.tasks;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +16,7 @@ import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.input.MouseEvent;
+import mainwindow.MainWindow;
 
 /**
  * The Objects of this Class are used to check for possible Updates.
@@ -49,14 +50,13 @@ public class UpdateTask extends Task<Void> {
   protected Void call() throws Exception {
     try {
       // Make a URL to the web page
-      URL url = new URL("https://github.com/Haeldeus/CashAssets/blob/master/version.txt");
-  
+      URL url;
+      url = new URL("https://github.com/Haeldeus/CashAssets/blob/master/version.txt");
       // Get the input stream through URL Connection
       URLConnection con = url.openConnection();
       InputStream is = con.getInputStream();
-      
       BufferedReader br = new BufferedReader(new InputStreamReader(is));
-  
+
       String line = null;
       
       /*

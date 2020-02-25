@@ -1,6 +1,12 @@
 #Begin Updates File
+0.92 Änderungen und Erweiterungen
+#New Line#
+- Tip-Rechner in die Hauptanwendung integriert.
+- Die Suche nach Updates sollte nun nach 5 Sekunden abgebrochen werden, falls keine Verbindung zur Seite hergestellt werden kann.
+#New Line#
+#New Line#
 0.91 Änderungen und Erweiterungen
-
+#New Line#
 - Nachtmodus hinzugefügt
 - Export-Button minimal verändert. Hintergrund ist nun transparent
 - Settings-Datei verschoben

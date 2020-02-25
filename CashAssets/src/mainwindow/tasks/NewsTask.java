@@ -1,4 +1,4 @@
-package mainwindow;
+package mainwindow.tasks;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.net.URLConnection;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import mainwindow.MainWindow;
 
 /**
  * The Task, that will get the Text from the updates.txt File in the repository.
@@ -59,6 +60,8 @@ public class NewsTask extends Task<Void> {
           }
           if (line.trim().length() != 0) {
             s = s.concat(line.trim() + System.lineSeparator());
+          } else if (line.trim().equals("#New Line#")) {
+            s = s.concat(line.trim().replace("#New Line#", "") + System.lineSeparator());
           }
         }
 

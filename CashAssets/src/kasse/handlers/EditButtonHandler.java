@@ -1,8 +1,9 @@
-package kasse;
+package kasse.handlers;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import kasse.ComponentStorer;
 
 /**
  * A Class which Objects will handle the Way, the Edit Button behaves whenever it is pressed.

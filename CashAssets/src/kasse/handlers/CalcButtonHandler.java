@@ -1,4 +1,4 @@
-package kasse;
+package kasse.handlers;
 
 import java.math.BigDecimal;
 
@@ -6,6 +6,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import kasse.ComponentStorer;
 
 /**
  * The Handler for the Calculate-Button. This Handler will calculate the Money in the Purses and 

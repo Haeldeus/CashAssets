@@ -32,6 +32,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import kasse.handlers.CalcButtonHandler;
+import kasse.handlers.EditButtonHandler;
+import kasse.handlers.ExportButtonHandler;
+import kasse.handlers.ResetButtonHandler;
 import util.Util;
 
 /**
@@ -89,7 +93,10 @@ public class CashAssetsWindow extends Application {
         dialogVbox.getChildren().add(t);
         Scene dialogScene = new Scene(dialogVbox, 300, 290);
         t.setWrappingWidth(dialogScene.getWidth());
-        dialogScene.getStylesheets().add("controlStyle1.css");
+        dialogScene.getStylesheets().add(Util.getControlStyle());
+        if (Util.checkNightmode()) {
+          t.setId("text");
+        }
         dialog.setScene(dialogScene);
         dialog.setResizable(false);
         dialog.show();
@@ -430,11 +437,7 @@ public class CashAssetsWindow extends Application {
      * the primaryStage to the User.
      */
     Scene scene = new Scene(bp, 500, 550);
-    if (Util.checkNightmode()) {
-      scene.getStylesheets().add("nightControlStyle1.css");
-    } else {
-      scene.getStylesheets().add("controlStyle1.css");
-    }
+    scene.getStylesheets().add(Util.getControlStyle());
     primaryStage.setScene(scene);
     primaryStage.setMinHeight(595.0);
     primaryStage.setMinWidth(615.0);

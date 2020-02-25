@@ -1,4 +1,4 @@
-package kasse;
+package kasse.handlers;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.MouseEvent;
+import kasse.ComponentStorer;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
