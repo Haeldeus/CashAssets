@@ -25,6 +25,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -267,28 +269,16 @@ public class CashAssetsWindow extends Application {
     grid.add(cashNecessity, 0, 10);
     
     TextField cashNecessityEuro = new TextField("0");
-    cashNecessityEuro.setMaxWidth(45.0);
-    Label labelCashEuro = new Label("€");
-    GridPane cashEuro = new GridPane();
-    cashEuro.setHgap(5.0);
-    cashEuro.add(cashNecessityEuro, 0, 0);
-    cashEuro.add(labelCashEuro, 1, 0);
-    grid.add(cashEuro, 2, 10);
+    grid.add(cashNecessityEuro, 2, 10);
+    GridPane.setColumnSpan(cashNecessityEuro, 2);
     
-    TextField cashNecessityCent = new TextField("0");
-    cashNecessityCent.setMaxWidth(45.0);
-    Label labelCashCent = new Label("ct");
-    GridPane cashCent = new GridPane();
-    cashCent.setHgap(5.0);
-    cashCent.add(cashNecessityCent, 0, 0);
-    cashCent.add(labelCashCent, 1, 0);
-    grid.add(cashCent, 3, 10);
+    Label labelCashCent = new Label("€");
+    grid.add(labelCashCent, 4, 10);
     
     /*
      * Adds the needed Components to the ComponentStorer.
      */
     cs.setCashNecessityEuroTextField(cashNecessityEuro);
-    cs.setCashNecessityCentTextField(cashNecessityCent);
     
     /*
      * Adds a Reset Button to reset all TextFields and Labels to their original value.
@@ -405,7 +395,7 @@ public class CashAssetsWindow extends Application {
     GridPane.setRowSpan(calc, 2);
     GridPane.setFillHeight(calc, true);
     GridPane.setFillWidth(calc, true);
-    calc.addEventFilter(MouseEvent.MOUSE_RELEASED, new CalcButtonHandler(cs, simple));
+    calc.setOnMouseClicked(new CalcButtonHandler(cs, simple));
     grid.add(calc, 0, 20);
     
     /*
@@ -418,7 +408,7 @@ public class CashAssetsWindow extends Application {
     GridPane.setRowSpan(edit, 2);
     GridPane.setFillHeight(edit, true);
     GridPane.setFillWidth(edit, true);
-    edit.addEventFilter(MouseEvent.MOUSE_RELEASED, new EditButtonHandler(cs));
+    edit.setOnMouseClicked(new EditButtonHandler(cs));
     grid.add(edit, 4, 20);
     
     /*
@@ -432,6 +422,8 @@ public class CashAssetsWindow extends Application {
      */
     cs.updateToolTips();
     
+    addKeyHandlers(cs, simple);
+    
     /*
      * Sets the Size of the Scene, it's restrictions and the Stylesheet. Afterwards, it displays 
      * the primaryStage to the User.
@@ -444,6 +436,187 @@ public class CashAssetsWindow extends Application {
     primaryStage.show();
   }
 
+  /**
+   * Adds KeyEvent Handlers to all TextFields, so they change to the TF below them, whenever the 
+   * Enter-Key is pressed.
+   * @param cs  The ComponentStorer, where all TextFields are stored. The Method accesses the TFs 
+   *     from there.
+   * @param simple  The boolean Value, if the simple Design is used. Depending on this Value, the 
+   *     sequence of selected TextFields is different.
+   * @since 1.0
+   */
+  private void addKeyHandlers(ComponentStorer cs, boolean simple) {
+    /*
+     * Adds KeyEventHandler to each TextField, so they change focus whenever the Enter Key was 
+     * pressed.
+     */
+    if (simple) {    
+      cs.getYear().setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getCoinTextFields()[7].requestFocus();
+          }
+        }     
+      });
+      cs.getCoinTextFields()[7].setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getBillsTextFields()[0].requestFocus();
+          }
+        }      
+      });
+    } else {    
+      cs.getYear().setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getCoinTextFields()[0].requestFocus();
+          }
+        }     
+      });
+      cs.getCoinTextFields()[0].setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getCoinTextFields()[1].requestFocus();
+          }
+        }      
+      });
+      cs.getCoinTextFields()[1].setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getCoinTextFields()[2].requestFocus();
+          }
+        }      
+      });
+      cs.getCoinTextFields()[2].setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getCoinTextFields()[3].requestFocus();
+          }
+        }      
+      });
+      cs.getCoinTextFields()[3].setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getCoinTextFields()[4].requestFocus();
+          }
+        }      
+      });
+      cs.getCoinTextFields()[4].setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getCoinTextFields()[5].requestFocus();
+          }
+        }      
+      });
+      cs.getCoinTextFields()[5].setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getCoinTextFields()[6].requestFocus();
+          }
+        }      
+      });
+      cs.getCoinTextFields()[6].setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getCoinTextFields()[7].requestFocus();
+          }
+        }      
+      });
+      cs.getCoinTextFields()[7].setOnKeyPressed(new EventHandler<KeyEvent>() {
+        @Override
+        public void handle(KeyEvent event) {
+          if (event.getCode() == KeyCode.ENTER) {
+            cs.getBillsTextFields()[0].requestFocus();
+          }
+        }      
+      });
+    }
+    
+    cs.getBillsTextFields()[0].setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+          cs.getBillsTextFields()[1].requestFocus();
+        }
+      }
+    });
+    cs.getBillsTextFields()[1].setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+          cs.getBillsTextFields()[2].requestFocus();
+        }
+      }
+    });
+    cs.getBillsTextFields()[2].setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+          cs.getBillsTextFields()[3].requestFocus();
+        }
+      }
+    });
+    cs.getBillsTextFields()[3].setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+          cs.getBillsTextFields()[4].requestFocus();
+        }
+      }
+    });
+    cs.getBillsTextFields()[4].setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+          cs.getBillsTextFields()[5].requestFocus();
+        }
+      }
+    });
+    cs.getBillsTextFields()[5].setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+          cs.getBillsTextFields()[6].requestFocus();
+        }
+      }
+    });
+    cs.getBillsTextFields()[6].setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+          cs.getPurseTextField().requestFocus();
+        }
+      }
+    });
+    cs.getPurseTextField().setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+          cs.getCashNecessityEuroTextField().requestFocus();
+        }
+      }      
+    });
+    
+    cs.getCashNecessityEuroTextField().setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+          cs.getYear().requestFocus();
+        }
+      }      
+    });
+  }
+  
   /**
    * Checks, if the Simple design of this application should be used.
    * @return The boolean value, if the simple design should be used.

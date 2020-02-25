@@ -56,11 +56,6 @@ public class ComponentStorer {
   private TextField purseTextField;
   
   /**
-   * The TextField, where the User enters the cent-part of the Cash Necessity.
-   */
-  private TextField cashNecessityCentTextField;
-  
-  /**
    * The TextField, where the User enters the Euro-Part of the Cash Necessity.
    */
   private TextField cashNecessityEuroTextField;
@@ -167,7 +162,6 @@ public class ComponentStorer {
      */
     year.setEditable(editable);
     purseTextField.setEditable(editable);
-    cashNecessityCentTextField.setEditable(editable);
     cashNecessityEuroTextField.setEditable(editable);
     
     /*
@@ -178,8 +172,6 @@ public class ComponentStorer {
       year.getStyleClass().addAll("text-field", "text-input", "enabledTF");
       purseTextField.getStyleClass().clear();
       purseTextField.getStyleClass().addAll("text-field", "text-input", "purseTF");
-      cashNecessityCentTextField.getStyleClass().clear();
-      cashNecessityCentTextField.getStyleClass().addAll("text-field", "text-input", "enabledTF");
       cashNecessityEuroTextField.getStyleClass().clear();
       cashNecessityEuroTextField.getStyleClass().addAll("text-field", "text-input", "enabledTF");
     } else {
@@ -187,8 +179,6 @@ public class ComponentStorer {
       year.getStyleClass().addAll("text-field", "text-input", "disabledTF");
       purseTextField.getStyleClass().clear();
       purseTextField.getStyleClass().addAll("text-field", "text-input", "disabledTF");
-      cashNecessityCentTextField.getStyleClass().clear();
-      cashNecessityCentTextField.getStyleClass().addAll("text-field", "text-input", "disabledTF");
       cashNecessityEuroTextField.getStyleClass().clear();
       cashNecessityEuroTextField.getStyleClass().addAll("text-field", "text-input", "disabledTF");
     }
@@ -381,28 +371,6 @@ public class ComponentStorer {
    */
   public void setPurseTextField(TextField purseTextField) {
     this.purseTextField = purseTextField;
-  }
-
-  /**
-   * Returns {@link #cashNecessityCentTextField}, the TextField where the User can enter the 
-   * cent-Part of the Cash-Necessity.
-   * @return The {@link #cashNecessityCentTextField}, that has to be set beforehand.
-   * @throws NullPointerException If the TextField wasn't set before.
-   * @since 1.0
-   */
-  public TextField getCashNecessityCentTextField() {
-    return cashNecessityCentTextField;
-  }
-
-  /**
-   * Sets {@link #cashNecessityCentTextField}, the TextField where the User can enter the cent-Part 
-   * of the Cash-Necessity, to the given TextField to be accessible by other Objects.
-   * @param cashNecessityTextFields The TextField, that contains the cent-Part of the 
-   *     Cash-Necessity.
-   * @since 1.0
-   */
-  public void setCashNecessityCentTextField(TextField cashNecessityTextFields) {
-    this.cashNecessityCentTextField = cashNecessityTextFields;
   }
 
   /**

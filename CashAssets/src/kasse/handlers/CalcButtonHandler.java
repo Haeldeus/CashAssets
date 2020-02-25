@@ -1,6 +1,7 @@
 package kasse.handlers;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
@@ -82,7 +83,6 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
         return;
       }
     }
-    
     /*
      * If there was no input or no digits in the Input, set the input to '0'.
      */
@@ -91,6 +91,32 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
     }
     cs.getCoinTextFields()[7].setText(str);
     
+    /*
+     *Gets the Text of the Cash Necessity Field and replaces all Non-Digits. 
+     */
+    str = cs.getCashNecessityEuroTextField().getText();
+    str = str.replaceAll("[\\D&&[^,]&&[^\\.]]", "");
+    /*
+     * If there are more than 1 chars that equal '.' or ',' then make the TextField red to show 
+     * that there was an Error in the input. This will also cancel the operation.
+     */
+    count = 0;
+    for (char c : str.toCharArray()) {
+      if (c == '.' || c == ',') {
+        count++;
+      }
+      if (count > 1) {
+        cs.getCashNecessityEuroTextField().getStyleClass().add("wrongTF");
+        return;
+      }
+    }
+    /*
+     * If there was no input or no digits in the Input, set the input to '0'.
+     */
+    if (str == null || str.length() == 0) {
+      str = "0";
+    }
+    cs.getCashNecessityEuroTextField().setText(str);
     
     /*
      * Creates the BigDecimals that are needed for this Handler.
@@ -98,6 +124,8 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
     BigDecimal coinageMoney = new BigDecimal("0.00");
     coinageMoney = coinageMoney.add(new BigDecimal(cs.getCoinTextFields()[7].getText()
         .replaceAll(",", "\\.")));
+    coinageMoney = coinageMoney.setScale(2, RoundingMode.DOWN);
+    cs.getCoinTextFields()[7].setText(coinageMoney.toString().replaceAll("\\.", ","));
     BigDecimal billMoney = new BigDecimal("0.00");
     
     /*
@@ -163,28 +191,17 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
     BigDecimal revenueWithTips = totalEuros.add(coinageDiff);
     cs.getCoinCleanedLabel().setText(revenueWithTips.toString().replaceAll("\\.", ",") + "€");
     
-    /*
-     * This one is simply parsing the Input of the Euro-Field of the CashNecessity to an Integer.
-     */
-    final int cashNecessityEuro = Integer.parseInt(setField(cs.getCashNecessityEuroTextField()));
     
     /*
      * Calculates the total CashNecessity by adding cashNecessityEuro with the Input of the 
      * cent-Field after cleaning it from potential Input-Errors (input >= 100, input contains 
      * non-Digits).
      */
-    BigDecimal cashNecessity;
-    int tmpCashNecessityCent = Integer.parseInt(setField(cs.getCashNecessityCentTextField()));
-    if (tmpCashNecessityCent >= 100) {
-      while (tmpCashNecessityCent >= 100) {
-        tmpCashNecessityCent /= 10;
-      }
-      cashNecessity = new BigDecimal(cashNecessityEuro + "." + tmpCashNecessityCent);
-    } else if (tmpCashNecessityCent < 10) {
-      cashNecessity = new BigDecimal(cashNecessityEuro + ".0" + tmpCashNecessityCent);
-    } else {
-      cashNecessity = new BigDecimal(cashNecessityEuro + "." + tmpCashNecessityCent);
-    }
+    BigDecimal cashNecessity = new BigDecimal("0.00");
+    cashNecessity = cashNecessity.add(new BigDecimal(cs.getCashNecessityEuroTextField().getText()
+        .replaceAll(",", "\\.")));
+    cashNecessity = cashNecessity.setScale(2, RoundingMode.DOWN);
+    cs.getCashNecessityEuroTextField().setText(cashNecessity.toString().replaceAll("\\.", ","));
     cs.getCashNecessityLabel().setText(cashNecessity.toString().replaceAll("\\.", ",") + "€");
     
     /*
@@ -286,27 +303,14 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
     cs.getCoinCleanedLabel().setText(revenueWithTips.toString().replaceAll("\\.", ",") + "€");
     
     /*
-     * This one is simply parsing the Input of the Euro-Field of the CashNecessity to an Integer.
-     */
-    final int cashNecessityEuro = Integer.parseInt(setField(cs.getCashNecessityEuroTextField()));
-    
-    /*
      * Calculates the total CashNecessity by adding cashNecessityEuro with the Input of the 
      * cent-Field after cleaning it from potential Input-Errors (input >= 100, input contains 
      * non-Digits).
      */
-    BigDecimal cashNecessity;
-    int tmpCashNecessityCent = Integer.parseInt(setField(cs.getCashNecessityCentTextField()));
-    if (tmpCashNecessityCent >= 100) {
-      while (tmpCashNecessityCent >= 100) {
-        tmpCashNecessityCent /= 10;
-      }
-      cashNecessity = new BigDecimal(cashNecessityEuro + "." + tmpCashNecessityCent);
-    } else if (tmpCashNecessityCent < 10) {
-      cashNecessity = new BigDecimal(cashNecessityEuro + ".0" + tmpCashNecessityCent);
-    } else {
-      cashNecessity = new BigDecimal(cashNecessityEuro + "." + tmpCashNecessityCent);
-    }
+    BigDecimal cashNecessity = new BigDecimal("0.00");
+    cashNecessity = cashNecessity.add(new BigDecimal(cs.getCashNecessityEuroTextField().getText()
+        .replaceAll(",", "\\.")));
+    cashNecessity = cashNecessity.setScale(2, RoundingMode.DOWN);
     cs.getCashNecessityLabel().setText(cashNecessity.toString().replaceAll("\\.", ",") + "€");
     
     /*

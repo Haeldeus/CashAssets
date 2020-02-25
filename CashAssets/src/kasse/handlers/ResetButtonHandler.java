@@ -1,6 +1,7 @@
 package kasse.handlers;
 
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import kasse.ComponentStorer;
@@ -43,9 +44,18 @@ public class ResetButtonHandler implements EventHandler<MouseEvent> {
       tf.setText("0");
     }
 
-    cs.getCashNecessityCentTextField().setText("0");
     cs.getCashNecessityEuroTextField().setText("0");
     cs.getPurseTextField().setText("0");
+    
+    for (Label l : cs.getCoinResults()) {
+      if (l != null) {
+        l.setText("=");
+      }
+    }
+    
+    for (Label l : cs.getBillsResults()) {
+      l.setText("=");
+    }
   }
 
 }

@@ -3,6 +3,9 @@
 #New Line#
 - Tip-Rechner in die Hauptanwendung integriert.
 - Die Suche nach Updates sollte nun nach 5 Sekunden abgebrochen werden, falls keine Verbindung zur Seite hergestellt werden kann.
+- Im Kassenbestand-fenster ist die Eingabe des Kassenschnitts nun in einem einzigen Feld möglich, statt in Euro und Cent aufgeteilt.
+- Wenn Enter gedrückt wird, während ein Textfeld ausgewählt ist wird nun automatisch das nächste TextFeld ausgewählt.
+- Der Reset-Button setzt nun das komplette Fenster, inklusive der Ergebnis-Anzeigen, zurück.
 #New Line#
 #New Line#
 0.91 Änderungen und Erweiterungen
