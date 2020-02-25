@@ -59,9 +59,11 @@ public class NewsTask extends Task<Void> {
                 line.indexOf(">") + 1), "");
           }
           if (line.trim().length() != 0) {
-            s = s.concat(line.trim() + System.lineSeparator());
-          } else if (line.trim().equals("#New Line#")) {
-            s = s.concat(line.trim().replace("#New Line#", "") + System.lineSeparator());
+            if (line.trim().equals("#New Line#")) {
+              s = s.concat(line.trim().replace("#New Line#", "") + System.lineSeparator());
+            } else {
+              s = s.concat(line.trim() + System.lineSeparator());
+            }
           }
         }
 
