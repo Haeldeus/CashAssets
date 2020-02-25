@@ -2,10 +2,11 @@
 0.92 Änderungen und Erweiterungen
 #New Line#
 - Tip-Rechner in die Hauptanwendung integriert.
-- Die Suche nach Updates sollte nun nach 5 Sekunden abgebrochen werden, falls keine Verbindung zur Seite hergestellt werden kann.
+- Die Suche nach Updates bzw. das Öffnen dieses News-Fensters sollte nun nach 5 Sekunden abgebrochen werden, falls keine Verbindung zur Seite hergestellt werden kann.
 - Im Kassenbestand-fenster ist die Eingabe des Kassenschnitts nun in einem einzigen Feld möglich, statt in Euro und Cent aufgeteilt.
 - Wenn Enter gedrückt wird, während ein Textfeld ausgewählt ist wird nun automatisch das nächste TextFeld ausgewählt.
 - Der Reset-Button setzt nun das komplette Fenster, inklusive der Ergebnis-Anzeigen, zurück.
+- Wenn per Update-Button eine neue Version gefunden wird, leitet das Klicken der Anzeige direkt zum Download der neuen Version anstatt zur Versions-Übersicht.
 #New Line#
 #New Line#
 0.91 Änderungen und Erweiterungen

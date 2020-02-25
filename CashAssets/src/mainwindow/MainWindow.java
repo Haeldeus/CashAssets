@@ -123,8 +123,9 @@ public class MainWindow extends Application {
       public void handle(ActionEvent arg0) {
         //new Thread(new NewsTask(me)).start();  
         ExecutorService executor = Executors.newSingleThreadExecutor();
+        NewsTask task = new NewsTask(me);
         try {
-          executor.submit(new NewsTask(me)).get(10, TimeUnit.SECONDS);
+          executor.submit(task).get(5, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
           Platform.runLater(new Runnable() {
             @Override
@@ -132,8 +133,9 @@ public class MainWindow extends Application {
               showUpdate("Zeitüberschreitung");
             }         
           });
-        } 
-        executor.shutdown();   
+          task.cancel();
+          executor.shutdownNow(); 
+        }  
       } 
     });
     newsMenu.getItems().addAll(newsItem);
@@ -308,14 +310,14 @@ public class MainWindow extends Application {
       @Override
       public void handle(MouseEvent arg0) {
         /*
-         * Creates a new Update Task for the Version Check.
-         */
-        UpdateTask task = new UpdateTask(bar, me);
-        /*
          * Displays the ProgressBar and the Response Label.
          */
         bar.setVisible(true);
         response.setText("Suche nach Updates..."); 
+        /*
+         * Creates a new Update Task for the Version Check.
+         */
+        UpdateTask task = new UpdateTask(bar, me);
         /*
          * Binds the ProhressBar to the progress of the Task.
          */
@@ -324,7 +326,16 @@ public class MainWindow extends Application {
          * Starts the Task in a new Thread.
          */
         new Thread(task).start();
-      }  
+        new Thread(() -> {
+          try {
+            Thread.sleep(5000);  
+          } catch (InterruptedException e) {
+            //Testing Purposes, shouldn't be called.
+            e.printStackTrace();
+          }
+          task.cancel();
+        }).start();
+      }
     });
     
     /*

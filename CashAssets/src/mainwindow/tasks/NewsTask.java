@@ -49,6 +49,9 @@ public class NewsTask extends Task<Void> {
       boolean updates = false;
       
       while ((line = br.readLine()) != null) {
+        if (isCancelled()) {
+          return null;
+        }
         if (line.contains("#End Updates File")) {
           updates = false;
         }

@@ -54,6 +54,7 @@ public class UpdateTask extends Task<Void> {
       url = new URL("https://github.com/Haeldeus/CashAssets/blob/master/version.txt");
       // Get the input stream through URL Connection
       URLConnection con = url.openConnection();
+      con.connect();
       InputStream is = con.getInputStream();
       BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
@@ -80,6 +81,17 @@ public class UpdateTask extends Task<Void> {
        * Go through each line of the InputStream to search for version information.
        */
       while ((line = br.readLine()) != null) {
+        if (isCancelled()) {
+          bar.setVisible(false);
+          Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+              primary.setResponseText("Zeitüberschreitung");
+              primary.removeResponseHandler();
+            }           
+          });
+          return null;
+        }
         /*
          * This String is always at the end of the version information.
          */
@@ -96,6 +108,17 @@ public class UpdateTask extends Task<Void> {
            * Remove HTML-Code from the String.
            */
           while (line.contains(">")) {
+            if (isCancelled()) {
+              bar.setVisible(false);
+              Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                  primary.setResponseText("Zeitüberschreitung");
+                  primary.removeResponseHandler();
+                }           
+              });
+              return null;
+            }
             line = line.replaceFirst(line.substring(line.indexOf("<"), 
                 line.indexOf(">") + 1), "");
           }
@@ -128,7 +151,7 @@ public class UpdateTask extends Task<Void> {
       /*
        * This stores the latest version.
        */
-      double latest = 0.0;
+      final double latest;
       /*
        * This List stores all older versions.
        */
@@ -145,11 +168,24 @@ public class UpdateTask extends Task<Void> {
          * Sets latest to the next Token.
          */
         latest = Double.parseDouble(st.nextToken());
+      } else {
+        latest = 0.0;
       }
       /*
        * Going through the rest of the Tokens to get all older versions.
        */
       while (st.hasMoreTokens()) {
+        if (isCancelled()) {
+          bar.setVisible(false);
+          Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+              primary.setResponseText("Zeitüberschreitung");
+              primary.removeResponseHandler();
+            }           
+          });
+          return null;
+        }
         /*
          * Gets the next Token from the Tokenizer.
          */
@@ -220,7 +256,7 @@ public class UpdateTask extends Task<Void> {
                    * Opens the Download page with the Systems default browser.
                    */
                   java.awt.Desktop.getDesktop().browse(
-                      new URI("https://github.com/Haeldeus/CashAssets/releases"));
+                      new URI("https://github.com/Haeldeus/CashAssets/releases/download/v" + latest + "/WeyherCalculator.rar"));
                 } catch (IOException e) {
                   /*
                    * If there was an Error while opening the Site, this text will be shown to the 
