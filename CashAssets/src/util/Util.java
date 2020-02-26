@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -38,7 +40,10 @@ public class Util {
       br.close();
       return st.nextToken().trim().equals("1");
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
+      /*
+       * If this happens, then there is no data Folder or Settings File. In this case, the 
+       * default value false will be returned.
+       */
     } catch (IOException e) {
       e.printStackTrace();
     } catch (NullPointerException e) {
@@ -51,8 +56,29 @@ public class Util {
   }
   
   /**
+   * Updates the File at data/staff.stg to set it's content to the given ArrayList of Strings, that 
+   * contains the new List of Staff Members.
+   * @param staff The new List of Staff Members as an ArrayList of Strings.
+   * @since 1.0
+   */
+  public static void setStaffMembers(ArrayList<String> staff) {
+    staff.sort(null);
+    Path path = Paths.get("data" + File.separator + "Staff.stg");
+    try {
+      PrintWriter writer = new PrintWriter(path.toString(), "UTF-8");
+      for (String s : staff) {
+        writer.println(s);
+      }
+      writer.close();
+    } catch (FileNotFoundException | UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+    System.out.println(staff.toString());
+  }
+  
+  /**
    * Returns all Staff Members, located in the File at data/Staff.stg.
-   * @return  All Staff Members, that are saved in Staff.stg.
+   * @return  All Staff Members, that are saved in Staff.stg as an ArrayList of Strings.
    * @since 1.0
    */
   public static ArrayList<String> getStaffMembers() {

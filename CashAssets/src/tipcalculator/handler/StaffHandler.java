@@ -12,6 +12,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
@@ -29,6 +30,12 @@ public class StaffHandler implements EventHandler<ActionEvent> {
    * The Stage, this Handler was called from.
    */
   private final Stage primaryStage;
+  
+  /**
+   * An ArrayList of Strings, where all Staff Members will be saved in after reading the Strings 
+   * from the File.
+   */
+  private ArrayList<String> staff;
   
   /**
    * A Constructor for the Handler. Will set the given Stage as {@link #primaryStage}. 
@@ -64,8 +71,7 @@ public class StaffHandler implements EventHandler<ActionEvent> {
     ScrollPane sp = new ScrollPane();
     sp.setContent(staffMemberPane);
     
-    ArrayList<String> staff = Util.getStaffMembers();
-    
+    staff = Util.getStaffMembers();
     for (int i = 0; i < staff.size(); i++) {
       String s = staff.get(i);
       Label l = new Label(s);
@@ -74,14 +80,35 @@ public class StaffHandler implements EventHandler<ActionEvent> {
       ImageView imageview = new ImageView(img);
       Button b = new Button("", imageview);
       b.setTooltip(new Tooltip("Aus Liste entfernen"));
+      b.setOnMouseClicked(new DeleteHandler(this, i, staff, staffMemberPane));
       staffMemberPane.add(b, 1, i);
     }
     
+    Image img = new Image(getClass().getResourceAsStream("/res/add.png"));
+    ImageView imageview = new ImageView(img);
+    Button add = new Button("", imageview);
+    add.setOnMouseClicked(new AddHandler(this, staffMemberPane));
+    staffMemberPane.add(add, 0, staff.size());
+    GridPane.setColumnSpan(add, 2);
+    
     BorderPane bottom = new BorderPane();
     Button save = new Button("Speichern");
+    save.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent arg0) {
+        Util.setStaffMembers(staff);
+        dialog.close();
+      }     
+    });
     bottom.setLeft(save);
     
     Button cancel = new Button("Abbrechen");
+    cancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent arg0) {   
+        dialog.close();
+      }    
+    });
     bottom.setRight(cancel);
     
     BorderPane bp = new BorderPane();
@@ -100,7 +127,27 @@ public class StaffHandler implements EventHandler<ActionEvent> {
     dialog.setResizable(false);
     dialog.setTitle("Mitarbeiter");
     dialog.show();
-    
-    System.out.println("Has to be handled...");
+  }
+  
+  /**
+   * Updates the {@link #staff} Field to the given new ArrayList of Strings. This is called, 
+   * whenever a new Staff Member was added or an existing Member was deleted.
+   * @param newStaff The new ArrayList of Strings, that contains the updated List of Staff Members.
+   * @since 1.0
+   */
+  protected void updateStaff(ArrayList<String> newStaff) {
+    this.staff = newStaff;
+  }
+  
+  /**
+   * Returns all Staff Members, that are currently saved in {@link #staff}. This can be different 
+   * than {@link Util#getStaffMembers()}, since either adding or deleting a Staff Member in this 
+   * Stage won't be saved immediately in the File.
+   * @return  The Staff Members, that are currently saved in {@link #staff} as an ArrayList of 
+   *     Strings.
+   * @since 1.0
+   */
+  protected ArrayList<String> getStaff() {
+    return staff;
   }
 }

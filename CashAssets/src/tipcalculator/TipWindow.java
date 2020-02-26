@@ -1,15 +1,25 @@
 package tipcalculator;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import tipcalculator.handler.AddToTipHandler;
 import tipcalculator.handler.StaffHandler;
 import util.Util;
 
@@ -37,16 +47,48 @@ public class TipWindow extends Application {
     settingsMenu.getItems().addAll(settingsItem);
     menu.getMenus().addAll(settingsMenu);
     
+    Label tipSum = new Label("Summe Tip: ");
+    grid.add(tipSum, 0, 0);
+    
+    GridPane tipPane = new GridPane();
+    tipPane.setHgap(5);
+    
+    TextField tfTip = new TextField();
+    tipPane.add(tfTip, 0, 0);
+    Label tipEuroLabel = new Label("€");
+    tipPane.add(tipEuroLabel, 1, 0);
+    
+    grid.add(tipPane, 1, 0);
+    
+    Label totalHours = new Label("Gesamtstunden: ");
+    grid.add(totalHours, 0, 1);
+    
+    Label hoursRes = new Label("0,00h");
+    grid.add(hoursRes, 1, 1);
+    
+    Separator sep = new Separator();
+    grid.add(sep, 0, 2);
+    GridPane.setColumnSpan(sep, 10);
+    
+    Image img = new Image(getClass().getResourceAsStream("/res/add.png"));
+    ImageView imgView = new ImageView(img);
+    Button add = new Button("", imgView);
+    add.setOnMouseClicked(new AddToTipHandler(this, grid));
+    grid.add(add, 0, 3);
+    
+    ScrollPane sp = new ScrollPane();
+    sp.setContent(grid);
+    
     BorderPane borderPane = new BorderPane();
     borderPane.setTop(menu);
-    borderPane.setCenter(grid);
+    borderPane.setCenter(sp);
     
     Scene scene = new Scene(borderPane, 600, 250);
 
     scene.getStylesheets().add(Util.getControlStyle());
     primaryStage.setScene(scene);
     primaryStage.setMinHeight(270);
-    primaryStage.setMinWidth(620);
+    primaryStage.setMinWidth(310);
     primaryStage.show();
   }
 
