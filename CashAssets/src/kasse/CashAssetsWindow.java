@@ -11,6 +11,9 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -190,6 +193,19 @@ public class CashAssetsWindow extends Application {
         coinTf.setTooltip(new Tooltip("Geben Sie hier die Anzahl der " 
             + coinLabelText[i].replaceAll(":", "") + "-Münzen ein."));
         coinTf.setMaxWidth(50.0);
+        coinTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
+          @Override
+          public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldP, Boolean newP) {
+            if (!oldP && newP) {
+              Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                  coinTf.selectAll();
+                }              
+              });
+            }
+          }
+        });
         coinTfs[i] = coinTf;
         grid.add(coinTf, 1, i + 1);
         Label resLabelCoin = new Label("=");
@@ -202,6 +218,19 @@ public class CashAssetsWindow extends Application {
         grid.add(coinLabel, 0, i + 1);
         TextField coinTf = new TextField("0");
         coinTf.setTooltip(new Tooltip("Geben Sie hier die Summe des Kleingelds ein"));
+        coinTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
+          @Override
+          public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldP, Boolean newP) {
+            if (!oldP && newP) {
+              Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                  coinTf.selectAll();
+                }              
+              });
+            }
+          }
+        });
         coinTfs[i] = coinTf;
         grid.add(coinTf, 1, i + 1);
         GridPane.setColumnSpan(coinTf, 2);
@@ -222,6 +251,19 @@ public class CashAssetsWindow extends Application {
       billTf.setMaxWidth(50.0);
       billTf.setTooltip(new Tooltip("Geben Sie hier die Anzahl der " 
           + billLabelText[i].replaceAll(":", "") + "-Scheine ein."));
+      billTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
+        @Override
+        public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldP, Boolean newP) {
+          if (!oldP && newP) {
+            Platform.runLater(new Runnable() {
+              @Override
+              public void run() {
+                billTf.selectAll();
+              }              
+            });
+          }
+        }
+      });
       if (i == 7) {
         billTf.getStyleClass().add("purseTF");
         billTf.setTooltip(new Tooltip("Geben Sie hier die Anzahl der gezählten Geldbörsen ein."));
@@ -269,6 +311,19 @@ public class CashAssetsWindow extends Application {
     grid.add(cashNecessity, 0, 10);
     
     TextField cashNecessityEuro = new TextField("0");
+    cashNecessityEuro.focusedProperty().addListener(new ChangeListener<Boolean>() {
+      @Override
+      public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldP, Boolean newP) {
+        if (!oldP && newP) {
+          Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+              cashNecessityEuro.selectAll();
+            }              
+          });
+        }
+      }
+    });
     grid.add(cashNecessityEuro, 2, 10);
     GridPane.setColumnSpan(cashNecessityEuro, 2);
     

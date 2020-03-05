@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -22,9 +23,12 @@ public class AddHandler implements EventHandler<MouseEvent> {
   
   private StaffHandler primary;
   
-  public AddHandler(StaffHandler primary, GridPane staffMemberPane) {
+  private ScrollPane sp;
+  
+  public AddHandler(StaffHandler primary, GridPane staffMemberPane, ScrollPane sp) {
     this.primary = primary;
     this.staffMemberPane = staffMemberPane;
+    this.sp = sp;
   }
   
   @Override
@@ -42,9 +46,10 @@ public class AddHandler implements EventHandler<MouseEvent> {
           Image img = new Image(getClass().getResourceAsStream("/res/add.png"));
           ImageView imageview = new ImageView(img);
           Button add = new Button("", imageview);
-          add.setOnMouseClicked(new AddHandler(primary, staffMemberPane));
+          add.setOnMouseClicked(new AddHandler(primary, staffMemberPane, sp));
           staffMemberPane.add(add, 0, size / 2);
         }
+        sp.setVvalue(sp.getVmax()); //TODO: Make this functional
       }      
     });
     tf.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -67,17 +72,19 @@ public class AddHandler implements EventHandler<MouseEvent> {
           Image img = new Image(getClass().getResourceAsStream("/res/add.png"));
           ImageView imgview = new ImageView(img);
           Button add = new Button("", imgview);
-          add.setOnMouseClicked(new AddHandler(primary, staffMemberPane));
+          add.setOnMouseClicked(new AddHandler(primary, staffMemberPane, sp));
           staffMemberPane.add(add, 0, staff.size());
           GridPane.setColumnSpan(add, 2);
-          
+          sp.setVvalue(sp.getVmax());
         } else if (event.getCode() == KeyCode.ESCAPE) {
           tf.setDisable(true);
+          sp.setVvalue(sp.getVmax());
         }
       }
     });
     tf.setTooltip(new Tooltip("Enter drücken zum Hinzufügen, Escape zum Abbrechen"));
     staffMemberPane.add(tf, 0, size / 2);
+    sp.setVvalue(sp.getVmax());
   }
 
 }

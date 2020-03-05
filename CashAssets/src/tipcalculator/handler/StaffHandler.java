@@ -87,7 +87,7 @@ public class StaffHandler implements EventHandler<ActionEvent> {
     Image img = new Image(getClass().getResourceAsStream("/res/add.png"));
     ImageView imageview = new ImageView(img);
     Button add = new Button("", imageview);
-    add.setOnMouseClicked(new AddHandler(this, staffMemberPane));
+    add.setOnMouseClicked(new AddHandler(this, staffMemberPane, sp));
     staffMemberPane.add(add, 0, staff.size());
     GridPane.setColumnSpan(add, 2);
     

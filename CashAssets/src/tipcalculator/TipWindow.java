@@ -1,7 +1,6 @@
 package tipcalculator;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,10 +12,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import tipcalculator.handler.AddToTipHandler;
@@ -64,16 +64,21 @@ public class TipWindow extends Application {
     grid.add(totalHours, 0, 1);
     
     Label hoursRes = new Label("0,00h");
+    hoursRes.setMaxWidth(50);
     grid.add(hoursRes, 1, 1);
+    grid.getColumnConstraints().add(new ColumnConstraints());
+    grid.getColumnConstraints().add(new ColumnConstraints());
+    grid.getColumnConstraints().get(1).setMaxWidth(75);
     
     Separator sep = new Separator();
     grid.add(sep, 0, 2);
-    GridPane.setColumnSpan(sep, 10);
+    GridPane.setColumnSpan(sep, 2);
     
     Image img = new Image(getClass().getResourceAsStream("/res/add.png"));
     ImageView imgView = new ImageView(img);
     Button add = new Button("", imgView);
-    add.setOnMouseClicked(new AddToTipHandler(this, grid));
+    add.setTooltip(new Tooltip("Hinzufügen"));
+    add.setOnMouseClicked(new AddToTipHandler(this, grid, 3));
     grid.add(add, 0, 3);
     
     ScrollPane sp = new ScrollPane();

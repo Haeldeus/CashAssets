@@ -73,7 +73,6 @@ public class Util {
     } catch (FileNotFoundException | UnsupportedEncodingException e) {
       e.printStackTrace();
     }
-    System.out.println(staff.toString());
   }
   
   /**
