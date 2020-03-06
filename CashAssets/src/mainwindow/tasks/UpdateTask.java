@@ -81,7 +81,6 @@ public class UpdateTask extends Task<Void> {
        * Go through each line of the InputStream to search for version information.
        */
       while ((line = br.readLine()) != null) {
-        System.out.println(line);
         if (isCancelled()) {
           bar.setVisible(false);
           Platform.runLater(new Runnable() {
