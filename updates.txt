@@ -1,4 +1,11 @@
 #Begin Updates File
+0.921 Änderungen und Erweiterungen
+#New Line#
+- Der Export der Dateien ist nun in Ordner strukturiert.
+- Designänderung im Kassenbestands-Fenster: Statt "Gezählt" zeigt das Label nun "Geldbörsen" an.
+- Berechnung im Kassenbestand sollte nun korrekt sein.
+#New Line#
+#New Line#
 0.92 Änderungen und Erweiterungen
 #New Line#
 - Automatische Markierung der Eingabe, sobald ein TextFeld angeklickt wird.

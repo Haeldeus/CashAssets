@@ -33,6 +33,10 @@ public class EditButtonHandler implements EventHandler<MouseEvent> {
   
   @Override
   public void handle(MouseEvent arg0) {
+    cs.getCoinDifferenceLabel().getStyleClass().clear();
+    cs.getCoinDifferenceLabel().getStyleClass().addAll("label");
+    cs.getTipSumLabel().getStyleClass().clear();
+    cs.getTipSumLabel().getStyleClass().addAll("label");
     cs.setFieldsEditable(true);
     cs.getExportButton().setDisable(true);
     cs.getResetButton().setDisable(false);

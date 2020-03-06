@@ -132,7 +132,7 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
      * Gets all Sums of bills.
      */
     for (int i = 8; i <= 14; i++) {
-      billMoney = addCoinsToDecimal(billMoney, i);
+      billMoney = addToDecimal(billMoney, i);
     }
     
     /*
@@ -177,18 +177,18 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
      */
     if (coinageDiff.compareTo(new BigDecimal("0.0")) == -1) {
       cs.getCoinDifferenceLabel().getStyleClass().clear();
-      cs.getCoinDifferenceLabel().getStyleClass().addAll("label", "minusLabel");
+      cs.getCoinDifferenceLabel().getStyleClass().addAll("minusLabel");
     } else {
       cs.getCoinDifferenceLabel().getStyleClass().clear();
       cs.getCoinDifferenceLabel().getStyleClass().addAll("label");
     }
     
     /*
-     * Since the coinage will be either added to the purses or taken out of them, we have to 
-     * add this difference from the total amount of Money in the purses to get the final 
-     * revenue. The result will be displayed in the belonging Label.
+     * There is a given discrepancy of coinage of 25€. When counting the purses, this discrepancy 
+     * will be fixed, by taking the amount of Euro from the Bill Money. So we have to subtract the 
+     * coin Difference from the billMoney. The result will be displayed in the belonging Label.
      */
-    BigDecimal revenueWithTips = totalEuros.add(coinageDiff);
+    BigDecimal revenueWithTips = billMoney.add(coinageDiff);
     cs.getCoinCleanedLabel().setText(revenueWithTips.toString().replaceAll("\\.", ",") + "€");
     
     
@@ -212,7 +212,7 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
     cs.getTipSumLabel().setText(tips.toString().replaceAll("\\.", ",") + "€");
     if (tips.compareTo(new BigDecimal("0.0")) < 0) {
       cs.getTipSumLabel().getStyleClass().clear();
-      cs.getTipSumLabel().getStyleClass().addAll("label", "minusLabel");
+      cs.getTipSumLabel().getStyleClass().addAll("minusLabel");
     } else {
       cs.getTipSumLabel().getStyleClass().clear();
       cs.getTipSumLabel().getStyleClass().addAll("label");
@@ -245,9 +245,9 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
      */
     for (int i = 0; i <= 14; i++) {
       if (i <= 7) {
-        coinageMoney = addCoinsToDecimal(coinageMoney, i);
+        coinageMoney = addToDecimal(coinageMoney, i);
       } else {
-        billMoney = addCoinsToDecimal(billMoney, i);
+        billMoney = addToDecimal(billMoney, i);
       }
     }
     
@@ -288,18 +288,18 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
      */
     if (coinageDiff.compareTo(new BigDecimal("0.0")) == -1) {
       cs.getCoinDifferenceLabel().getStyleClass().clear();
-      cs.getCoinDifferenceLabel().getStyleClass().addAll("label", "minusLabel");
+      cs.getCoinDifferenceLabel().getStyleClass().addAll("minusLabel");
     } else {
       cs.getCoinDifferenceLabel().getStyleClass().clear();
       cs.getCoinDifferenceLabel().getStyleClass().addAll("label");
     }
     
     /*
-     * Since the coinage will be either added to the purses or taken out of them, we have to 
-     * add this difference from the total amount of Money in the purses to get the final 
-     * revenue. The result will be displayed in the belonging Label.
+     * There is a given discrepancy of coinage of 25€. When counting the purses, this discrepancy 
+     * will be fixed, by taking the amount of Euro from the Bill Money. So we have to subtract the 
+     * coin Difference from the billMoney. The result will be displayed in the belonging Label.
      */
-    BigDecimal revenueWithTips = totalEuros.add(coinageDiff);
+    BigDecimal revenueWithTips = billMoney.add(coinageDiff);
     cs.getCoinCleanedLabel().setText(revenueWithTips.toString().replaceAll("\\.", ",") + "€");
     
     /*
@@ -321,7 +321,7 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
     cs.getTipSumLabel().setText(tips.toString().replaceAll("\\.", ",") + "€");
     if (tips.compareTo(new BigDecimal("0.0")) < 0) {
       cs.getTipSumLabel().getStyleClass().clear();
-      cs.getTipSumLabel().getStyleClass().addAll("label", "minusLabel");
+      cs.getTipSumLabel().getStyleClass().addAll("minusLabel");
     } else {
       cs.getTipSumLabel().getStyleClass().clear();
       cs.getTipSumLabel().getStyleClass().addAll("label");
@@ -356,7 +356,7 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
    * @return  The Result of {@link BigDecimal#add(BigDecimal)} with the new BigDecimal.
    * @since 1.0
    */
-  private BigDecimal addCoinsToDecimal(BigDecimal decimal, int index) {
+  private BigDecimal addToDecimal(BigDecimal decimal, int index) {
     /*
      * The Factor, indicated be the index, that will be multiplied with the given decimal.
      */
@@ -370,11 +370,7 @@ public class CalcButtonHandler implements EventHandler<MouseEvent> {
      * If the index is 8 or greater, it indicates a bill factor, since there are only 8 coin-types 
      * (starting to count at 0).
      */
-    if (index > 7) {
-      bill = true;
-    } else {
-      bill = false;
-    }
+    bill = index > 7;
     
     /*
      * Switches the index, since each index points at a single factor indirectly by indexing their 

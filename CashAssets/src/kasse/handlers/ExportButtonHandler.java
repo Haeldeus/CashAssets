@@ -1,5 +1,6 @@
 package kasse.handlers;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -336,11 +337,20 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     
     //Creating the Excel-Sheet.
     try {
+      String year = componentStorer.getYear().getText().replaceAll("\\D+", "").substring(0, 4);
+      String month = getMonth();
+      
+      File directory = new File("Kassenbestand" + File.separator + year + File.separator + month);
+      if (!directory.exists()) {
+        directory.mkdirs();
+      }
+      
       /*
        * The Excel-Sheet will be called the same as the Date replacing the Dots in the "official" 
        * representation with an x to match OS-naming patterns.
        */
-      String s = getDate().replaceAll("\\.", "x") + ".xlsx";
+      String s = "Kassenbestand" + File.separator + year + File.separator + month + File.separator;
+      s = s.concat(getDate().replaceAll("\\.", "x") + ".xlsx");
       
       /*
        * Creates a new Path to the potential new File.
@@ -398,6 +408,31 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     }
   }
 
+  /**
+   * Returns a String with the Name of the Month instead of the Integer value of it.
+   * @return  A String with the Name of the Month that was selected in the Month-Box.
+   * @since 1.0
+   */
+  private String getMonth() {
+    String month = componentStorer.getMonthBox().getSelectionModel().getSelectedItem();
+    switch (month) {
+      case ("1."): return "Januar";
+      case ("2."): return "Februar";
+      case ("3."): return "März";
+      case ("4."): return "April";
+      case ("5."): return "Mai";
+      case ("6."): return "Juni";
+      case ("7."): return "Juli";
+      case ("8."): return "August";
+      case ("9."): return "September";
+      case ("10."): return "Oktober";
+      case ("11."): return "November";
+      case ("12."): return "Dezember";
+      default: System.err.println("Error while parsing the Month-Box!"); 
+        return "";
+    }
+  }
+  
 
   /**
    * Returns the Date, the User has entered in the Stage.

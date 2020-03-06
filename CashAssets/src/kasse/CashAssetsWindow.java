@@ -171,7 +171,7 @@ public class CashAssetsWindow extends Application {
     final String[] coinLabelText = new String[] {"1ct:", "2ct:", "5ct:", "10ct:", 
         "20ct:", "50ct:", "1€:", "2€:"};
     final String[] billLabelText = new String[] {"5€:", "10€:", "20€:", "50€:", 
-        "100€:", "200€:", "500€:", "Gezählt:"};
+        "100€:", "200€:", "500€:", "Geldbörsen:"};
     
     /*
      * Creates some Arrays where the created Labels and Textfields, that can be altered 
