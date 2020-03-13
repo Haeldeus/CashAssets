@@ -30,6 +30,9 @@ import util.Util;
  */
 public class TipWindow extends Application {
   
+  public TipWindow() {
+  }
+  
   @Override
   public void start(Stage primaryStage) throws Exception {
     primaryStage.setTitle("Tip-Rechner");
@@ -69,24 +72,34 @@ public class TipWindow extends Application {
     grid.getColumnConstraints().add(new ColumnConstraints());
     grid.getColumnConstraints().add(new ColumnConstraints());
     grid.getColumnConstraints().get(1).setMaxWidth(75);
+    grid.getColumnConstraints().add(new ColumnConstraints());
+    grid.getColumnConstraints().add(new ColumnConstraints());
+    grid.getColumnConstraints().get(3).setMinWidth(75);
     
     Separator sep = new Separator();
     grid.add(sep, 0, 2);
     GridPane.setColumnSpan(sep, 2);
     
+    GridPane staffGrid = new GridPane();
+    staffGrid.setHgap(5);
+    staffGrid.setVgap(5);
+    
     Image img = new Image(getClass().getResourceAsStream("/res/add.png"));
     ImageView imgView = new ImageView(img);
     Button add = new Button("", imgView);
     add.setTooltip(new Tooltip("Hinzufügen"));
-    add.setOnMouseClicked(new AddToTipHandler(this, grid, 3));
-    grid.add(add, 0, 3);
+    add.setOnMouseClicked(new AddToTipHandler(this, staffGrid, 1));
+    staffGrid.add(add, 0, 0);
     
     ScrollPane sp = new ScrollPane();
-    sp.setContent(grid);
+    sp.setContent(staffGrid);
+    sp.setFitToWidth(true);
+    grid.add(sp, 0, 3);
+    GridPane.setColumnSpan(sp, 4);
     
     BorderPane borderPane = new BorderPane();
     borderPane.setTop(menu);
-    borderPane.setCenter(sp);
+    borderPane.setCenter(grid);
     
     Scene scene = new Scene(borderPane, 600, 250);
 
@@ -96,5 +109,4 @@ public class TipWindow extends Application {
     primaryStage.setMinWidth(310);
     primaryStage.show();
   }
-
 }

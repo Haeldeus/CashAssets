@@ -26,6 +26,12 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
   
   private int rowIndex;
   
+  /**
+   * 
+   * @param primary
+   * @param grid
+   * @param rowIndex
+   */
   public AddToTipHandler(TipWindow primary, GridPane grid, int rowIndex) {
     this.primary = primary;
     this.gridPane = grid;
@@ -37,7 +43,7 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
   public void handle(MouseEvent arg0) {
     gridPane.getChildren().remove(gridPane.getChildren().size() - 1);
     ArrayList<String> usedItems = new ArrayList<String>();
-    for (int i = 5; i < gridPane.getChildren().size() - 1; i += 3) {
+    for (int i = 0; i < gridPane.getChildren().size() - 1; i += 3) {
       usedItems.add(((ComboBox<String>)gridPane.getChildren().get(i)).getSelectionModel()
           .getSelectedItem());
     }
@@ -55,7 +61,7 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
       public void handle(MouseEvent arg0) {
         String selected = staffMember.getSelectionModel().getSelectedItem();
         ArrayList<String> usedItems = new ArrayList<String>();
-        for (int i = 5; i < gridPane.getChildren().size() - 1; i += 3) {
+        for (int i = 0; i < gridPane.getChildren().size() - 1; i += 3) {
           usedItems.add(((ComboBox<String>)gridPane.getChildren().get(i)).getSelectionModel()
               .getSelectedItem());
         }
@@ -97,9 +103,9 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
     ImageView imageview = new ImageView(img);
     Button remove = new Button("", imageview);
     remove.setTooltip(new Tooltip("Aus Liste entfernen"));
-    remove.setOnMouseClicked(new DeleteFromTipHandler());
+    remove.setOnMouseClicked(new DeleteFromTipHandler(rowIndex, gridPane, primary));
     gridPane.add(remove, 2, rowIndex);
-    
+
     img = new Image(getClass().getResourceAsStream("/res/add.png"));
     imageview = new ImageView(img);
     Button add = new Button("", imageview);
