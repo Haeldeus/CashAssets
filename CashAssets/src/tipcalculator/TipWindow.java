@@ -37,6 +37,10 @@ public class TipWindow extends Application {
   
   private TextField tfKitchen;
   
+  private TextField tfTip;
+  
+  private Label lbKitchenTip;
+  
   public TipWindow() {
   }
   
@@ -63,7 +67,8 @@ public class TipWindow extends Application {
     GridPane tipPane = new GridPane();
     tipPane.setHgap(5);
     
-    TextField tfTip = new TextField();
+    tfTip = new TextField();
+    tfTip.setMaxWidth(100);
     tipPane.add(tfTip, 0, 0);
     Label tipEuroLabel = new Label("€");
     tipPane.add(tipEuroLabel, 1, 0);
@@ -78,9 +83,9 @@ public class TipWindow extends Application {
     grid.add(lbHoursTotal, 1, 1);
     grid.getColumnConstraints().add(new ColumnConstraints());
     grid.getColumnConstraints().add(new ColumnConstraints());
-    grid.getColumnConstraints().get(1).setMaxWidth(85);
+    //    grid.getColumnConstraints().get(1).setMaxWidth(120);
     grid.getColumnConstraints().add(new ColumnConstraints());
-    grid.getColumnConstraints().get(2).setMaxWidth(75);
+    //    grid.getColumnConstraints().get(2).setMaxWidth(100);
     grid.getColumnConstraints().add(new ColumnConstraints());
     grid.getColumnConstraints().get(3).setMinWidth(75);
     
@@ -111,6 +116,10 @@ public class TipWindow extends Application {
     
     Label lbPercent = new Label("%");
     smallGrid.add(lbPercent, 2, 0);
+    
+    lbKitchenTip = new Label("");
+    lbKitchenTip.setMinWidth(50);
+    smallGrid.add(lbKitchenTip, 3, 0);
     
     grid.add(smallGrid, 1, 2);
     
@@ -166,5 +175,25 @@ public class TipWindow extends Application {
    */
   public TextField getTfKitchen() {
     return tfKitchen;
+  }
+  
+  /**
+   * Returns the TextField, where the total amount of tip can be entered.
+   * @return  The TextField, where the total amount of tip is stored in.
+   * @see #tfTip
+   * @since 1.0
+   */
+  public TextField getTfTip() {
+    return tfTip;
+  }
+  
+  /**
+   * Returns the Label, where the Tip Sum for the Kitchen can be stored in.
+   * @return  The Label for the Tip Sum for the Kitchen, that can be altered by other Objects.
+   * @see #lbKitchenTip
+   * @since 1.0
+   */
+  public Label getLbKitchenTip() {
+    return lbKitchenTip;
   }
 }
