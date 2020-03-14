@@ -1,10 +1,13 @@
 package tipcalculator;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -31,6 +34,8 @@ import util.Util;
 public class TipWindow extends Application {
   
   private Label lbHoursTotal;
+  
+  private TextField tfKitchen;
   
   public TipWindow() {
   }
@@ -73,13 +78,44 @@ public class TipWindow extends Application {
     grid.add(lbHoursTotal, 1, 1);
     grid.getColumnConstraints().add(new ColumnConstraints());
     grid.getColumnConstraints().add(new ColumnConstraints());
-    grid.getColumnConstraints().get(1).setMaxWidth(75);
+    grid.getColumnConstraints().get(1).setMaxWidth(85);
     grid.getColumnConstraints().add(new ColumnConstraints());
+    grid.getColumnConstraints().get(2).setMaxWidth(75);
     grid.getColumnConstraints().add(new ColumnConstraints());
     grid.getColumnConstraints().get(3).setMinWidth(75);
     
+    Label lbKitchen = new Label("Anteil Küche?");
+    grid.add(lbKitchen, 0, 2);
+    
+    GridPane smallGrid = new GridPane();
+    smallGrid.setHgap(5);
+    
+    tfKitchen = new TextField();
+    tfKitchen.setMaxWidth(40);
+    tfKitchen.setDisable(true);
+    smallGrid.add(tfKitchen, 1, 0);
+    
+    CheckBox chbKitchen = new CheckBox();
+    chbKitchen.selectedProperty().addListener(new ChangeListener<Boolean>() {
+      @Override
+      public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldProp, 
+          Boolean newProp) {
+        if (!oldProp && newProp) {
+          tfKitchen.setDisable(false);
+        } else if (oldProp && !newProp) {
+          tfKitchen.setDisable(true);
+        }
+      }     
+    });
+    smallGrid.add(chbKitchen, 0, 0);
+    
+    Label lbPercent = new Label("%");
+    smallGrid.add(lbPercent, 2, 0);
+    
+    grid.add(smallGrid, 1, 2);
+    
     Separator sep = new Separator();
-    grid.add(sep, 0, 2);
+    grid.add(sep, 0, 3);
     GridPane.setColumnSpan(sep, 2);
     
     GridPane staffGrid = new GridPane();
@@ -120,5 +156,15 @@ public class TipWindow extends Application {
    */
   public Label getLbHoursTotal() {
     return lbHoursTotal;
+  }
+  
+  /**
+   * Returns the TextField, where the cut from the total tip for the Kitchen can be entered.
+   * @return  The TextField, where the percentage for the Kitchen is stored in.
+   * @see #tfKitchen
+   * @since 1.0
+   */
+  public TextField getTfKitchen() {
+    return tfKitchen;
   }
 }
