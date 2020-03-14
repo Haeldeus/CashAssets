@@ -30,6 +30,8 @@ import util.Util;
  */
 public class TipWindow extends Application {
   
+  private Label lbHoursTotal;
+  
   public TipWindow() {
   }
   
@@ -66,9 +68,9 @@ public class TipWindow extends Application {
     Label totalHours = new Label("Gesamtstunden: ");
     grid.add(totalHours, 0, 1);
     
-    Label hoursRes = new Label("0,00h");
-    hoursRes.setMaxWidth(50);
-    grid.add(hoursRes, 1, 1);
+    lbHoursTotal = new Label("0,00h");
+    lbHoursTotal.setMaxWidth(50);
+    grid.add(lbHoursTotal, 1, 1);
     grid.getColumnConstraints().add(new ColumnConstraints());
     grid.getColumnConstraints().add(new ColumnConstraints());
     grid.getColumnConstraints().get(1).setMaxWidth(75);
@@ -108,5 +110,15 @@ public class TipWindow extends Application {
     primaryStage.setMinHeight(270);
     primaryStage.setMinWidth(310);
     primaryStage.show();
+  }
+  
+  /**
+   * Returns the Label for the total amount of hours, so it can be altered by other Objects.
+   * @return  The Label for the Total amount of hours.
+   * @see #lbHoursTotal
+   * @since 1.0
+   */
+  public Label getLbHoursTotal() {
+    return lbHoursTotal;
   }
 }

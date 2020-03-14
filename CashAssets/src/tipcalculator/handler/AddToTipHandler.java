@@ -1,5 +1,7 @@
 package tipcalculator.handler;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 
 import javafx.beans.value.ChangeListener;
@@ -26,6 +28,8 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
   
   private int rowIndex;
   
+  private boolean exact;
+  
   /**
    * 
    * @param primary
@@ -36,6 +40,7 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
     this.primary = primary;
     this.gridPane = grid;
     this.rowIndex = rowIndex;
+    exact = false;
   }
   
   @SuppressWarnings("unchecked")
@@ -88,7 +93,34 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
       public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldProperty, 
           Boolean newProperty) {
         if (oldProperty && !newProperty) {
-          System.out.println("Focus lost");
+          String str = tfHours.getText();
+          str = str.replaceAll("[\\D&&[^,]&&[^\\.]]", "");
+          str = str.replaceAll(",", "\\.");
+          if (!exact) {
+            if (str.indexOf('.') != - 1) {
+              str = str.substring(0, str.indexOf('.'));
+            }
+          }
+          tfHours.setText(str.replace('.', ','));
+          BigDecimal total = new BigDecimal("0.00");
+          for (int i = 1; i < gridPane.getChildren().size(); i += 3) {
+            GridPane smallGrid = (GridPane)gridPane.getChildren().get(i);
+            TextField tmpTf = (TextField) smallGrid.getChildren().get(0);
+            try {
+              if (tmpTf.getText() != null && !tmpTf.getText().equals("")) {
+                total = total.add(new BigDecimal(tmpTf.getText().replace(',', '.')));
+              }
+            } catch (NumberFormatException nfe) {
+              nfe.printStackTrace();
+              System.err.println("Skipping this Error....");
+            }
+          }
+          BigDecimal totalHours = new BigDecimal("0.00");
+          totalHours = totalHours.add(total);
+          
+          totalHours = totalHours.setScale(2, RoundingMode.DOWN);
+          primary.getLbHoursTotal().setText(totalHours.toString().replace('.', '.') + "h");
+          System.out.println("TotalHours: " + totalHours.toString());
         } else if (!oldProperty && newProperty) {
           System.out.println("Focus gained");
         }
