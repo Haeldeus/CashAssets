@@ -2,6 +2,7 @@ package tipcalculator.handler;
 
 import java.util.ArrayList;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -49,7 +50,12 @@ public class AddHandler implements EventHandler<MouseEvent> {
           add.setOnMouseClicked(new AddHandler(primary, staffMemberPane, sp));
           staffMemberPane.add(add, 0, size / 2);
         }
-        sp.setVvalue(sp.getVmax()); //TODO: Make this functional
+        Platform.runLater(new Runnable() {
+          @Override
+          public void run() {
+            sp.setVvalue(sp.getVmax());
+          }          
+        });
       }      
     });
     tf.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -84,7 +90,12 @@ public class AddHandler implements EventHandler<MouseEvent> {
     });
     tf.setTooltip(new Tooltip("Enter drücken zum Hinzufügen, Escape zum Abbrechen"));
     staffMemberPane.add(tf, 0, size / 2);
-    sp.setVvalue(sp.getVmax());
+    Platform.runLater(new Runnable() {
+      @Override
+      public void run() {
+        sp.setVvalue(sp.getVmax());
+      }          
+    });
   }
 
 }

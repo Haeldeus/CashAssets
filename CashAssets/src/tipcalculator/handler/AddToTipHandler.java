@@ -83,6 +83,22 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
         staffMember.setItems(FXCollections.observableArrayList(res));
       }      
     });
+    staffMember.setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent arg0) {
+        //TODO: Make multiple letter selection possible
+        if (checkTextKey(arg0)) {
+          for (String s : staffMember.getItems()) {
+            char c = s.toUpperCase().charAt(0);
+            String str = arg0.getText().toUpperCase();
+            if (Character.toString(c).equals(str)) {
+              staffMember.getSelectionModel().select(s);
+              return;
+            }
+          }
+        }
+      }      
+    });
     gridPane.add(staffMember, 0, rowIndex);
     
     GridPane gridTemp = new GridPane();
@@ -139,7 +155,11 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
     gridPane.add(add, 0, rowIndex + 1);
   }
   
-  protected void reduceIndex() {
-    rowIndex--;
+  private boolean checkTextKey(KeyEvent event) {
+    char input = event.getText().toUpperCase().charAt(0);
+    if ((input < 'A' || input > 'Z')) {
+      return false;
+    }
+    return true;
   }
 }

@@ -65,7 +65,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
   @Override
   public void handle(MouseEvent arg0) {
     //TODO Shorten this Method with for-loops for the actual input of the User to the Excel Sheet.
-    //TODO add a Password to check permission before exporting?
+
     //Create a new Workbook
     XSSFWorkbook workbook = new XSSFWorkbook();
     

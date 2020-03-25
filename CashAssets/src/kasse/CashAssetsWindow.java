@@ -727,6 +727,7 @@ public class CashAssetsWindow extends Application {
        * This happens, if there is no String to be tokenized by st. In this case there 
        * is no Setting for this and false will be returned by default.
        */
+      e.printStackTrace();
     }
     return false;
   }

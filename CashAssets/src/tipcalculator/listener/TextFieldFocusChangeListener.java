@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
@@ -104,12 +105,24 @@ public class TextFieldFocusChangeListener implements ChangeListener<Boolean> {
             tip = tipPerHour.multiply(new BigDecimal(tmpTf.getText()));
             tip = tip.setScale(2, RoundingMode.HALF_DOWN);
             lbTmp.setText("= " + tip.toString() + "€");
+          } else {
+            Label lbTmp = (Label)smallGrid.getChildren().get(2);
+            lbTmp.setText("= 0.00€");
           }
         } catch (NumberFormatException nfe) {
           nfe.printStackTrace();
           System.err.println("Skipping this Error....");
         }
       }
+    }
+    
+    if (!oldProperty && newProperty) {
+      Platform.runLater(new Runnable() {
+        @Override
+        public void run() {
+          tfHours.selectAll();
+        }              
+      });
     }
   }  
 

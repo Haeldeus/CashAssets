@@ -124,7 +124,7 @@ public class StaffHandler implements EventHandler<ActionEvent> {
     Scene dialogScene = new Scene(bp, 400, 200);
     dialogScene.getStylesheets().add(Util.getControlStyle());
     dialog.setScene(dialogScene);
-    dialog.setResizable(false);
+    dialog.setResizable(true);
     dialog.setTitle("Mitarbeiter");
     dialog.show();
   }

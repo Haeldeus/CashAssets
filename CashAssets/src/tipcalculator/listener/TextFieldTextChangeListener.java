@@ -101,6 +101,9 @@ public class TextFieldTextChangeListener implements ChangeListener<String>{
             tip = tipPerHour.multiply(new BigDecimal(tmpTf.getText()));
             tip = tip.setScale(2, RoundingMode.HALF_DOWN);
             lbTmp.setText("= " + tip.toString() + "€");
+          } else {
+            Label lbTmp = (Label)smallGrid.getChildren().get(2);
+            lbTmp.setText("= 0.00€");
           }
         } catch (NumberFormatException nfe) {
           nfe.printStackTrace();
