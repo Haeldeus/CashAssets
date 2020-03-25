@@ -1,13 +1,7 @@
 package tipcalculator.handler;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -17,9 +11,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import tipcalculator.TipWindow;
+import tipcalculator.listener.TextFieldChangeListener;
 import util.Util;
 
 public class AddToTipHandler implements EventHandler<MouseEvent> {
@@ -92,93 +89,27 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
     
     TextField tfHours = new TextField();
     tfHours.setMaxWidth(50);
-    tfHours.focusedProperty().addListener(new ChangeListener<Boolean>() {
+    tfHours.focusedProperty().addListener(new TextFieldChangeListener(tfHours, exact, gridPane, 
+        primary, false));
+    tfHours.setOnKeyPressed(new EventHandler<KeyEvent>() {
       @Override
-      public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldProperty, 
-          Boolean newProperty) {
-        if (oldProperty && !newProperty) {
-          String str = tfHours.getText();
-          str = str.replaceAll("[\\D&&[^,]&&[^\\.]]", "");
-          str = str.replaceAll(",", "\\.");
-          if (!exact) {
-            if (str.indexOf('.') != - 1) {
-              str = str.substring(0, str.indexOf('.'));
-            }
-          }
-          tfHours.setText(str.replace('.', ','));
-          BigDecimal total = new BigDecimal("0.00");
+      public void handle(KeyEvent arg0) {
+        if (arg0.getCode() == KeyCode.ENTER) {
           for (int i = 1; i < gridPane.getChildren().size(); i += 3) {
             GridPane smallGrid = (GridPane)gridPane.getChildren().get(i);
             TextField tmpTf = (TextField)smallGrid.getChildren().get(0);
-            try {
-              if (tmpTf.getText() != null && !tmpTf.getText().equals("")) {
-                total = total.add(new BigDecimal(tmpTf.getText().replace(',', '.')));
-              }
-            } catch (NumberFormatException nfe) {
-              nfe.printStackTrace();
-              System.err.println("Skipping this Error....");
-            }
-          }
-          BigDecimal totalHours = new BigDecimal("0.00");
-          totalHours = totalHours.add(total);
-          
-          totalHours = totalHours.setScale(2, RoundingMode.DOWN);
-          primary.getLbHoursTotal().setText(totalHours.toString().replace('.', '.') + "h");
-          
-          if (primary.getTfTip().getText() != null && !primary.getTfTip().getText().equals("")) {
-            String txt = primary.getTfTip().getText();
-            txt = txt.replaceAll("[\\D&&[^,]&&[^\\.]]", "");
-            txt = txt.replaceAll(",", "\\.");
-            BigDecimal totalTip = new BigDecimal(txt);
-            totalTip = totalTip.setScale(2, RoundingMode.DOWN);
-            
-            MathContext mc = new MathContext(10);
-            
-            if (!primary.getTfKitchen().isDisabled()) {
-              if (primary.getTfKitchen().getText() != null && !primary.getTfKitchen().getText()
-                  .equals("")) {
-                String kitchenCut = primary.getTfKitchen().getText();
-                kitchenCut = kitchenCut.replaceAll("[\\D&&[^,]&&[^\\.]]", "");
-                kitchenCut = kitchenCut.replaceAll(",", "");
-                kitchenCut = kitchenCut.replaceAll("\\.", "");
-                BigDecimal tipKitchen = totalTip.multiply(new BigDecimal("0." 
-                    + kitchenCut).setScale(2, RoundingMode.HALF_DOWN), mc);
-                totalTip = totalTip.subtract(tipKitchen, mc);
-                Platform.runLater(new Runnable() {
-                  @Override
-                  public void run() {
-                    primary.getLbKitchenTip().setText("= " + tipKitchen.setScale(2, 
-                        RoundingMode.HALF_DOWN).toString() + "€");
-                  }                 
-                });
-              }
-            } else {
-              primary.getLbKitchenTip().setText("");
-            }
-            
-            BigDecimal tipPerHour = totalTip.divide(totalHours, mc);
-            System.out.println("Tip per Hour: " + tipPerHour.toString());
-            for (int i = 1; i < gridPane.getChildren().size(); i += 3) {
-              GridPane smallGrid = (GridPane)gridPane.getChildren().get(i);
-              TextField tmpTf = (TextField)smallGrid.getChildren().get(0);
-              try {
-                if (tmpTf.getText() != null && !tmpTf.getText().equals("")) {
-                  Label lbTmp = (Label)smallGrid.getChildren().get(2);
-                  BigDecimal tip = new BigDecimal("0.00");
-                  tip = tipPerHour.multiply(new BigDecimal(tmpTf.getText()));
-                  tip = tip.setScale(2, RoundingMode.HALF_DOWN);
-                  lbTmp.setText("= " + tip.toString() + "€");
-                }
-              } catch (NumberFormatException nfe) {
-                nfe.printStackTrace();
-                System.err.println("Skipping this Error....");
+            if (tmpTf == tfHours) {
+              if (i + 3 >= gridPane.getChildren().size()) {
+                primary.getTfTip().requestFocus();
+              } else {
+                smallGrid = (GridPane)gridPane.getChildren().get(i + 3);
+                tmpTf = (TextField)smallGrid.getChildren().get(0);
+                tmpTf.requestFocus();
               }
             }
           }
-        } else if (!oldProperty && newProperty) {
-          //TODO check if there is something to be done
         }
-      }    
+      }      
     });
     gridTemp.add(tfHours, 0, 0);
     
@@ -203,5 +134,9 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
     add.setTooltip(new Tooltip("Hinzufügen"));
     add.setOnMouseClicked(new AddToTipHandler(primary, gridPane, rowIndex + 1));
     gridPane.add(add, 0, rowIndex + 1);
+  }
+  
+  protected void reduceIndex() {
+    rowIndex--;
   }
 }

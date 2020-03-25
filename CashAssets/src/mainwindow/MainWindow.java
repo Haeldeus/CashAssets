@@ -134,7 +134,7 @@ public class MainWindow extends Application {
             }         
           });
           task.cancel();
-          executor.shutdownNow(); 
+          executor.shutdownNow();
         }  
       } 
     });

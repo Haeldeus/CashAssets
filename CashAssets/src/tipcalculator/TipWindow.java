@@ -3,6 +3,7 @@ package tipcalculator;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,12 +19,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import tipcalculator.handler.AddToTipHandler;
 import tipcalculator.handler.StaffHandler;
+import tipcalculator.listener.TextFieldChangeListener;
 import util.Util;
 
 /**
@@ -35,11 +39,7 @@ public class TipWindow extends Application {
   
   private Label lbHoursTotal;
   
-  private TextField tfKitchen;
-  
   private TextField tfTip;
-  
-  private Label lbKitchenTip;
   
   public TipWindow() {
   }
@@ -89,42 +89,8 @@ public class TipWindow extends Application {
     grid.getColumnConstraints().add(new ColumnConstraints());
     grid.getColumnConstraints().get(3).setMinWidth(75);
     
-    Label lbKitchen = new Label("Anteil Küche?");
-    grid.add(lbKitchen, 0, 2);
-    
-    GridPane smallGrid = new GridPane();
-    smallGrid.setHgap(5);
-    
-    tfKitchen = new TextField();
-    tfKitchen.setMaxWidth(40);
-    tfKitchen.setDisable(true);
-    smallGrid.add(tfKitchen, 1, 0);
-    
-    CheckBox chbKitchen = new CheckBox();
-    chbKitchen.selectedProperty().addListener(new ChangeListener<Boolean>() {
-      @Override
-      public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldProp, 
-          Boolean newProp) {
-        if (!oldProp && newProp) {
-          tfKitchen.setDisable(false);
-        } else if (oldProp && !newProp) {
-          tfKitchen.setDisable(true);
-        }
-      }     
-    });
-    smallGrid.add(chbKitchen, 0, 0);
-    
-    Label lbPercent = new Label("%");
-    smallGrid.add(lbPercent, 2, 0);
-    
-    lbKitchenTip = new Label("");
-    lbKitchenTip.setMinWidth(50);
-    smallGrid.add(lbKitchenTip, 3, 0);
-    
-    grid.add(smallGrid, 1, 2);
-    
     Separator sep = new Separator();
-    grid.add(sep, 0, 3);
+    grid.add(sep, 0, 2);
     GridPane.setColumnSpan(sep, 2);
     
     GridPane staffGrid = new GridPane();
@@ -143,6 +109,23 @@ public class TipWindow extends Application {
     sp.setFitToWidth(true);
     grid.add(sp, 0, 3);
     GridPane.setColumnSpan(sp, 4);
+    
+    tfTip.setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent arg0) {
+        if (arg0.getCode() == KeyCode.ENTER) {
+          if (staffGrid.getChildren().size() > 1) {
+            GridPane smallGrid = (GridPane)staffGrid.getChildren().get(1);
+            TextField tfTmp = (TextField)smallGrid.getChildren().get(0);
+            tfTmp.requestFocus();
+          } else {
+            tfTip.requestFocus();
+          }
+        }
+      }   
+    });
+    tfTip.focusedProperty().addListener(new TextFieldChangeListener(tfTip, true, staffGrid, 
+        this, true));
     
     BorderPane borderPane = new BorderPane();
     borderPane.setTop(menu);
@@ -168,16 +151,6 @@ public class TipWindow extends Application {
   }
   
   /**
-   * Returns the TextField, where the cut from the total tip for the Kitchen can be entered.
-   * @return  The TextField, where the percentage for the Kitchen is stored in.
-   * @see #tfKitchen
-   * @since 1.0
-   */
-  public TextField getTfKitchen() {
-    return tfKitchen;
-  }
-  
-  /**
    * Returns the TextField, where the total amount of tip can be entered.
    * @return  The TextField, where the total amount of tip is stored in.
    * @see #tfTip
@@ -185,15 +158,5 @@ public class TipWindow extends Application {
    */
   public TextField getTfTip() {
     return tfTip;
-  }
-  
-  /**
-   * Returns the Label, where the Tip Sum for the Kitchen can be stored in.
-   * @return  The Label for the Tip Sum for the Kitchen, that can be altered by other Objects.
-   * @see #lbKitchenTip
-   * @since 1.0
-   */
-  public Label getLbKitchenTip() {
-    return lbKitchenTip;
   }
 }
