@@ -64,6 +64,7 @@ public class DeleteFromTipHandler implements EventHandler<MouseEvent> {
             GridPane.setMargin(grid.getChildren().get(j), null);
           }
         }
+        primary.getTfTip().requestFocus();
       }     
     });
   }

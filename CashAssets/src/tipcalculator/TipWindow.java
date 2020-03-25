@@ -27,7 +27,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import tipcalculator.handler.AddToTipHandler;
 import tipcalculator.handler.StaffHandler;
-import tipcalculator.listener.TextFieldChangeListener;
+import tipcalculator.listener.TextFieldFocusChangeListener;
+import tipcalculator.listener.TextFieldTextChangeListener;
 import util.Util;
 
 /**
@@ -124,8 +125,10 @@ public class TipWindow extends Application {
         }
       }   
     });
-    tfTip.focusedProperty().addListener(new TextFieldChangeListener(tfTip, true, staffGrid, 
+    tfTip.focusedProperty().addListener(new TextFieldFocusChangeListener(tfTip, true, staffGrid, 
         this, true));
+    tfTip.textProperty().addListener(new TextFieldTextChangeListener(tfTip, true, staffGrid, this, 
+        true));
     
     BorderPane borderPane = new BorderPane();
     borderPane.setTop(menu);

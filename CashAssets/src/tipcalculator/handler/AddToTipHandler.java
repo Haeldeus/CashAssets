@@ -16,7 +16,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import tipcalculator.TipWindow;
-import tipcalculator.listener.TextFieldChangeListener;
+import tipcalculator.listener.TextFieldFocusChangeListener;
+import tipcalculator.listener.TextFieldTextChangeListener;
 import util.Util;
 
 public class AddToTipHandler implements EventHandler<MouseEvent> {
@@ -89,8 +90,10 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
     
     TextField tfHours = new TextField();
     tfHours.setMaxWidth(50);
-    tfHours.focusedProperty().addListener(new TextFieldChangeListener(tfHours, exact, gridPane, 
-        primary, false));
+    tfHours.focusedProperty().addListener(new TextFieldFocusChangeListener(tfHours, exact, 
+        gridPane, primary, false));
+    tfHours.textProperty().addListener(new TextFieldTextChangeListener(tfHours, 
+        exact, gridPane, primary, false));
     tfHours.setOnKeyPressed(new EventHandler<KeyEvent>() {
       @Override
       public void handle(KeyEvent arg0) {
