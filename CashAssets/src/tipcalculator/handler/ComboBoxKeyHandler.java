@@ -204,11 +204,16 @@ public class ComboBoxKeyHandler implements EventHandler<KeyEvent> {
    * @see KeyEvent
    */
   private boolean checkTextKey(KeyEvent event) {
-    char input = event.getText().toUpperCase().charAt(0);
-    if ((input < 'A' || input > 'Z')) {
+    try {
+      char input = event.getText().toUpperCase().charAt(0);
+      if ((input < 'A' || input > 'Z')) {
+        return false;
+      }
+      return true;
+    } catch (StringIndexOutOfBoundsException exc) {
+      //If a key was pressed, that isn't alphanumerical
       return false;
     }
-    return true;
   }
   
 }

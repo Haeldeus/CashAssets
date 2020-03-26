@@ -1,4 +1,9 @@
 #Begin Updates File
+0.93 Änderungen und Erweiterungen
+#New Line#
+- Tip-Rechner fertiggestellt.
+#New Line#
+#New Line#
 0.921 Änderungen und Erweiterungen
 #New Line#
 - Der Export der Dateien ist nun in Ordner strukturiert.

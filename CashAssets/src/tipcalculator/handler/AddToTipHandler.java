@@ -3,7 +3,9 @@ package tipcalculator.handler;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -238,5 +240,22 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
     add.setTooltip(new Tooltip("Hinzufügen"));
     add.setOnMouseClicked(new AddToTipHandler(primary, gridPane, rowIndex + 1));
     gridPane.add(add, 0, rowIndex + 1);
+    
+    /*
+     * If a row was deleted as the last action, this part is used to get rid of the Inset, that was 
+     * left afterwards.
+     */
+    if (primary.getDeleted()) {
+      ObservableList<Node> tmpChildren = gridPane.getChildren();
+      ArrayList<Node> children = new ArrayList<Node>();
+      for (Node n : tmpChildren) {
+        children.add(n);
+      }
+      gridPane.getChildren().clear();
+      for (int i = 0; i < children.size(); i++) {
+        gridPane.add(children.get(i), i % 3, i / 3);
+      }
+      primary.setDeleted(false);
+    }
   }
 }

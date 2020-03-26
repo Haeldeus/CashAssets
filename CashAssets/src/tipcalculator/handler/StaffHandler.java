@@ -61,20 +61,32 @@ public class StaffHandler implements EventHandler<ActionEvent> {
     grid.setHgap(10);
     grid.setVgap(10);
     
+    /*
+     * Creates a Label, with a Basic Introduction for the User as Text and adds it to the Pane.
+     */
     Label infoLabel = new Label("Hier können Sie die Mitarbeiter Ihres Teams bearbeiten.");
     grid.add(infoLabel, 0, 0);
     GridPane.setColumnSpan(infoLabel, 10);
     
+    /*
+     * Creates a new ScrollPane, which contains a new GridPane, where the StaffMembers can be 
+     * added to.
+     */
     GridPane staffMemberPane = new GridPane();
     staffMemberPane.setVgap(5);
     staffMemberPane.setHgap(15);
     ScrollPane sp = new ScrollPane();
     sp.setContent(staffMemberPane);
     
+    /*
+     * Stores all Staff Members that were saved beforehand.
+     */
     staff = Util.getStaffMembers();
+    /*
+     * Creates a Label and Delete Button for each Staff Member and adds it to the staffMemberPane.
+     */
     for (int i = 0; i < staff.size(); i++) {
-      String s = staff.get(i);
-      Label l = new Label(s);
+      Label l = new Label(staff.get(i));
       staffMemberPane.add(l, 0, i);
       Image img = new Image(getClass().getResourceAsStream("/res/delete.png"));
       ImageView imageview = new ImageView(img);
@@ -84,6 +96,10 @@ public class StaffHandler implements EventHandler<ActionEvent> {
       staffMemberPane.add(b, 1, i);
     }
     
+    /*
+     * Creates an Add Button and adds it to the Bottom of the GridPane, so the User can add new 
+     * Members.
+     */
     Image img = new Image(getClass().getResourceAsStream("/res/add.png"));
     ImageView imageview = new ImageView(img);
     Button add = new Button("", imageview);
@@ -91,26 +107,44 @@ public class StaffHandler implements EventHandler<ActionEvent> {
     staffMemberPane.add(add, 0, staff.size());
     GridPane.setColumnSpan(add, 2);
     
+    /*
+     * Creates a BorderPane, which contains the Buttons to save and cancel the changes.
+     */
     BorderPane bottom = new BorderPane();
+    /*
+     * Creates a new Save Button and adds it to the BorderPane.
+     */
     Button save = new Button("Speichern");
     save.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent arg0) {
+        /*
+         * Saves all current Members, that are in the GridPane and closes the Dialog afterwards.
+         */
         Util.setStaffMembers(staff);
         dialog.close();
       }     
     });
     bottom.setLeft(save);
     
+    /*
+     * Creates a new Cancel Button and adds it to the BorderPane.
+     */
     Button cancel = new Button("Abbrechen");
     cancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
-      public void handle(MouseEvent arg0) {   
+      public void handle(MouseEvent arg0) {
+        /*
+         * Closes the dialog without saving the changes.
+         */
         dialog.close();
       }    
     });
     bottom.setRight(cancel);
     
+    /*
+     * Creates a BorderPane which contains all other Panes, so they can be placed at their spots.
+     */
     BorderPane bp = new BorderPane();
     Insets insets = new Insets(5);
     bp.setTop(grid);
@@ -121,6 +155,9 @@ public class StaffHandler implements EventHandler<ActionEvent> {
     BorderPane.setMargin(bottom, insets);
     bp.setPadding(new Insets(5, 10, 5, 10));
     
+    /*
+     * Basic Scene settings.
+     */
     Scene dialogScene = new Scene(bp, 400, 200);
     dialogScene.getStylesheets().add(Util.getControlStyle());
     dialog.setScene(dialogScene);

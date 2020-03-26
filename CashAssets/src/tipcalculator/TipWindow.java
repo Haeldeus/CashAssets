@@ -42,7 +42,10 @@ public class TipWindow extends Application {
   
   private TextField tfTip;
   
+  private boolean deleted;
+  
   public TipWindow() {
+    deleted = false;
   }
   
   @Override
@@ -151,6 +154,23 @@ public class TipWindow extends Application {
    */
   public Label getLbHoursTotal() {
     return lbHoursTotal;
+  }
+  
+  /**
+   * Returns the value of {@link #deleted}. This determines, if a row was deleted as the last 
+   * action.
+   * @return  {@code true}, if a row was deleted, {@code false} if not.
+   */
+  public boolean getDeleted() {
+    return deleted;
+  }
+  
+  /**
+   * Sets {@link #deleted} to the new value. This means, that a row was deleted.
+   * @param deleted The new value of {@link #deleted}.
+   */
+  public void setDeleted(boolean deleted) {
+    this.deleted = deleted;
   }
   
   /**
