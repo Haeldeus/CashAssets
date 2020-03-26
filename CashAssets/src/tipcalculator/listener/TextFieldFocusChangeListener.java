@@ -159,6 +159,11 @@ public class TextFieldFocusChangeListener implements ChangeListener<Boolean> {
        */
       BigDecimal totalTip = new BigDecimal(txt);
       totalTip = totalTip.setScale(2, RoundingMode.DOWN);
+      /*
+       * Sets the Text of the TextField to the adjusted Text. Since german Numbers are displayed 
+       * as ##,## instead of ##.## the '.' in the Display will be replaced by a ','.
+       */
+      primary.getTfTip().setText(totalTip.toString().replace('.', ','));
       
       /*
        * Creates a new MathContext for precise calculations.

@@ -7,11 +7,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import util.DayComboBoxKeyHandler;
@@ -93,18 +96,52 @@ public class ExportHandler implements EventHandler<ActionEvent> {
     monthBox.getSelectionModel().select(cal.get(Calendar.MONTH));
     monthBox.setOnKeyPressed(new MonthComboBoxKeyHandler(monthBox));
     grid.add(monthBox, 1, 0);
-    
+     
+    /*
+     * Creates a TextField, where the User can enter the Year for this Calculation.
+     */
     TextField tfYear = new TextField();
     tfYear.setMaxWidth(75);
     grid.add(tfYear, 2, 0);
     
+    /*
+     * Creates a GridPane, where the Buttons are displayed.
+     */
+    GridPane lowGrid = new GridPane();
+    lowGrid.setAlignment(Pos.CENTER);
+    lowGrid.setHgap(10);
+    /*
+     * Creates the Button to export the Calculation into a new File.
+     */
+    Button export = new Button("Export");
+    export.setMaxWidth(200);
+    export.setOnKeyReleased(null); //TODO
+    lowGrid.add(export, 0, 0);
+    GridPane.setHgrow(export, Priority.ALWAYS);
+    
+    /*
+     * Creates the Button to cancel the Export.
+     */
+    Button cancel = new Button("Abbrechen");
+    cancel.setMaxWidth(200);
+    cancel.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent arg0) {
+        /*
+         * Closes the dialog without exporting.
+         */
+        dialog.close();
+      }     
+    });
+    lowGrid.add(cancel, 1, 0);
+    GridPane.setHgrow(cancel, Priority.ALWAYS);
     
     
     /*
      * Adds all Panes to the BorderPane.
      */
     bp.setCenter(grid);
-    
+    bp.setBottom(lowGrid);
     /*
      * Basic Scene settings.
      */

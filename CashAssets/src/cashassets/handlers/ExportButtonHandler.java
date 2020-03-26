@@ -489,9 +489,6 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
       cell.setCellValue(data);
     }
     if (bool) {
-      //TODO Testing purposes. This shouldn't be used anymore if I'm correct. 
-      //cell.setCellValue(cell.getStringCellValue().replace("<html><font color='red'>", ""));
-      //cell.setCellValue(cell.getStringCellValue().replaceAll("</font></html>", ""));
       if (cell.toString().charAt(0) == '-') {
         cell.setCellStyle(style2);
       } else {
