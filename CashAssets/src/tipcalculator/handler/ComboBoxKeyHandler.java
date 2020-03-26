@@ -206,7 +206,9 @@ public class ComboBoxKeyHandler implements EventHandler<KeyEvent> {
   private boolean checkTextKey(KeyEvent event) {
     try {
       char input = event.getText().toUpperCase().charAt(0);
-      if ((input < 'A' || input > 'Z')) {
+      if (input == 'Ä' || input == 'Ö' || input == 'Ü') {
+        return true;
+      } else if (input < 'A' || input > 'Z') {
         return false;
       }
       return true;
