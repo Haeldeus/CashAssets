@@ -1,9 +1,10 @@
 package cashassets.handlers;
 
+import cashassets.ComponentStorer;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import cashassets.ComponentStorer;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;

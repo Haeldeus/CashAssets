@@ -1,7 +1,11 @@
 package tipcalculator.handler;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -54,13 +58,31 @@ public class ExportHandler implements EventHandler<ActionEvent> {
     labelInfo.setWrapText(true);
     bp.setTop(labelInfo);
     
+    
+    /*
+     * Adding a Calendar to get the Current Date. This will be used in the afterwards added 
+     * ComboBoxes for the Day and Month.
+     */
+    Calendar cal = Calendar.getInstance(Locale.GERMANY);
+    /*
+     * Creates the ComboBox for the User to select the day for this Calculation.
+     */
+    ComboBox<String> dayBox = new ComboBox<String>();
+    for (int i = 1; i <= 31; i++) {
+      dayBox.getItems().add(i + ".");
+    }
+    dayBox.getSelectionModel().select(cal.get(Calendar.DAY_OF_MONTH) - 1);
+    dayBox.setOnKeyPressed(new ExportDayComboBoxKeyHandler(dayBox)); //TODO
+    
     /*
      * Creates a GridPane, where the User can enter the date for the new File.
      */
     GridPane grid = new GridPane();
+    grid.setAlignment(Pos.CENTER);
+    grid.add(dayBox, 0, 0);
     
-    ComboBox<String> cbDay = new ComboBox<String>();
-    
+    bp.setCenter(grid);
+    bp.setBottom(new Label("Placeholder"));
     
     /*
      * Basic Scene settings.

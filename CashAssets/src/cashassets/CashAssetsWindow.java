@@ -1,5 +1,10 @@
 package cashassets;
 
+import cashassets.handlers.CalcButtonHandler;
+import cashassets.handlers.EditButtonHandler;
+import cashassets.handlers.ExportButtonHandler;
+import cashassets.handlers.ResetButtonHandler;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,10 +15,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import cashassets.handlers.CalcButtonHandler;
-import cashassets.handlers.EditButtonHandler;
-import cashassets.handlers.ExportButtonHandler;
-import cashassets.handlers.ResetButtonHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -121,16 +122,26 @@ public class CashAssetsWindow extends Application {
      * ComboBoxes for the Day and Month.
      */
     Calendar cal = Calendar.getInstance(Locale.GERMANY);
+    /*
+     * Creates the ComboBox for the User to select the day for this Calculation.
+     */
     ComboBox<String> dayBox = new ComboBox<String>();
     for (int i = 1; i <= 31; i++) {
       dayBox.getItems().add(i + ".");
     }
-    ComponentStorer cs = new ComponentStorer();
     dayBox.getSelectionModel().select(cal.get(Calendar.DAY_OF_MONTH) - 1);
     dayBox.setMaxWidth(70.0);
+    /*
+     * Creates a new ComponentStorer, so this Object can store alternating Fields in it. Adds 
+     * the Daybox to this Storer.
+     */
+    ComponentStorer cs = new ComponentStorer();
     cs.setDayBox(dayBox);
     grid.add(dayBox, 3, 0);
     
+    /*
+     * Creates the ComboBox for the User to select the month for this Calculation.
+     */
     ComboBox<String> monthBox = new ComboBox<String>();
     for (int i = 1; i <= 12; i++) {
       monthBox.getItems().add(i + ".");

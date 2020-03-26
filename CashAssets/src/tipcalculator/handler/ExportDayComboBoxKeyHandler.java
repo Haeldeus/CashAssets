@@ -3,26 +3,18 @@ package tipcalculator.handler;
 import java.util.Timer;
 
 import javafx.event.EventHandler;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import tipcalculator.task.MyTimerTask;
 
 /**
- * The KeyHandler for the ComboBox in the TipWindow, where the User can enter Staff Members.
+ * The EventHandler for KeyEvents for the ComboBox in the Export Stage, where the Day can be 
+ * entered.
  * @author Haeldeus
  * @version 1.0
  */
-public class ComboBoxKeyHandler implements EventHandler<KeyEvent> {
+public class ExportDayComboBoxKeyHandler implements EventHandler<KeyEvent> {
 
-  /**
-   * The ComboBox, this Handler is attached to.
-   */
-  private ComboBox<String> staffMember;
-  
   /**
    * The boolean value, if the User has entered multiple Letters on their Keyboard in a short time. 
    * This is used to make selecting Members by entering their name possible.
@@ -36,30 +28,25 @@ public class ComboBoxKeyHandler implements EventHandler<KeyEvent> {
   private volatile String text;
   
   /**
-   * The GridPane, the ComboBox was added to. Used to change the ComboBox Focus when the User 
-   * presed Enter.
+   * The ComboBox, this Handler is attached to.
    */
-  private GridPane gridPane;
+  private ComboBox<String> dayBox;
   
   /**
    * The Constructor for this Handler. Will set the Fields to the given values.
-   * @param staffMember The ComboBox, this Handler will be attached to.
-   * @param gridPane  The GridPane, the ComboBox was added to.
+   * @param dayBox The ComboBox, this Handler will be attached to.
    * @since 1.0
    */
-  public ComboBoxKeyHandler(ComboBox<String> staffMember, GridPane gridPane) {
-    this.staffMember = staffMember;
-    this.multiple = false;
-    this.gridPane = gridPane;
+  public ExportDayComboBoxKeyHandler(ComboBox<String> dayBox) {
+    this.dayBox = dayBox;
   }
   
-  @SuppressWarnings("unchecked")
   @Override
   public void handle(KeyEvent arg0) {
     /*
-     * Checks, if the current input is an alphabetical Key.
+     * Checks, if the current input is a number Key.
      */
-    if (checkTextKey(arg0)) {
+    if (checkKey(arg0)) {
       /*
        * Saves the input in a String variable.
        */
@@ -84,28 +71,28 @@ public class ComboBoxKeyHandler implements EventHandler<KeyEvent> {
       setText(input);
       
       /*
-       * Iterates over the List of Members, that are selectable in the ComboBox.
+       * Iterates over the List of Days, that are selectable in the ComboBox.
        */
-      for (String member : staffMember.getItems()) {
+      for (String day : dayBox.getItems()) {
         /*
          * Sets length to input.length(). If this is greater than the Length of the current String 
          * from the List, length will be set to this instead to prevent errors.
          */
         int length = input.length();
-        if (length > member.length()) {
-          length = member.length();
+        if (length > day.length()) {
+          length = day.length();
         }
         /*
          * Stores the substring from the beginning of the current String from the List to length in 
          * a new variable.
          */
-        String c = member.toUpperCase().substring(0, length);
+        String c = day.toUpperCase().substring(0, length);
         /*
          * Compares, if the current input equals the saved substring. If yes, this Item will be 
          * selected and the Method will be stopped.
          */
         if (c.equals(input)) {
-          staffMember.getSelectionModel().select(member);
+          dayBox.getSelectionModel().select(day);
           return;
         }
       }
@@ -113,40 +100,6 @@ public class ComboBoxKeyHandler implements EventHandler<KeyEvent> {
        * If the User pressed Enter, the next ComboBox will be selected. If this was the last 
        * ComboBox in the Pane, a new Entry will be added at the Bottom.
        */
-    } else if (arg0.getCode() == KeyCode.ENTER) {
-      /*
-       * Iterates over the List of ComboBoxes to get the index, where this ComboBox is stored at 
-       * in the List.
-       */
-      for (int i = 0; i < gridPane.getChildren().size() - 1; i += 3) {
-        ComboBox<String> tmpBox = (ComboBox<String>)gridPane.getChildren().get(i);
-        /*
-         * Compares the ComboBox, that this Handler is attached to to the ComboBox, that is stored 
-         * at the current index.
-         */
-        if (tmpBox == staffMember) {
-          /*
-           * If i + 4 is greater than getChildren.size(), a new Line has to be created.
-           */
-          if (i + 4 >= gridPane.getChildren().size()) {
-            /*
-             * Saves the add Button, that is at the Bottom of the Pane in a new variable.
-             */
-            Button tmp = (Button)gridPane.getChildren().get(gridPane.getChildren().size() - 1);
-            /*
-             * Fires an event, that clicks the Add-Button.
-             */
-            tmp.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, null, 0, false, 
-                false, false, false, true, false, false, false, false, false, null));
-          }
-          /*
-           * Selects the Box below the ComboBox this Handler was attached to and requests Focus for 
-           * it.
-           */
-          tmpBox = (ComboBox<String>)gridPane.getChildren().get(i + 3);
-          tmpBox.requestFocus();
-        }
-      }
     }
   }
 
@@ -197,16 +150,16 @@ public class ComboBoxKeyHandler implements EventHandler<KeyEvent> {
   }
   
   /**
-   * Checks, if the given KeyEvent encodes an alphabetical input.
+   * Checks, if the given KeyEvent encodes a numerical input.
    * @param event The KeyEvent, that was triggered.
-   * @return  {@code true}, if the KeyEvent encodes an alphabetical input, {@code false} else.
+   * @return  {@code true}, if the KeyEvent encodes an numerical input, {@code false} else.
    * @since 1.0
    * @see KeyEvent
    */
-  private boolean checkTextKey(KeyEvent event) {
+  private boolean checkKey(KeyEvent event) {
     try {
       char input = event.getText().toUpperCase().charAt(0);
-      if ((input < 'A' || input > 'Z')) {
+      if ((input < '0' || input > '9')) {
         return false;
       }
       return true;
@@ -215,5 +168,4 @@ public class ComboBoxKeyHandler implements EventHandler<KeyEvent> {
       return false;
     }
   }
-  
 }
