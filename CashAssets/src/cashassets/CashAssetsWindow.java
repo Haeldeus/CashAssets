@@ -42,6 +42,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import util.DayComboBoxKeyHandler;
+import util.MonthComboBoxKeyHandler;
 import util.Util;
 
 /**
@@ -130,6 +132,7 @@ public class CashAssetsWindow extends Application {
       dayBox.getItems().add(i + ".");
     }
     dayBox.getSelectionModel().select(cal.get(Calendar.DAY_OF_MONTH) - 1);
+    dayBox.setOnKeyPressed(new DayComboBoxKeyHandler(dayBox));
     dayBox.setMaxWidth(70.0);
     /*
      * Creates a new ComponentStorer, so this Object can store alternating Fields in it. Adds 
@@ -143,10 +146,10 @@ public class CashAssetsWindow extends Application {
      * Creates the ComboBox for the User to select the month for this Calculation.
      */
     ComboBox<String> monthBox = new ComboBox<String>();
-    for (int i = 1; i <= 12; i++) {
-      monthBox.getItems().add(i + ".");
-    }
+    monthBox.getItems().addAll("Januar", "Februar", "März", "April", "Mai", "Juni", 
+        "Juli", "August", "September", "Oktober", "November", "Dezember");
     monthBox.getSelectionModel().select(cal.get(Calendar.MONTH));
+    monthBox.setOnKeyPressed(new MonthComboBoxKeyHandler(monthBox));
     monthBox.setMaxWidth(70.0);
     cs.setMonthBox(monthBox);
     grid.add(monthBox, 4, 0);

@@ -1,4 +1,4 @@
-package tipcalculator.handler;
+package util;
 
 import java.util.Timer;
 
@@ -8,12 +8,12 @@ import javafx.scene.input.KeyEvent;
 import tipcalculator.task.MyTimerTask;
 
 /**
- * The EventHandler for KeyEvents for the ComboBox in the Export Stage, where the Day can be 
- * entered.
+ * The EventHandler for KeyEvents for the ComboBox in the Export Stage or CashAssets Stage, where 
+ * the Day can be entered.
  * @author Haeldeus
  * @version 1.0
  */
-public class ExportDayComboBoxKeyHandler implements EventHandler<KeyEvent> {
+public class DayComboBoxKeyHandler implements EventHandler<KeyEvent> {
 
   /**
    * The boolean value, if the User has entered multiple Letters on their Keyboard in a short time. 
@@ -37,8 +37,9 @@ public class ExportDayComboBoxKeyHandler implements EventHandler<KeyEvent> {
    * @param dayBox The ComboBox, this Handler will be attached to.
    * @since 1.0
    */
-  public ExportDayComboBoxKeyHandler(ComboBox<String> dayBox) {
+  public DayComboBoxKeyHandler(ComboBox<String> dayBox) {
     this.dayBox = dayBox;
+    this.multiple = false;
   }
   
   @Override

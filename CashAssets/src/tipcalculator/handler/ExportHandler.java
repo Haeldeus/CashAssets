@@ -9,10 +9,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import util.DayComboBoxKeyHandler;
+import util.MonthComboBoxKeyHandler;
 import util.Util;
 
 /**
@@ -72,7 +75,7 @@ public class ExportHandler implements EventHandler<ActionEvent> {
       dayBox.getItems().add(i + ".");
     }
     dayBox.getSelectionModel().select(cal.get(Calendar.DAY_OF_MONTH) - 1);
-    dayBox.setOnKeyPressed(new ExportDayComboBoxKeyHandler(dayBox)); //TODO
+    dayBox.setOnKeyPressed(new DayComboBoxKeyHandler(dayBox));
     
     /*
      * Creates a GridPane, where the User can enter the date for the new File.
@@ -81,13 +84,31 @@ public class ExportHandler implements EventHandler<ActionEvent> {
     grid.setAlignment(Pos.CENTER);
     grid.add(dayBox, 0, 0);
     
+    /*
+     * Creates the ComboBox for the User to select the Month for this Calculation.
+     */
+    ComboBox<String> monthBox = new ComboBox<String>();
+    monthBox.getItems().addAll("Januar", "Februar", "März", "April", "Mai", "Juni", 
+        "Juli", "August", "September", "Oktober", "November", "Dezember");
+    monthBox.getSelectionModel().select(cal.get(Calendar.MONTH));
+    monthBox.setOnKeyPressed(new MonthComboBoxKeyHandler(monthBox));
+    grid.add(monthBox, 1, 0);
+    
+    TextField tfYear = new TextField();
+    tfYear.setMaxWidth(75);
+    grid.add(tfYear, 2, 0);
+    
+    
+    
+    /*
+     * Adds all Panes to the BorderPane.
+     */
     bp.setCenter(grid);
-    bp.setBottom(new Label("Placeholder"));
     
     /*
      * Basic Scene settings.
      */
-    Scene dialogScene = new Scene(bp, 200, 200);
+    Scene dialogScene = new Scene(bp, 250, 100);
     dialogScene.getStylesheets().add(Util.getControlStyle());
     dialog.setScene(dialogScene);
     dialog.setResizable(false);

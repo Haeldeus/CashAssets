@@ -3,7 +3,8 @@ package tipcalculator.task;
 import java.util.TimerTask;
 
 import tipcalculator.handler.ComboBoxKeyHandler;
-import tipcalculator.handler.ExportDayComboBoxKeyHandler;
+import util.DayComboBoxKeyHandler;
+import util.MonthComboBoxKeyHandler;
 
 /**
  * A Task, that is used to determine if the User enters multiple Letters while the ComboBox is 
@@ -14,14 +15,19 @@ import tipcalculator.handler.ExportDayComboBoxKeyHandler;
 public class MyTimerTask extends TimerTask {
 
   /**
-   * The ComboBoxKeyHandler, that started this thread.
+   * The ComboBoxKeyHandler, that started this Task.
    */
   private ComboBoxKeyHandler primary;
   
   /**
-   * The ExportDayComboBoxKeyHandler, that started this Thread.
+   * The DayComboBoxKeyHandler, that started this Task.
    */
-  private ExportDayComboBoxKeyHandler secondary;
+  private DayComboBoxKeyHandler secondary;
+  
+  /**
+   * The MonthComboBoxKeyHandler, that started this Task.
+   */
+  private MonthComboBoxKeyHandler tertiary;
   
   /**
    * The Text, that was entered by the User when this Task was started.
@@ -41,12 +47,23 @@ public class MyTimerTask extends TimerTask {
   
   /**
    * The Constructor for this Task. This will set all Fields to the given values.
-   * @param primary The ExportDayComboBoxKeyHandler, that started this Thread.
+   * @param primary The DayComboBoxKeyHandler, that started this Thread.
    * @param str The Text, that was entered by the User when this Task was started.
    * @since 1.0
    */
-  public MyTimerTask(ExportDayComboBoxKeyHandler primary, String str) {
+  public MyTimerTask(DayComboBoxKeyHandler primary, String str) {
     this.secondary = primary;
+    this.text = str;
+  }
+  
+  /**
+   * The Constructor for this Task. This will set all Fields to the given values.
+   * @param primary The MonthComboBoxKeyHandler, that started this Thread.
+   * @param str The Text, that was entered by the User when this Task was started.
+   * @since 1.0
+   */
+  public MyTimerTask(MonthComboBoxKeyHandler primary, String str) {
+    this.tertiary = primary;
     this.text = str;
   }
   
@@ -79,7 +96,7 @@ public class MyTimerTask extends TimerTask {
         e.printStackTrace();
       }
       /*
-       * If this Task was started from a ExportDayComboBoxKeyHandler, primary will be set to a 
+       * If this Task was started from a DayComboBoxKeyHandler, secondary will be set to a 
        * value while primary is null. This Part is used to run the Task.
        */
     } else if (secondary != null) {
@@ -100,6 +117,32 @@ public class MyTimerTask extends TimerTask {
          */
         if (this.text.equals(secondary.getText())) {
           secondary.reset();
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      /*
+       * If this Task was started from a MonthComboBoxKeyHandler, tertiary will be set to a 
+       * value while primary and secondary are null. This Part is used to run the Task.
+       */
+    } else {
+      try {
+        /*
+         * Sets primary.multiple to true, so the Application knows, that the User is able to enter 
+         * multiple Letters to search for this Text in the Items of the given ComboBox.
+         */
+        tertiary.startMult();
+        /*
+         * The Timeout, after which the input is reset to "", if no new Keys were pressed.
+         */
+        Thread.sleep(1000);
+        /*
+         * Checks, if the Text of primary is still the same as it was, when this Thread started. 
+         * If yes, there was no new Input and the search-Term is reset. If no, this Task finishes 
+         * without changes.
+         */
+        if (this.text.equals(tertiary.getText())) {
+          tertiary.reset();
         }
       } catch (InterruptedException e) {
         e.printStackTrace();

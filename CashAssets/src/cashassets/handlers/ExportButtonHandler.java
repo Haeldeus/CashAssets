@@ -410,28 +410,12 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
   }
 
   /**
-   * Returns a String with the Name of the Month instead of the Integer value of it.
+   * Returns a String with the Name of the Month that is selected in the MonthBox.
    * @return  A String with the Name of the Month that was selected in the Month-Box.
    * @since 1.0
    */
   private String getMonth() {
-    String month = componentStorer.getMonthBox().getSelectionModel().getSelectedItem();
-    switch (month) {
-      case ("1."): return "Januar";
-      case ("2."): return "Februar";
-      case ("3."): return "März";
-      case ("4."): return "April";
-      case ("5."): return "Mai";
-      case ("6."): return "Juni";
-      case ("7."): return "Juli";
-      case ("8."): return "August";
-      case ("9."): return "September";
-      case ("10."): return "Oktober";
-      case ("11."): return "November";
-      case ("12."): return "Dezember";
-      default: System.err.println("Error while parsing the Month-Box!"); 
-        return "";
-    }
+    return componentStorer.getMonthBox().getSelectionModel().getSelectedItem();
   }
   
 
@@ -448,15 +432,39 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     } else {
       res = res.concat("" + box.getSelectionModel().getSelectedItem());
     }
-    box = componentStorer.getMonthBox();
-    if (Integer.parseInt(box.getSelectionModel().getSelectedItem().replaceAll("\\.", "")) < 10) {
-      res = res.concat("0" + box.getSelectionModel().getSelectedItem());
-    } else {
-      res = res.concat("" + box.getSelectionModel().getSelectedItem());
-    }
+    res = res.concat(getStringForMonth() + ".");
     res = res.concat("" + componentStorer.getYear().getText().replaceAll("\\D+", "")
         .substring(0, 4));
     return res;
+  }
+
+  /**
+   * Returns a String, that resembles the numerical value of the selected Month in the 
+   * MonthBox. <br>
+   * E.g. Januar equals 01, Februar equals 02, etc.
+   * @return  The numerical value of the selected Month as a String.
+   * @since 1.0
+   */
+  private String getStringForMonth() {
+    ComboBox<String> box = componentStorer.getMonthBox();
+    String month = box.getSelectionModel().getSelectedItem();
+    switch (month) {
+      case "Januar": return "01";
+      case "Februar": return "02";
+      case "März": return "03";
+      case "April": return "04";
+      case "Mai": return "05";
+      case "Juni": return "06";
+      case "Juli": return "07";
+      case "August": return "08";
+      case "September": return "09";
+      case "Oktober": return "10";
+      case "November": return "11";
+      case "Dezember": return "12";
+      default: 
+        System.err.println("Error while parsing the Month...");
+        return "00";
+    }
   }
 
   /**
