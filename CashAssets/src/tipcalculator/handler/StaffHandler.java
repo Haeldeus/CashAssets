@@ -80,14 +80,14 @@ public class StaffHandler implements EventHandler<ActionEvent> {
       ImageView imageview = new ImageView(img);
       Button b = new Button("", imageview);
       b.setTooltip(new Tooltip("Aus Liste entfernen"));
-      b.setOnMouseClicked(new DeleteHandler(this, i, staff, staffMemberPane));
+      b.setOnMouseClicked(new DeleteFromStaffHandler(this, i, staff, staffMemberPane));
       staffMemberPane.add(b, 1, i);
     }
     
     Image img = new Image(getClass().getResourceAsStream("/res/add.png"));
     ImageView imageview = new ImageView(img);
     Button add = new Button("", imageview);
-    add.setOnMouseClicked(new AddHandler(this, staffMemberPane, sp));
+    add.setOnMouseClicked(new AddToStaffHandler(this, staffMemberPane, sp));
     staffMemberPane.add(add, 0, staff.size());
     GridPane.setColumnSpan(add, 2);
     
