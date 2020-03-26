@@ -161,8 +161,8 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
     tfHours.setMaxWidth(50);
     tfHours.focusedProperty().addListener(new TextFieldFocusChangeListener(tfHours, exact, 
         gridPane, primary, false));
-    tfHours.textProperty().addListener(new TextFieldTextChangeListener(tfHours, 
-        exact, gridPane, primary, false));
+    tfHours.textProperty().addListener(new TextFieldTextChangeListener(exact, gridPane, primary, 
+        false));
     tfHours.setOnKeyPressed(new EventHandler<KeyEvent>() {
       @Override
       public void handle(KeyEvent arg0) {

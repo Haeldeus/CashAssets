@@ -183,7 +183,7 @@ public class MainWindow extends Application {
            */
           Stage stage = new Stage();
           stage.initModality(Modality.APPLICATION_MODAL);
-          new kasse.CashAssetsWindow().start(stage);
+          new cashassets.CashAssetsWindow().start(stage);
         } catch (Exception e) {
           /*
            * Just for debugging purposes. Usually this shouldn't be called at any time.

@@ -1,4 +1,4 @@
-package kasse;
+package cashassets;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -10,6 +10,10 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
+import cashassets.handlers.CalcButtonHandler;
+import cashassets.handlers.EditButtonHandler;
+import cashassets.handlers.ExportButtonHandler;
+import cashassets.handlers.ResetButtonHandler;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -37,10 +41,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import kasse.handlers.CalcButtonHandler;
-import kasse.handlers.EditButtonHandler;
-import kasse.handlers.ExportButtonHandler;
-import kasse.handlers.ResetButtonHandler;
 import util.Util;
 
 /**

@@ -48,7 +48,7 @@ public class TextFieldFocusChangeListener implements ChangeListener<Boolean> {
   /**
    * The Constructor for this Listener, where all needed variables will be passed to the newly 
    * created Object.
-   * @param tfHours The TextField, where the amount of Hours can be stored in and this Listener 
+   * @param textField The TextField, where the amount of Hours can be stored in and this Listener 
    *     is listening to.
    * @param exact The boolean value, if the calculation should be exact or if hours alone are 
    *     sufficient.
@@ -57,9 +57,9 @@ public class TextFieldFocusChangeListener implements ChangeListener<Boolean> {
    * @param isTotal The boolean value, if this Listener is listening to the total TipSum TextField.
    * @since 1.0   
    */
-  public TextFieldFocusChangeListener(TextField tfHours, boolean exact, GridPane grid, 
+  public TextFieldFocusChangeListener(TextField textField, boolean exact, GridPane grid, 
       TipWindow primary, boolean isTotal) {
-    this.textField = tfHours;
+    this.textField = textField;
     this.exact = exact;
     this.gridPane = grid;
     this.primary = primary;
@@ -104,11 +104,11 @@ public class TextFieldFocusChangeListener implements ChangeListener<Boolean> {
     textField.setText(str.replace('.', ','));
     
     /*
-     * Creates a new BigDecimal, where the total amount of hours will be stored in.
+     * Creates a new BigDecimal, where the total amount of hours worked will be stored in.
      */
     BigDecimal total = new BigDecimal("0.00");
     /*
-     * Iterates over all TextFields in the GridPane to calculate the total amount of hours.
+     * Iterates over all TextFields in the GridPane to calculate the total amount of hours worked.
      */
     for (int i = 1; i < gridPane.getChildren().size(); i += 3) {
       /*
@@ -148,7 +148,8 @@ public class TextFieldFocusChangeListener implements ChangeListener<Boolean> {
      */
     if (primary.getTfTip().getText() != null && !primary.getTfTip().getText().equals("")) {
       /*
-       * Removes all non alphanumerical characters from the total Tip Sum TextField.
+       * Removes all non numerical characters from the total Tip Sum TextField except for '.' 
+       * and ','.
        */
       String txt = primary.getTfTip().getText();
       txt = txt.replaceAll("[\\D&&[^,]&&[^\\.]]", "");
@@ -229,6 +230,21 @@ public class TextFieldFocusChangeListener implements ChangeListener<Boolean> {
           nfe.printStackTrace();
           System.err.println("Skipping this Error....");
         }
+      }
+      /*
+       * If there was no Input in TfTip, the Labels will be reset to a default value.
+       */
+    } else {
+      for (int i = 1; i < gridPane.getChildren().size(); i += 3) {
+        /*
+         * Fetches the Label, in which the Share of the Staff Member can be displayed in.
+         */
+        GridPane smallGrid = (GridPane)gridPane.getChildren().get(i);
+        Label lbTmp = (Label)smallGrid.getChildren().get(2);
+        /*
+         * Since there was no input, the default value of 0,00€ will be displayed in the Label.
+         */
+        lbTmp.setText("= 0.00€");
       }
     }
     

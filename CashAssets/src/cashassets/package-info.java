@@ -3,4 +3,4 @@
  * @author Haeldeus
  * @version 1.0
  */
-package kasse;
+package cashassets;
