@@ -2,6 +2,8 @@
 0.93 Änderungen und Erweiterungen
 #New Line#
 - Tip-Rechner fertiggestellt.
+- Änderung der Monatsanzeige im Kassenbestands-Fenster von Zahlen zu Namen.
+- Performance-Verbesserungen beim Export der Kassenbestands-Daten.
 #New Line#
 #New Line#
 0.921 Änderungen und Erweiterungen
