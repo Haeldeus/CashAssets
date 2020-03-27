@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -63,6 +64,11 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
   private TextField tfYear;
   
   /**
+   * The Stage, this Button is part of. Used to close the dialog after exporting.
+   */
+  private final Stage dialog;
+  
+  /**
    * The Constructor for this Handler. Sets all Fields to the given values.
    * @param primary The TipWindow, that opened the Export Stage, where this Button was clicked.
    *      Used to get all needed Components, that aren't saved in the staffGrid.
@@ -77,16 +83,19 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
    * @param tfYear  The TextField, where the user entered the Year of the newly created File. 
    *      This has to be stored, since the User enters the Value after creating this Handler. So 
    *      the Handler needs to have a way to access this TextField to get the date.
+   * @param dialog  The Dialog Stage. this Button is part of. This is used to close the dialog 
+   *     after exporting.
    * @since 1.0
    */
   public ExportButtonHandler(TipWindow primary, GridPane staffGrid, boolean open, 
-      ComboBox<String> dayBox, ComboBox<String> monthBox, TextField tfYear) {
+      ComboBox<String> dayBox, ComboBox<String> monthBox, TextField tfYear, Stage dialog) {
     this.primary = primary;
     this.staffGrid = staffGrid;
     this.open = open;
     this.dayBox = dayBox;
     this.monthBox = monthBox;
     this.tfYear = tfYear;
+    this.dialog = dialog;
   }
   
   @Override
@@ -167,6 +176,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     String year = date.substring(date.lastIndexOf('x') + 1);
     String month = monthBox.getSelectionModel().getSelectedItem();
     ExportUtils.export(workbook, "Trinkgeld", date, year, month, open);
+    dialog.close();
   }
   
   /**

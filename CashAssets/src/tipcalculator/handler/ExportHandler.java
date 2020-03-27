@@ -138,7 +138,7 @@ public class ExportHandler implements EventHandler<ActionEvent> {
     Button export = new Button("Export");
     export.setMaxWidth(200);
     export.setOnMouseClicked(new ExportButtonHandler(primary, staffGrid, checkOpen(), dayBox, 
-        monthBox, tfYear));
+        monthBox, tfYear, dialog));
     lowGrid.add(export, 0, 0);
     GridPane.setHgrow(export, Priority.ALWAYS);
     
