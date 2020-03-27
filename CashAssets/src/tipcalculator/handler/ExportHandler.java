@@ -122,7 +122,7 @@ public class ExportHandler implements EventHandler<ActionEvent> {
     /*
      * Creates a TextField, where the User can enter the Year for this Calculation.
      */
-    TextField tfYear = new TextField();
+    TextField tfYear = new TextField("" + cal.get(Calendar.YEAR));
     tfYear.setMaxWidth(75);
     grid.add(tfYear, 2, 0);
     
@@ -137,7 +137,8 @@ public class ExportHandler implements EventHandler<ActionEvent> {
      */
     Button export = new Button("Export");
     export.setMaxWidth(200);
-    export.setOnMouseClicked(new ExportButtonHandler(primary, staffGrid, checkOpen()));
+    export.setOnMouseClicked(new ExportButtonHandler(primary, staffGrid, checkOpen(), dayBox, 
+        monthBox, tfYear));
     lowGrid.add(export, 0, 0);
     GridPane.setHgrow(export, Priority.ALWAYS);
     

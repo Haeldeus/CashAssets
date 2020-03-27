@@ -72,14 +72,23 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
      * Removes the Add-Button from the GridPane to make space for a new Row.
      */
     gridPane.getChildren().remove(gridPane.getChildren().size() - 1);
+    
+    /*
+     * The MinWidth for this ComboBox.
+     */
+    double minWidth = 0;
     /*
      * Creates a new List, where all Items that are selected in already existing ComboBoxes are 
-     * stored in.
+     * stored in. Also checks the Width for all existing ComboBoxes and stores the Maximum in 
+     * minWidth.
      */
     ArrayList<String> usedItems = new ArrayList<String>();
     for (int i = 0; i < gridPane.getChildren().size() - 1; i += 3) {
-      usedItems.add(((ComboBox<String>)gridPane.getChildren().get(i)).getSelectionModel()
-          .getSelectedItem());
+      ComboBox<String> cb = (ComboBox<String>)(gridPane.getChildren().get(i));
+      usedItems.add(cb.getSelectionModel().getSelectedItem());
+      if (cb.getWidth() > minWidth) {
+        minWidth = cb.getWidth();
+      }
     }
     /*
      * Creates a new List, where all Staff Members are stored in.
@@ -108,13 +117,14 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
          * Stores the currently selected Item in a new variable.
          */
         String selected = staffMember.getSelectionModel().getSelectedItem();
+        
         /*
          * Creates a new List, where all Items that are selected in already existing ComboBoxes are 
          * stored in.
          */
         ArrayList<String> usedItems = new ArrayList<String>();
         for (int i = 0; i < gridPane.getChildren().size() - 1; i += 3) {
-          usedItems.add(((ComboBox<String>)gridPane.getChildren().get(i)).getSelectionModel()
+          usedItems.add(((ComboBox<String>)(gridPane.getChildren().get(i))).getSelectionModel()
               .getSelectedItem());
         }
         /*
@@ -144,6 +154,13 @@ public class AddToTipHandler implements EventHandler<MouseEvent> {
       }      
     });
     staffMember.setOnKeyPressed(new ComboBoxKeyHandler(staffMember, gridPane));
+    /*
+     * Sets the MinWidth to the Maximum width of all existing ComboBoxes. This way, it is 
+     * ensured, that all ComboBoxes have the same size.
+     */
+    if (minWidth != 0) {
+      staffMember.setMinWidth(minWidth);
+    }
     gridPane.add(staffMember, 0, rowIndex);
     
     /*

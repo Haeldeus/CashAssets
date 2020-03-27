@@ -184,6 +184,7 @@ public class TextFieldFocusChangeListener implements ChangeListener<Boolean> {
       } else {
         tipPerHour = new BigDecimal("0.00");
       }
+      primary.setTipPerHour(tipPerHour);
       /*
        * Iterates over all TextFields in the GridPane to calculate their Share of the Tip for each 
        * Staff Member.
