@@ -50,7 +50,7 @@ public class MainWindow extends Application {
   /**
    * The Current version of the Application.
    */
-  private final double version = 0.921;
+  private final double version = 0.93;
   
   /**
    * The instance of this Class. Used for the {@link UpdateTask}.
@@ -134,7 +134,7 @@ public class MainWindow extends Application {
             }         
           });
           task.cancel();
-          executor.shutdownNow(); 
+          executor.shutdownNow();
         }  
       } 
     });
@@ -183,7 +183,7 @@ public class MainWindow extends Application {
            */
           Stage stage = new Stage();
           stage.initModality(Modality.APPLICATION_MODAL);
-          new kasse.CashAssetsWindow().start(stage);
+          new cashassets.CashAssetsWindow().start(stage);
         } catch (Exception e) {
           /*
            * Just for debugging purposes. Usually this shouldn't be called at any time.
