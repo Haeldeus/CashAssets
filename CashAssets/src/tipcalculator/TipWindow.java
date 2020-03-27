@@ -66,12 +66,6 @@ public class TipWindow extends Application {
     settingsMenu.getItems().addAll(settingsItem);
     menu.getMenus().addAll(settingsMenu);
     
-    final Menu exportMenu = new Menu("Export");
-    final MenuItem exportItem = new MenuItem("Export...");
-    exportItem.setOnAction(new ExportHandler(primaryStage));
-    exportMenu.getItems().addAll(exportItem);
-    menu.getMenus().addAll(exportMenu);
-    
     Label tipSum = new Label("Summe Tip: ");
     grid.add(tipSum, 0, 0);
     
@@ -138,6 +132,12 @@ public class TipWindow extends Application {
     tfTip.focusedProperty().addListener(new TextFieldFocusChangeListener(tfTip, true, staffGrid, 
         this, true));
     tfTip.textProperty().addListener(new TextFieldTextChangeListener(true, staffGrid, this, true));
+    
+    final Menu exportMenu = new Menu("Export");
+    final MenuItem exportItem = new MenuItem("Export...");
+    exportItem.setOnAction(new ExportHandler(primaryStage, this, staffGrid));
+    exportMenu.getItems().addAll(exportItem);
+    menu.getMenus().addAll(exportMenu);
     
     BorderPane borderPane = new BorderPane();
     borderPane.setTop(menu);

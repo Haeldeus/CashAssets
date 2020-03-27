@@ -1,7 +1,14 @@
 package tipcalculator.handler;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +24,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import tipcalculator.TipWindow;
 import util.DayComboBoxKeyHandler;
 import util.MonthComboBoxKeyHandler;
 import util.Util;
@@ -34,12 +42,26 @@ public class ExportHandler implements EventHandler<ActionEvent> {
   private final Stage primaryStage;
   
   /**
+   * The TipWindow, which the MenuItem is part of.
+   */
+  private TipWindow primary;
+  
+  /**
+   * The GridPane, where all the Staff Members were added to.
+   */
+  private GridPane staffGrid;
+  
+  /**
    * A Constructor for the Handler. Will set the given Stage as {@link #primaryStage}. 
    * @param primaryStage  The Stage, that will be set as primary Stage.
+   * @param primary The TipWIndow, which the MenuItem is part of.
+   * @param staffGrid The GridPane, where all the Staff Members were added to.
    * @since 1.0
    */
-  public ExportHandler(Stage primaryStage) {
+  public ExportHandler(Stage primaryStage, TipWindow primary, GridPane staffGrid) {
     this.primaryStage = primaryStage;
+    this.primary = primary;
+    this.staffGrid = staffGrid;
   }
   
   @Override
@@ -115,7 +137,7 @@ public class ExportHandler implements EventHandler<ActionEvent> {
      */
     Button export = new Button("Export");
     export.setMaxWidth(200);
-    export.setOnKeyReleased(null); //TODO
+    export.setOnMouseClicked(new ExportButtonHandler(primary, staffGrid, checkOpen()));
     lowGrid.add(export, 0, 0);
     GridPane.setHgrow(export, Priority.ALWAYS);
     
@@ -153,4 +175,35 @@ public class ExportHandler implements EventHandler<ActionEvent> {
     dialog.show();
   }
 
+  /**
+   * Checks, if the Directory should be opened after exporting.
+   * @return  The boolean value, if the Directory should be opened.
+   * @since 1.0
+   */
+  private boolean checkOpen() {
+    Path path = Paths.get("data/Settings.stg");
+    FileReader fr;
+    try {
+      fr = new FileReader(path.toString());
+      BufferedReader br = new BufferedReader(fr);
+      br.readLine();
+      String s = br.readLine();
+      StringTokenizer st = new StringTokenizer(s, "=");
+      st.nextToken();
+      br.close();
+      return st.nextToken().trim().equals("1");
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (NullPointerException e) {
+      /*
+       * This happens, if there is no String to be tokenized by st. In this case there 
+       * is no Setting for this and false will be returned by default.
+       */
+      e.printStackTrace();
+    }
+    return false;
+  }
+  
 }
