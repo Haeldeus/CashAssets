@@ -20,6 +20,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -82,11 +84,13 @@ public class TipWindow extends Application {
     /*
      * Creates a MenuBar, where the User can edit settings and export the calculation to a file.
      */
-    MenuBar menu = new MenuBar();
     final Menu settingsMenu = new Menu("Einstellungen");
     final MenuItem settingsItem = new MenuItem("Mitarbeiter...");
+    settingsItem.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.CONTROL_DOWN, 
+        KeyCombination.SHIFT_DOWN));
     settingsItem.setOnAction(new StaffHandler(primaryStage));
     settingsMenu.getItems().addAll(settingsItem);
+    MenuBar menu = new MenuBar();
     menu.getMenus().addAll(settingsMenu);
     
     /*
@@ -205,6 +209,8 @@ public class TipWindow extends Application {
      */
     final Menu exportMenu = new Menu("Export");
     final MenuItem exportItem = new MenuItem("Export...");
+    exportItem.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN, 
+        KeyCombination.SHIFT_DOWN));
     exportItem.setOnAction(new ExportHandler(primaryStage, this, staffGrid));
     exportMenu.getItems().addAll(exportItem);
     menu.getMenus().addAll(exportMenu);

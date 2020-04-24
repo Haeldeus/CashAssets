@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -279,6 +280,40 @@ public class ExportUtils {
     } else {
       cell.setCellStyle(style);
     }
+  }
+  
+  /**
+   * Creates a Cell in the given row and column with a Formula as content. The Formula itself will 
+   * not be checked, if it is correct.
+   * @param row The Row, this Cell will be created in.
+   * @param column  The Column, this Cell will be created in.
+   * @param formula The Formula, that will be the Content for this Cell.
+   * @param style The CellStyle, that will be used for this Cell.
+   * @see XSSFRow
+   * @see XSSFCellStyle
+   */
+  public static void createFormulaCell(XSSFRow row, int column, String formula, 
+      XSSFCellStyle style) {
+    
+    /*
+     * Creates a new Cell at the given column in the given row.
+     */
+    XSSFCell cell = row.createCell(column);
+    
+    cell.setCellType(CellType.FORMULA);
+    
+    /*
+     * Checks, if there is a formula to be calculated in the Cell. If yes, this adds it to the 
+     * created Cell.
+     */
+    if (formula != null) {
+      cell.setCellValue(formula);
+    }
+    
+    /*
+     * Sets the Styling for the Cell.
+     */
+    cell.setCellStyle(style);
   }
   
   /**
