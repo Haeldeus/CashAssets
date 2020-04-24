@@ -50,7 +50,7 @@ public class MainWindow extends Application {
   /**
    * The Current version of the Application.
    */
-  private final double version = 0.93;
+  private final double version = 0.94;
   
   /**
    * The instance of this Class. Used for the {@link UpdateTask}.
@@ -229,19 +229,31 @@ public class MainWindow extends Application {
     grid.add(btTip, 0, 1);
     
     /*
-     * Creates a new Button to launch the Outdoor Cash Application.
+     * Creates a new Button to launch the External Register Application.
      */
-    Button btOutdoor = new Button("Auﬂentheken-Bestand");
-    //TODO: Add Handler.
+    Button btExternal = new Button("Auﬂentheken-Bestand");
+    btExternal.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent arg0) {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        try {
+          new externalregister.ExternalWindow().start(stage);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }      
+      }    
+    });
+    
     /*
      * Ensures, that the Button for the new Window will scale with the Scene's size.
      */
-    btOutdoor.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-    GridPane.setFillHeight(btOutdoor, true);
-    GridPane.setFillWidth(btOutdoor, true);
-    GridPane.setVgrow(btOutdoor, Priority.ALWAYS);
-    GridPane.setHgrow(btOutdoor, Priority.ALWAYS);
-    grid.add(btOutdoor, 1, 0);
+    btExternal.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+    GridPane.setFillHeight(btExternal, true);
+    GridPane.setFillWidth(btExternal, true);
+    GridPane.setVgrow(btExternal, Priority.ALWAYS);
+    GridPane.setHgrow(btExternal, Priority.ALWAYS);
+    grid.add(btExternal, 1, 0);
     
     /*
      * Creates a disabled Button to fill the Scene and inform the User, that additions are possible.

@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -60,6 +61,12 @@ public class ExportUtils {
   public static final int BLACK_WITH_BOTTOM_BORDER = 4;
   
   /**
+   * The static Field, that indexes the CellStyle for red text with Borders and wrapping text in 
+   * the HashMap returned by {@link #getStyles(XSSFWorkbook)}.
+   */
+  public static final int RED_WITH_BORDERS_WRAPPING = 5;
+  
+  /**
    * The static Field, that stores the Information displayed in the Header of each Exported File.
    */
   public static final String EXPORT_HEADER = "Gaststätte Weyher GmbH Haxtergrund 8 33100 Paderborn";
@@ -88,11 +95,6 @@ public class ExportUtils {
     fontRed.setFontName("Arial");
     fontRed.setFontHeightInPoints((short)10);
     fontRed.setColor(IndexedColors.RED.getIndex());
-    /*
-     * Creates a HashMap, that will be returned with all Styles as Elements and the static fields 
-     * of this File as Keys.
-     */
-    HashMap<Integer, XSSFCellStyle> res = new HashMap<Integer, XSSFCellStyle>();
     
     /*
      * Creates the CellStyle, that will display the Cell as standard black text with no Borders and 
@@ -100,7 +102,14 @@ public class ExportUtils {
      */
     final XSSFCellStyle csStandard = workbook.createCellStyle();
     csStandard.setAlignment(HorizontalAlignment.CENTER);
+    csStandard.setVerticalAlignment(VerticalAlignment.CENTER);
     csStandard.setFont(fontBlack);
+    
+    /*
+     * Creates a HashMap, that will be returned with all Styles as Elements and the static fields 
+     * of this File as Keys.
+     */
+    HashMap<Integer, XSSFCellStyle> res = new HashMap<Integer, XSSFCellStyle>();
     res.put(STANDARD_BLACK, csStandard);
     
     /*
@@ -109,6 +118,7 @@ public class ExportUtils {
      */
     final XSSFCellStyle csRed = workbook.createCellStyle();
     csRed.setAlignment(HorizontalAlignment.CENTER);
+    csRed.setVerticalAlignment(VerticalAlignment.CENTER);
     csRed.setFont(fontRed);
     res.put(STANDARD_RED, csRed);
     
@@ -118,6 +128,7 @@ public class ExportUtils {
      */
     final XSSFCellStyle csRedBorder = workbook.createCellStyle();
     csRedBorder.setAlignment(HorizontalAlignment.CENTER);
+    csRedBorder.setVerticalAlignment(VerticalAlignment.CENTER);
     csRedBorder.setFont(fontRed);
     csRedBorder.setBorderBottom(BorderStyle.HAIR);
     csRedBorder.setBorderLeft(BorderStyle.HAIR);
@@ -131,6 +142,7 @@ public class ExportUtils {
      */
     final XSSFCellStyle csStandardBorder = workbook.createCellStyle();
     csStandardBorder.setAlignment(HorizontalAlignment.CENTER);
+    csStandardBorder.setVerticalAlignment(VerticalAlignment.CENTER);
     csStandardBorder.setBorderBottom(BorderStyle.HAIR);
     csStandardBorder.setBorderLeft(BorderStyle.HAIR);
     csStandardBorder.setBorderRight(BorderStyle.HAIR);
@@ -144,9 +156,25 @@ public class ExportUtils {
      */
     final XSSFCellStyle csUnderscoreBorder = workbook.createCellStyle();
     csUnderscoreBorder.setAlignment(HorizontalAlignment.CENTER);
+    csUnderscoreBorder.setVerticalAlignment(VerticalAlignment.CENTER);
     csUnderscoreBorder.setBorderBottom(BorderStyle.HAIR);
     csUnderscoreBorder.setFont(fontBlack);
     res.put(BLACK_WITH_BOTTOM_BORDER, csUnderscoreBorder);
+    
+    /*
+     * Creates the CellStyle, that will display the Cell as red Text with Borders on all sides and 
+     * central horizontal alignment.
+     */
+    final XSSFCellStyle csRedBorderWrapping = workbook.createCellStyle();
+    csRedBorderWrapping.setAlignment(HorizontalAlignment.CENTER);
+    csRedBorderWrapping.setVerticalAlignment(VerticalAlignment.CENTER);
+    csRedBorderWrapping.setFont(fontRed);
+    csRedBorderWrapping.setBorderBottom(BorderStyle.HAIR);
+    csRedBorderWrapping.setBorderLeft(BorderStyle.HAIR);
+    csRedBorderWrapping.setBorderRight(BorderStyle.HAIR);
+    csRedBorderWrapping.setBorderTop(BorderStyle.HAIR);
+    csRedBorderWrapping.setWrapText(true);
+    res.put(RED_WITH_BORDERS_WRAPPING, csRedBorderWrapping);
     
     return res;
   }
@@ -227,7 +255,7 @@ public class ExportUtils {
      * this Sheet, can be entered as well as the signature itself.
      */
     row = sheet.createRow(rowIndex);    
-    createCell(row, 1, "Name/Vorname:", styles.get(STANDARD_BLACK), null, false);
+    createCell(row, 1, "Name,Vorname:", styles.get(STANDARD_BLACK), null, false);
     createCell(row, 2, null, styles.get(BLACK_WITH_BOTTOM_BORDER), null, false);
     createCell(row, 3, null, styles.get(BLACK_WITH_BOTTOM_BORDER), null, false);
     createCell(row, 4, "Unterschrift:", styles.get(STANDARD_BLACK), null, false);

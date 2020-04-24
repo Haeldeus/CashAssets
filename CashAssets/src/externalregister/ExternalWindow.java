@@ -1,9 +1,11 @@
 package externalregister;
 
-import java.math.BigDecimal;
-
+import externalregister.handlers.ExportHandler;
 import externalregister.listener.TextFieldFocusChangedListener;
 import externalregister.listener.TextFieldTextChangedListener;
+
+import java.math.BigDecimal;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -29,7 +31,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import tipcalculator.handler.ExportHandler;
 import util.Util;
 
 /**
@@ -39,17 +40,72 @@ import util.Util;
  */
 public class ExternalWindow extends Application {
 
+  /**
+   * An Array, that stores all Labels, which display the Result of the Multiplication of their 
+   * Factor and their corresponding TextFields. This is only for the Coins. Use 
+   * {@link #resultLabelBill} for the Bills.
+   */
   private Label[] resultLabelCoin;
+  
+  /**
+   * The Array, that stores all TextFields for the Coins. Use {@link #billTfs} for the Bills.
+   */
   private TextField[] coinTfs;
+  
+  /**
+   * The Array, that stores all TextFields for the Bills. Use {@link #coinTfs} for the coins.
+   */
   private TextField[] billTfs;
+  
+  /**
+   * The Array, that stores all Labels, where the Result of the Multiplication of their 
+   * corresponding TextFields and their Factor is stored in. This Array contains only the 
+   * Bill-TextFields. For the Coin-TextFields, use {@link #resultLabelCoin}.
+   */
   private Label[] resultLabelBill;
+  
+  /**
+   * The Label, where the total Sum of Money in the Register is displayed in.
+   */
   private Label resTotalSum;
+  
+  /**
+   * The Label, where the revenue is displayed in.
+   */
+  private Label revenueSum;
+  
+  /**
+   * The BigDecimal, that stores the amount of Money in bills and 1€ and 2€ coins in 
+   * the register.
+   */
+  private BigDecimal euroSum;
+  
+  /**
+   * The BigDecimal, that stores the total Sum of Money, that is in the Register.
+   */
+  private BigDecimal totalSum;
+
+  /**
+   * The {@link KeyCombination} for Ctrl+Up.
+   */
   private final KeyCombination kcUp = new KeyCodeCombination(KeyCode.UP, 
       KeyCombination.CONTROL_DOWN);
+  
+  /**
+   * The {@link KeyCombination} for Ctrl+Down.
+   */
   private final KeyCombination kcDown = new KeyCodeCombination(KeyCode.DOWN, 
       KeyCombination.CONTROL_DOWN);
+  
+  /**
+   * The {@link KeyCombination} for Ctrl+Right.
+   */
   private final KeyCombination kcRight = new KeyCodeCombination(KeyCode.RIGHT, 
       KeyCombination.CONTROL_DOWN);
+  
+  /**
+   * The {@link KeyCombination} for Ctrl+Left.
+   */
   private final KeyCombination kcLeft = new KeyCodeCombination(KeyCode.LEFT, 
       KeyCombination.CONTROL_DOWN);
   
@@ -86,7 +142,6 @@ public class ExternalWindow extends Application {
      * Creates all needed TextFields and Labels for the user to input the counted Money.
      */
     for (int i = 0; i <= 7; i++) {
-      final int j = i;
       Label coinLabel = new Label(coinLabelText[i]);
       grid.add(coinLabel, 0, i);
       TextField coinTf = new TextField("0");
@@ -148,6 +203,9 @@ public class ExternalWindow extends Application {
       }
     }
     
+    /*
+     * Adds KeyHandler for each TextField.
+     */
     for (int i = 0; i <= 7; i++) {
       final int j = i;
       if (i == 0) {
@@ -255,6 +313,11 @@ public class ExternalWindow extends Application {
     GridPane.setColumnSpan(sep3, 11);
     grid.add(sep3, 0, 9);
     
+    /*
+     * Creates a small Grid, where the calculated Result of the User's Input is displayed in. The 
+     * Result will be displayed in 2 Labels each, hence another Grid. The Labels are added to this 
+     * Grid and it is added to the total Grid.
+     */
     GridPane smallGrid = new GridPane();
     smallGrid.setHgap(10);
     smallGrid.setVgap(10);
@@ -262,17 +325,39 @@ public class ExternalWindow extends Application {
     smallGrid.add(totalSum, 0, 0);
     resTotalSum = new Label("0,00€");
     smallGrid.add(resTotalSum, 1, 0);
+
+    /*
+     * Adds the Area, where the Information about the cash assets, that was in the register before 
+     * the Day and thus will be subtracted from the sum, will be displayed.
+     */
+    Label startMoney = new Label("Minus Kassenbestand:");
+    smallGrid.add(startMoney, 0, 1);
+    Label startMoneySum = new Label("-462,00€");
+    startMoneySum.getStyleClass().clear();
+    startMoneySum.getStyleClass().addAll("minusLabel");
+    smallGrid.add(startMoneySum, 1, 1);
+
+    /*
+     * Adds the Area where the Revenue will be displayed.
+     */
+    Label revenue = new Label("Einnahmen");
+    smallGrid.add(revenue, 0, 2);
+    revenueSum = new Label("-462,00€");
+    revenueSum.getStyleClass().clear();
+    revenueSum.getStyleClass().addAll("minusLabel");
+    smallGrid.add(revenueSum, 1, 2);
     
     grid.add(smallGrid, 0, 10);
     GridPane.setColumnSpan(smallGrid, 11);
-    
-    
-    
 
+    /*
+     * Creates a MenuBar, a MenuBar and a MenuItem, so the User can export the Data.
+     */
     final Menu exportMenu = new Menu("Export");
     final MenuItem exportItem = new MenuItem("Export...");
     exportItem.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN, 
         KeyCombination.SHIFT_DOWN));
+    exportItem.setOnAction(new ExportHandler(primaryStage, this));
     exportMenu.getItems().addAll(exportItem);
     MenuBar menu = new MenuBar();
     menu.getMenus().addAll(exportMenu);
@@ -300,23 +385,40 @@ public class ExternalWindow extends Application {
 
   /**
    * Calculates the total amount of Money in the External register.
+   * @since 1.0
    */
   public void calc() {
-    BigDecimal totalAmount = new BigDecimal("0.00");
+    /*
+     * Creates the necessary BigDecimals.
+     */
+    totalSum = new BigDecimal("0.00");
+    euroSum = new BigDecimal("0.00");
+    /*
+     * Adds all Sums to the BigDecimals.
+     */
     for (int i = 0; i <= 7; i++) {
       TextField tf = coinTfs[i];
+      /*
+       * Replaces all non-Digits from the TextField.
+       */
       String str = tf.getText().replaceAll("[\\D]", "").trim();
       try {
         int integ = Integer.parseInt(str);
         BigDecimal factor = getFactor(i);
         BigDecimal augend = factor.multiply(new BigDecimal(integ));
-        totalAmount = totalAmount.add(augend);
+        totalSum = totalSum.add(augend);
+        if (i >= 6) {
+          euroSum = euroSum.add(augend);
+        }
         resultLabelCoin[i].setText("= " + augend.toString().replace('.', ',') + "€");
       } catch (NumberFormatException nfe) {
         //This is fired, in case the TextField is empty.
         resultLabelCoin[i].setText("= 0,00€");
       }
       
+      /*
+       * Since there are only 7 sorts of bills, this has to be handled.
+       */
       if (i < 7) {
         tf = billTfs[i];
         str = tf.getText().replaceAll("[\\D]", "").trim();
@@ -324,22 +426,44 @@ public class ExternalWindow extends Application {
           int integ = Integer.parseInt(str);
           BigDecimal factor = getFactor(i + 8);
           BigDecimal augend = factor.multiply(new BigDecimal(integ));
-          totalAmount = totalAmount.add(augend);
+          totalSum = totalSum.add(augend);
+          euroSum = euroSum.add(augend);
           resultLabelBill[i].setText("= " + augend.toString().replace('.', ',') + "€");
         } catch (NumberFormatException nfe) {
-          nfe.printStackTrace();
+          //This is fired, in case the TextField is empty.
+          resultLabelCoin[i].setText("= 0,00€");
         }
       }
     }
-    final BigDecimal res = totalAmount;
+    /*
+     * Creates final variations of the BigDecimals, so their values can be entered into the Labels.
+     */
+    final BigDecimal totalRes = totalSum;
+    final BigDecimal revenueRes = totalSum.subtract(new BigDecimal("462.00"));
     Platform.runLater(new Runnable() {
       @Override
       public void run() {
-        resTotalSum.setText(res.toString().replace('.', ',') + "€");
+        resTotalSum.setText(totalRes.toString().replace('.', ',') + "€");
+        revenueSum.setText(revenueRes.toString().replace('.', ',') + "€");
+        if (revenueRes.compareTo(new BigDecimal("0.0")) < 0) {
+          revenueSum.getStyleClass().clear();
+          revenueSum.getStyleClass().addAll("minusLabel");
+        } else {
+          revenueSum.getStyleClass().clear();
+          revenueSum.getStyleClass().addAll("label");
+        }
       }     
     });
   }
   
+  /**
+   * Returns the factor for the given index.
+   * @param index The index of the TextField in the Array. For Bills, the Array-Index has to be 
+   *     added by 8.
+   * @return  The BigDecimal, that resembles the Factor to multiply the value of the TextField 
+   *     with the given index with.
+   * @since 1.0
+   */
   private BigDecimal getFactor(int index) {
     switch (index) {
       case 0: 
@@ -377,13 +501,73 @@ public class ExternalWindow extends Application {
         return new BigDecimal("0.00");   
     }
   }
-  
+
   /**
-   * Just for testing until this window is integrated to the Main Application.
-   * @param args  Unused.
+   * Returns the Array, that stores all Labels, where the Result of the Multiplication of their 
+   * corresponding TextFields and their Factor is stored in. This Array contains only the 
+   * Coin-TextFields. For the Bill-TextFields, use {@link #getResultLabelBill()}.
+   * @return {@link #resultLabelCoin}.
    * @since 1.0
    */
-  public static void main(String[] args) {
-    ExternalWindow.launch(args);
+  public Label[] getResultLabelCoin() {
+    return resultLabelCoin;
+  }
+
+  /**
+   * Returns the Array, that stores all TextFields for the Coins.
+   * @return {@link #coinTfs}.
+   * @since 1.0
+   */
+  public TextField[] getCoinTfs() {
+    return coinTfs;
+  }
+
+  /**
+   * Returns the Array, that stores all TextFields for the Bills.
+   * @return {@link #billTfs}.
+   * @since 1.0
+   */
+  public TextField[] getBillTfs() {
+    return billTfs;
+  }
+
+  /**
+   * Returns the Array, that stores all Labels, where the Result of the Multiplication of their 
+   * corresponding TextFields and their Factor is stored in. This Array contains only the 
+   * Bill-TextFields. For the Coin-TextFields, use {@link #getResultLabelCoin()}.
+   * @return {@link #resultLabelBill}.
+   * @since 1.0
+   */
+  public Label[] getResultLabelBill() {
+    return resultLabelBill;
+  }
+
+  /**
+   * Returns the Label, that displays the Revenue, that was made that day. This is calculated 
+   * by (totalSum - 462€).
+   * @return {@link #revenueSum}.
+   * @since 1.0
+   */
+  public Label getRevenueSum() {
+    return revenueSum;
+  }
+  
+  /**
+   * Returns the BigDecimal, that stores the amount of Money in bills and 1€ and 2€ coins in 
+   * the register.
+   * @return {@link #euroSum}.
+   * @since 1.0
+   */
+  public BigDecimal getEuroSum() {
+    return euroSum;
+  }
+
+  /**
+   * Returns the BigDecimal, that stores the total Sum of Money, that is in the Register.
+   * @return {@link #totalSum}.
+   * @since 1.0
+   */
+  public BigDecimal getTotalSum() {
+    return totalSum;
   }
 }

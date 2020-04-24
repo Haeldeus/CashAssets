@@ -131,7 +131,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     /*
      * Creates the Second Row with the Cell, where the Title for this Sheet is displayed in.
      */
-    row = sheet.createRow(1);
+    row = sheet.createRow(2);
     ExportUtils.createCell(row, 2, "Trinkgeld", styles.get(ExportUtils.STANDARD_BLACK), null, 
         false);
     
@@ -145,7 +145,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
      * Creates the Area, where the total Sum of Tip is displayed, as well as the Tip per Hour 
      * worked.
      */
-    row = sheet.createRow(3);
+    row = sheet.createRow(4);
     ExportUtils.createCell(row, 2, "Summe Tip:", styles.get(ExportUtils.STANDARD_BLACK), null, 
         false);
     ExportUtils.createCell(row, 3, primary.getTfTip().getText() + "€", 
@@ -158,7 +158,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     /*
      * Creates the Area where the Tip for each Staff Member is displayed
      */
-    row = sheet.createRow(5);
+    row = sheet.createRow(6);
     ExportUtils.createCell(row, 1, "Mitarbeiter:", styles.get(ExportUtils.RED_WITH_BORDERS), 
         null, false);
     ExportUtils.createCell(row, 2, "Stunden:", styles.get(ExportUtils.RED_WITH_BORDERS), null, 
@@ -166,7 +166,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     ExportUtils.createCell(row, 3, "Trinkgeld:", styles.get(ExportUtils.RED_WITH_BORDERS), null, 
         false);
     
-    int index = createData(sheet, row, styles, 6);
+    int index = createData(sheet, row, styles, 7);
     
     ExportUtils.createSignatureArea(sheet, row, styles, index + 2);
     /*
