@@ -1,4 +1,13 @@
 #Begin Updates File
+0.94 Änderungen und Erweiterungen
+- Außentheken-Rechner fertiggestellt.
+- Tastenkombinationen hinzugefügt. Quasi alle Menü-Optionen haben nun einen Shortcut.
+- Möglichkeit hinzugefügt, Formeln in die Excel-Tabelle hinzuzufügen, statt nur Text Einträge. Dies wird möglich sein, sobald der Rechner für den Bar-Kassenschnitt umdesignt wurde.
+- Durch das drücken von Strg + Pfeiltaste kann nun ebenfalls zwischen den TextFeldern gewechselt werden.
+- "Name/Vorname" in "Name, Vorname" geändert, was offiziellen Dokumenten entspricht.
+- Der Export von der Berechnung des Tips ist nun an die Norm der anderen Exports angepasst, indem eine leere Zeile an die richtige Stelle eingefügt wurde.
+#New Line#
+#New Line#
 0.93 Änderungen und Erweiterungen
 #New Line#
 - Tip-Rechner fertiggestellt.

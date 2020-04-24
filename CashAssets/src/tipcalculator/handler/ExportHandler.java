@@ -54,7 +54,7 @@ public class ExportHandler implements EventHandler<ActionEvent> {
   /**
    * A Constructor for the Handler. Will set the given Stage as {@link #primaryStage}. 
    * @param primaryStage  The Stage, that will be set as primary Stage.
-   * @param primary The TipWIndow, which the MenuItem is part of.
+   * @param primary The TipWindow, which the MenuItem is part of.
    * @param staffGrid The GridPane, where all the Staff Members were added to.
    * @since 1.0
    */

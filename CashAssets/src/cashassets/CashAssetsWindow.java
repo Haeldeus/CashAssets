@@ -34,6 +34,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -318,6 +320,7 @@ public class CashAssetsWindow extends Application {
      */
     Label cashNecessity = new Label("Kassenschnitt Bar:");
     if (!simple) {
+      cashNecessity.setMinWidth(120);
       GridPane.setColumnSpan(cashNecessity, 2);
     } else {
       GridPane.setColumnSpan(cashNecessity, 3);
@@ -514,164 +517,150 @@ public class CashAssetsWindow extends Application {
    *     sequence of selected TextFields is different.
    * @since 1.0
    */
-  private void addKeyHandlers(ComponentStorer cs, boolean simple) {
+  private void addKeyHandlers(ComponentStorer cs, boolean simple) {  
     /*
-     * Adds KeyEventHandler to each TextField, so they change focus whenever the Enter Key was 
-     * pressed.
+     * The KeyCombinations for switching the TextFields with Control + Arrow
      */
-    if (simple) {    
+    final KeyCombination kcUp = new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN);
+    final KeyCombination kcDown = new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN);
+    final KeyCombination kcRight = new KeyCodeCombination(KeyCode.RIGHT, 
+        KeyCombination.CONTROL_DOWN);
+    final KeyCombination kcLeft = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.CONTROL_DOWN);
+    
+    /*
+     * Assigning KeyHandlers to each TextField.
+     */
+    if (simple) {
       cs.getYear().setOnKeyPressed(new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent event) {
           if (event.getCode() == KeyCode.ENTER) {
             cs.getCoinTextFields()[7].requestFocus();
+          } else if (kcDown.match(event)) {
+            cs.getBillsTextFields()[0].requestFocus();
           }
         }     
       });
-      cs.getCoinTextFields()[7].setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getBillsTextFields()[0].requestFocus();
-          }
-        }      
-      });
-    } else {    
+    } else {
       cs.getYear().setOnKeyPressed(new EventHandler<KeyEvent>() {
         @Override
         public void handle(KeyEvent event) {
           if (event.getCode() == KeyCode.ENTER) {
             cs.getCoinTextFields()[0].requestFocus();
+          } else if (kcDown.match(event)) {
+            cs.getBillsTextFields()[0].requestFocus();
           }
         }     
       });
-      cs.getCoinTextFields()[0].setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getCoinTextFields()[1].requestFocus();
-          }
-        }      
-      });
-      cs.getCoinTextFields()[1].setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getCoinTextFields()[2].requestFocus();
-          }
-        }      
-      });
-      cs.getCoinTextFields()[2].setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getCoinTextFields()[3].requestFocus();
-          }
-        }      
-      });
-      cs.getCoinTextFields()[3].setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getCoinTextFields()[4].requestFocus();
-          }
-        }      
-      });
-      cs.getCoinTextFields()[4].setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getCoinTextFields()[5].requestFocus();
-          }
-        }      
-      });
-      cs.getCoinTextFields()[5].setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getCoinTextFields()[6].requestFocus();
-          }
-        }      
-      });
-      cs.getCoinTextFields()[6].setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getCoinTextFields()[7].requestFocus();
-          }
-        }      
-      });
-      cs.getCoinTextFields()[7].setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getBillsTextFields()[0].requestFocus();
-          }
-        }      
-      });
     }
     
-    cs.getBillsTextFields()[0].setOnKeyPressed(new EventHandler<KeyEvent>() {
-      @Override
-      public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-          cs.getBillsTextFields()[1].requestFocus();
+    for (int i = 0; i <= 7; i++) {
+      final int j = i;
+      if (i == 0) {
+        if (!simple) {
+          cs.getCoinTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+              if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
+                cs.getCoinTextFields()[j + 1].requestFocus();
+              } else if (kcUp.match(event)) {
+                cs.getCoinTextFields()[cs.getCoinTextFields().length - 1].requestFocus();
+              } else if (kcRight.match(event)) {
+                cs.getBillsTextFields()[j].requestFocus();
+              }
+            }     
+          });
+        }
+        
+        cs.getBillsTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
+          @Override
+          public void handle(KeyEvent event) {
+            if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
+              cs.getBillsTextFields()[j + 1].requestFocus();
+            } else if (kcUp.match(event)) {
+              cs.getPurseTextField().requestFocus();
+            } else if (kcLeft.match(event)) {
+              if (!simple) {
+                cs.getCoinTextFields()[j].requestFocus();
+              }
+            }
+          }     
+        });
+      } else if (i == 7) {
+        cs.getCoinTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
+          @Override
+          public void handle(KeyEvent event) {
+            if (event.getCode() == KeyCode.ENTER) {
+              cs.getBillsTextFields()[0].requestFocus();
+            } else if (kcUp.match(event)) {
+              cs.getCoinTextFields()[j - 1].requestFocus();
+            } else if (kcDown.match(event)) {
+              cs.getCoinTextFields()[0].requestFocus();
+            } else if (kcRight.match(event)) {
+              cs.getPurseTextField().requestFocus();
+            }
+          }     
+        });
+        
+      } else {
+        cs.getCoinTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
+          @Override
+          public void handle(KeyEvent event) {
+            if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
+              cs.getCoinTextFields()[j + 1].requestFocus();
+            } else if (kcUp.match(event)) {
+              cs.getCoinTextFields()[j - 1].requestFocus();
+            } else if (kcRight.match(event)) {
+              cs.getBillsTextFields()[j].requestFocus();
+            }
+          }     
+        });
+        
+        if (i == 6) {
+          cs.getBillsTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+              if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
+                cs.getPurseTextField().requestFocus();
+              } else if (kcUp.match(event)) {
+                cs.getBillsTextFields()[j - 1].requestFocus();
+              } else if (kcLeft.match(event)) {
+                if (!simple) {
+                  cs.getCoinTextFields()[j].requestFocus();
+                }
+              }
+            }     
+          });
+        } else {
+          cs.getBillsTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+              if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
+                cs.getBillsTextFields()[j + 1].requestFocus();
+              } else if (kcUp.match(event)) {
+                cs.getBillsTextFields()[j - 1].requestFocus();
+              } else if (kcLeft.match(event)) {
+                if (!simple) {
+                  cs.getCoinTextFields()[j].requestFocus();
+                }
+              }
+            }     
+          });
         }
       }
-    });
-    cs.getBillsTextFields()[1].setOnKeyPressed(new EventHandler<KeyEvent>() {
-      @Override
-      public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-          cs.getBillsTextFields()[2].requestFocus();
-        }
-      }
-    });
-    cs.getBillsTextFields()[2].setOnKeyPressed(new EventHandler<KeyEvent>() {
-      @Override
-      public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-          cs.getBillsTextFields()[3].requestFocus();
-        }
-      }
-    });
-    cs.getBillsTextFields()[3].setOnKeyPressed(new EventHandler<KeyEvent>() {
-      @Override
-      public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-          cs.getBillsTextFields()[4].requestFocus();
-        }
-      }
-    });
-    cs.getBillsTextFields()[4].setOnKeyPressed(new EventHandler<KeyEvent>() {
-      @Override
-      public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-          cs.getBillsTextFields()[5].requestFocus();
-        }
-      }
-    });
-    cs.getBillsTextFields()[5].setOnKeyPressed(new EventHandler<KeyEvent>() {
-      @Override
-      public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-          cs.getBillsTextFields()[6].requestFocus();
-        }
-      }
-    });
-    cs.getBillsTextFields()[6].setOnKeyPressed(new EventHandler<KeyEvent>() {
-      @Override
-      public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-          cs.getPurseTextField().requestFocus();
-        }
-      }
-    });
+    }
+    
     cs.getPurseTextField().setOnKeyPressed(new EventHandler<KeyEvent>() {
       @Override
       public void handle(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
           cs.getCashNecessityEuroTextField().requestFocus();
+        } else if (kcDown.match(event)) {
+          cs.getBillsTextFields()[0].requestFocus();
+        } else if (kcUp.match(event)) {
+          cs.getBillsTextFields()[cs.getBillsTextFields().length - 1].requestFocus();
+        } else if (kcLeft.match(event)) {
+          cs.getCoinTextFields()[7].requestFocus();
         }
       }      
     });
@@ -681,6 +670,14 @@ public class CashAssetsWindow extends Application {
       public void handle(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
           cs.getYear().requestFocus();
+        } else if (kcUp.match(event) || kcLeft.match(event)) {
+          cs.getCoinTextFields()[7].requestFocus();
+        } else if (kcDown.match(event)) {
+          if (!simple) {
+            cs.getCoinTextFields()[0].requestFocus();
+          }
+        } else if (kcRight.match(event)) {
+          cs.getPurseTextField().requestFocus();
         }
       }      
     });
