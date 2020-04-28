@@ -1,4 +1,9 @@
 #Begin Updates File
+0.95 Änderungen und Erweiterungen
+- Kassenbestands-Rechner umdesignt
+- Beim Export sollte nun ein Bereich richtigerweise aus zwei statt einer Zelle bestehen.
+#New Line#
+#New Line#
 0.94 Änderungen und Erweiterungen
 - Außentheken-Rechner fertiggestellt.
 - Tastenkombinationen hinzugefügt. Quasi alle Menü-Optionen haben nun einen Shortcut.

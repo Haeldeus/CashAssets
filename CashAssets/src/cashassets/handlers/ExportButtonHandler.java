@@ -1,12 +1,6 @@
 package cashassets.handlers;
 
-import cashassets.ComponentStorer;
-
 import java.util.HashMap;
-
-import javafx.event.EventHandler;
-import javafx.scene.control.ComboBox;
-import javafx.scene.input.MouseEvent;
 
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -14,26 +8,21 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import cashassets.NewCashAssetsWindow;
+
+import javafx.event.EventHandler;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 import util.ExportUtils;
 
-/**
- * The Handler for the Export Button.
- * @author Haeldeus
- * @version 1.0
- */
 public class ExportButtonHandler implements EventHandler<MouseEvent> {
 
   /**
-   * The Container, that holds the Button, this ActionListener was added to.
-   * In this case, it's the contentPane of the JFrame.
+   * The NewCashAssetsWindow, that opened the Export Stage, where this Button was clicked.
    */
-  private final ComponentStorer componentStorer;
-  
-  /**
-   * The boolean value that determines, if the simple Design is used. In this case, 
-   * there are a few Cells that have to be created differently.
-   */
-  private final boolean simple;
+  private final NewCashAssetsWindow primary;
   
   /**
    * The boolean value that determines, if the Directory should be opened after exporting.
@@ -41,291 +30,265 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
   private final boolean open;
   
   /**
-   * Creates a new Handler for the Export Button. The componentStorer is used to 
-   * access the TextFields and Labels in the primaryStage of the Application.
-   * @param componentStorer The ComponentStorer of the Application, which handles all 
-   *     Components, that are of use for this Handler.
-   * @param simple  The boolean value, if the simple design is used.
-   * @param open  The boolean value, if the directory should be opened.
+   * The ComboBox, where the user entered the Day of the newly created File. This has to be stored, 
+   * since the User enters the Value after creating this Handler. So the Handler needs to have a 
+   * way to access this ComboBox to get the date.
+   */
+  private ComboBox<String> dayBox;
+  
+  /**
+   * The ComboBox, where the user entered the Month of the newly created File. This has to be 
+   * stored, since the User enters the Value after creating this Handler. So the Handler needs 
+   * to have a way to access this ComboBox to get the date.
+   */
+  private ComboBox<String> monthBox;
+  
+  /**
+   * The TextField, where the user entered the Year of the newly created File. This has to be 
+   * stored, since the User enters the Value after creating this Handler. So the Handler needs to 
+   * have a way to access this TextField to get the date.
+   */
+  private TextField tfYear;
+  
+  /**
+   * The Stage, this Button is part of. Used to close the dialog after exporting.
+   */
+  private final Stage dialog;
+  
+  /**
+   * The Constructor for this Handler. Sets all Fields to the given values.
+   * @param primary The NewCashAssetsWindow, that opened the Export Stage, where this Button was 
+   *      clicked.
+   *      Used to get all needed Components.
+   * @param open  The boolean value, if the Directory should be opened after exporting the File.
+   * @param dayBox  The ComboBox, where the user entered the Day of the newly created File. This 
+   *      has to be stored, since the User enters the Value after creating this Handler. So the 
+   *      Handler needs to have a way to access this ComboBox to get the date.
+   * @param monthBox  The ComboBox, where the user entered the Month of the newly created File. 
+   *      This has to be stored, since the User enters the Value after creating this Handler. So 
+   *      the Handler needs to have a way to access this ComboBox to get the date.
+   * @param tfYear  The TextField, where the user entered the Year of the newly created File. 
+   *      This has to be stored, since the User enters the Value after creating this Handler. So 
+   *      the Handler needs to have a way to access this TextField to get the date.
+   * @param dialog  The Dialog Stage. this Button is part of. This is used to close the dialog 
+   *     after exporting.
    * @since 1.0
    */
-  public ExportButtonHandler(ComponentStorer componentStorer, boolean simple, boolean open) {
-    this.componentStorer = componentStorer;
-    this.simple = simple;
+  public ExportButtonHandler(NewCashAssetsWindow primary, boolean open, 
+      ComboBox<String> dayBox, ComboBox<String> monthBox, TextField tfYear, Stage dialog) {
+    this.primary = primary;
     this.open = open;
+    this.dayBox = dayBox;
+    this.monthBox = monthBox;
+    this.tfYear = tfYear;
+    this.dialog = dialog;
   }
 
   @Override
   public void handle(MouseEvent arg0) {
-    //TODO Shorten this Method with for-loops for the actual input of the User to the Excel Sheet.
-
-    //Create a new Workbook
-    XSSFWorkbook workbook = new XSSFWorkbook();
-    
-    //Create a new Sheet for the Excel File.
-    XSSFSheet sheet = workbook.createSheet(getDate().replaceAll("\\.", " "));
-    
-    //Basic Sheet Settings
-    for (int i = 0; i <= 7; i++) {
-      sheet.setColumnWidth(i, 3900);  //Setting Column Width
-    }
-    sheet.getPrintSetup().setLandscape(true); //Setting Landscape View
-
     /*
-     * Creates the Styles for this Sheet.
+     * Creates a new Workbook to edit the Excel File. In this Workbook, a new Sheet is created as 
+     * well.
      */
-    final HashMap<Integer, XSSFCellStyle> styles = ExportUtils.getStyles(workbook);
-    final XSSFCellStyle csStandard = styles.get(ExportUtils.STANDARD_BLACK);
-    final XSSFCellStyle csRed = styles.get(ExportUtils.STANDARD_RED);
-    final XSSFCellStyle csRedBorder = styles.get(ExportUtils.RED_WITH_BORDERS);
-    final XSSFCellStyle csStandardBorder = styles.get(ExportUtils.BLACK_WITH_BORDERS);
+    XSSFWorkbook workbook = new XSSFWorkbook();
+    XSSFSheet sheet = workbook.createSheet(getDate());
     
-    //Create the Header
+    /*
+     * Basic Sheet Settings. Setting the Column width to 3cm and enables Landscape View.
+     */
+    for (int i = 0; i <= 7; i++) {
+      sheet.setColumnWidth(i, 3900);
+    }
+    sheet.getPrintSetup().setLandscape(true);
+    
+    /*
+     * Creates all Styles in ExportUtils and saves them in a HashMap.
+     */
+    HashMap<Integer, XSSFCellStyle> styles = ExportUtils.getStyles(workbook);
+    
+    /*
+     * Creates the Header.
+     */
     sheet.addMergedRegion(new CellRangeAddress(0, 0, 2, 5));
     XSSFRow row = sheet.createRow(0);
-    ExportUtils.createCell(row, 2, ExportUtils.EXPORT_HEADER, csStandard, null, false);
+    ExportUtils.createCell(row, 2, ExportUtils.EXPORT_HEADER, styles.get(ExportUtils
+        .STANDARD_BLACK), null, false);
     
-    //Create the second Row
-    row = sheet.createRow(1);
+    /*
+     * Creates the Second Row with the Cell, where the Title for this Sheet is displayed in.
+     */
+    row = sheet.createRow(2);
+    ExportUtils.createCell(row, 2, "Zählprotokoll Bar", 
+        styles.get(ExportUtils.STANDARD_BLACK), null, false);
     
-    ExportUtils.createCell(row, 2, "Zählprotokoll Bar", csStandard, null, false);
-    ExportUtils.createCell(row, 4, "Datum:", csStandard, null, false);
-    ExportUtils.createCell(row, 5, getDate(), csStandard, null, false);
+    /*
+     * Creates the Date Cells.
+     */
+    ExportUtils.createDateCells(row, 4, styles.get(ExportUtils.STANDARD_BLACK), 
+        getDate().replaceAll("x", "\\."));
     
-    //Create the fourth Row
-    row = sheet.createRow(3);
-    sheet.addMergedRegion(new CellRangeAddress(3, 3, 2, 3));
     
-    ExportUtils.createCell(row, 2, "Gezählte Geldbörsen:", csStandard, null, false);
-    ExportUtils.createCell(row, 4, componentStorer.getPurseTextField().getText(), csStandard, 
+    /*
+     * Creates the Row, where the amount of counted purses is displayed.
+     */
+    sheet.addMergedRegion(new CellRangeAddress(4, 4, 2, 3));
+    row = sheet.createRow(4);
+    
+    ExportUtils.createCell(row, 2, "Gezählte Geldbörsen:", styles.get(ExportUtils.STANDARD_BLACK), 
         null, false);
+    ExportUtils.createCell(row, 4, primary.getPurses().getText(), 
+        styles.get(ExportUtils.STANDARD_BLACK), null, false);
     
-    //Create the sixth Row
-    row = sheet.createRow(5);
-    
-    ExportUtils.createCell(row, 1, "Einheit", csRedBorder, null, false);
-    ExportUtils.createCell(row, 2, "Stück", csRedBorder, null, false);
-    ExportUtils.createCell(row, 3, "Betrag", csRedBorder, null, false);
-    ExportUtils.createCell(row, 4, "Einheit", csRedBorder, null, false);
-    ExportUtils.createCell(row, 5, "Stück", csRedBorder, null, false);
-    ExportUtils.createCell(row, 6, "Betrag", csRedBorder, null, false);
-    
-    //Create the seventh Row
+    /*
+     * Creates the Area for the Data, that was given by the User.
+     */
     row = sheet.createRow(6);
+    int index = createData(sheet, row, styles, 6);
+    row = sheet.createRow(index);
     
-    ExportUtils.createCell(row, 1, "1ct", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 2, componentStorer.getCoinTextFields()[0].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinResults()[0].getText().substring(2), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 4, "5€", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 5, componentStorer.getBillsTextFields()[0].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getBillsResults()[0].getText().substring(2), 
-        csStandardBorder, null, false);
+    /*
+     * Creates the Signature Area.
+     */
+    ExportUtils.createSignatureArea(sheet, row, styles, index);
     
-    //Create the eighth Row
-    row = sheet.createRow(7);
-    
-    ExportUtils.createCell(row, 1, "2ct", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 2, componentStorer.getCoinTextFields()[1].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinResults()[1].getText().substring(2), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 4, "10€", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 5, componentStorer.getBillsTextFields()[1].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getBillsResults()[1].getText().substring(2), 
-        csStandardBorder, null, false);
-    
-    //Create the ninth Row
-    row = sheet.createRow(8);
-    
-    ExportUtils.createCell(row, 1, "5ct", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 2, componentStorer.getCoinTextFields()[2].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinResults()[2].getText().substring(2), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 4, "20€", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 5, componentStorer.getBillsTextFields()[2].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getBillsResults()[2].getText().substring(2), 
-        csStandardBorder, null, false);
-    
-    //Create the tenth Row
-    row = sheet.createRow(9);
-    
-    ExportUtils.createCell(row, 1, "10ct", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 2, componentStorer.getCoinTextFields()[3].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinResults()[3].getText().substring(2), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 4, "50€", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 5, componentStorer.getBillsTextFields()[3].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getBillsResults()[3].getText().substring(2), 
-        csStandardBorder, null, false);
-    
-    //Create the eleventh Row
-    row = sheet.createRow(10);
-    
-    ExportUtils.createCell(row, 1, "20ct", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 2, componentStorer.getCoinTextFields()[4].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinResults()[4].getText().substring(2), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 4, "100€", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 5, componentStorer.getBillsTextFields()[4].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getBillsResults()[4].getText().substring(2), 
-        csStandardBorder, null, false);
-    
-    //Create the twelfth Row
-    row = sheet.createRow(11);
-    
-    ExportUtils.createCell(row, 1, "50ct", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 2, componentStorer.getCoinTextFields()[5].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinResults()[5].getText().substring(2), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 4, "200€", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 5, componentStorer.getBillsTextFields()[5].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getBillsResults()[5].getText().substring(2), 
-        csStandardBorder, null, false);
-    
-    //Create the thirteenth Row
-    row = sheet.createRow(12);
-    
-    ExportUtils.createCell(row, 1, "1€", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 2, componentStorer.getCoinTextFields()[6].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinResults()[6].getText().substring(2), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 4, "500€", csStandardBorder, null, false);
-    ExportUtils.createCell(row, 5, componentStorer.getBillsTextFields()[6].getText(), 
-        csStandardBorder, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getBillsResults()[6].getText().substring(2), 
-        csStandardBorder, null, false);
-    
-    //Create the fourteenth Row
-    row = sheet.createRow(13);
-    
-    ExportUtils.createCell(row, 1, "2€", csStandardBorder, null, false);
-    if (!simple) {
-      ExportUtils.createCell(row, 2, componentStorer.getCoinTextFields()[7].getText(), 
-          csStandardBorder, null, false);
-      ExportUtils.createCell(row, 3, componentStorer.getCoinResults()[7].getText().substring(2), 
-          csStandardBorder, null, false);
-    } else {
-      ExportUtils.createCell(row, 2, "0", csStandardBorder, null, false);
-      ExportUtils.createCell(row, 3, "0,00€", csStandardBorder, null, false);
-    }
-    for (int i = 4; i <= 6; i++) {
-      ExportUtils.createCell(row, i, null, csStandardBorder, null, false);
-    }
-    
-    //Create the fifteenth Row
-    row = sheet.createRow(14);
-    
-    ExportUtils.createCell(row, 2, "Kleingeld:", csStandard, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinSumLabel().getText(), csStandard, null, 
-        false);
-    ExportUtils.createCell(row, 5, "Scheine:", csStandard, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getBillSumLabel().getText(), csStandard, null, 
-        false);
-    
-    //Create the seventeenth Row
-    row = sheet.createRow(16);
-    
-    ExportUtils.createCell(row, 2, "Muss Kleingeld:", csStandard, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinNecessityLabel().getText(), csStandard, 
-        null, false);
-    ExportUtils.createCell(row, 5, "Gesamtsumme:", csRed, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getCoinCleanedLabel().getText(), csStandard, 
-        null, false);
-    
-    //Create the nineteenth Row
-    row = sheet.createRow(18);
-    
-    ExportUtils.createCell(row, 2, "Differenz Kleingeld:", csStandard, null, false);
-    ExportUtils.createCell(row, 3, componentStorer.getCoinDifferenceLabel().getText(), csStandard, 
-        csRed, true);
-    ExportUtils.createCell(row, 5, "Kassenschnitt Bar:", csStandard, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getSumLabel().getText(), csStandard, 
-        null, false);
-    
-    // Create the twenty-first Row
-    row = sheet.createRow(20);
-    
-    ExportUtils.createCell(row, 5, "Rest Tip:", csStandard, null, false);
-    ExportUtils.createCell(row, 6, componentStorer.getTipSumLabel().getText(), csStandard, csRed, 
-        true);
-    
-    ExportUtils.createSignatureArea(sheet, row, styles, 22);
-    
-    //Creating the Excel-Sheet.
-    String year = componentStorer.getYear().getText().replaceAll("\\D+", "").substring(0, 4);
-    String month = getMonth();
-    String date = getDate().replaceAll("\\.", "x");
+    /*
+     * Exporting the created Excel File.
+     */
+    String date = getDate();
+    String year = date.substring(date.lastIndexOf('x') + 1);
+    String month = monthBox.getSelectionModel().getSelectedItem();
     ExportUtils.export(workbook, "Kassenbestand", date, year, month, open);
-  }
-
-  /**
-   * Returns a String with the Name of the Month that is selected in the MonthBox.
-   * @return  A String with the Name of the Month that was selected in the Month-Box.
-   * @since 1.0
-   */
-  private String getMonth() {
-    return componentStorer.getMonthBox().getSelectionModel().getSelectedItem();
+    dialog.close();
+    
+    System.out.println("TODO");
   }
   
-
   /**
-   * Returns the Date, the User has entered in the Stage.
-   * @return A Single String of the Form "dd.mm.yyyy"
+   * Creates the Data Area, where the result of the calculation is displayed in the Excel Sheet. 
+   * Returns the index of the Row below the created area.
+   * @param sheet The Sheet, the area will be created in.
+   * @param row The XSSFRow. This is used to prevent creating a new Object for each Row to be 
+   *     created. Has to be set to represent the given index beforehand.
+   * @param styles  All possible CellStyles in an HashMap of Integer and XSSFCellStyle.
+   * @param index The index, where to start the creation of the new Area.
+   * @return  An Integer value, that represents the index of the row below the created area.
+   * @since 1.0
+   */
+  private int createData(XSSFSheet sheet, XSSFRow row, 
+      HashMap<Integer, XSSFCellStyle> styles, int index) {
+    int newIndex = index;
+    boolean simple = primary.isSimple();
+    
+    String[] headerData = {"Einheit", "Stück", "Betrag"};
+    for (int i = 0; i < 6; i++) {
+      ExportUtils.createCell(row, i + 1, headerData[i % 3], 
+          styles.get(ExportUtils.RED_WITH_BORDERS), null, false);
+    }
+    
+    newIndex++;
+    String[] billIds = {"5€:", "10€:", "20€:", "50€:", "100€:", "200€:", "500€:"};
+    String[] coinIds = {"1ct:", "2ct:", "5ct:", "10ct:", "20ct:", "50ct:", "1€:", "2€:"};
+    double[] factors = {0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2};
+    for (int i = 0; i <= 7; i++) {
+      row = sheet.createRow(newIndex);
+      ExportUtils.createCell(row, 1, coinIds[i], styles.get(ExportUtils.BLACK_WITH_BORDERS), null, 
+          false);
+      if (!simple) {
+        ExportUtils.createCell(row, 2, primary.getCoinFields().get(i).getText(), 
+            styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+        ExportUtils.createCell(row, 3, primary.getCoinFieldRes().get(i).getText(), 
+            styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+      } else {
+        ExportUtils.createCell(row, 2, "0", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, 
+            false);
+        ExportUtils.createFormulaCell(row, 3, "C" + (index + 2 + i) + "*" + factors[i]
+            + "&\"€\"" , styles.get(ExportUtils.BLACK_WITH_BORDERS));
+      }
+      ExportUtils.createCell(row, 4, billIds[i], styles.get(ExportUtils.BLACK_WITH_BORDERS), 
+          null, false);
+      ExportUtils.createCell(row, 5, primary.getBillFields().get(i).getText(), 
+          styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+      ExportUtils.createCell(row, 3, primary.getBillFieldRes().get(i).getText(), 
+          styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+      
+      newIndex++;
+    }
+    return newIndex + 1;
+  }
+  
+  /**
+   * Returns a String, that describes the Date the User entered in the pattern DDxMMxYYYY, so the 
+   * Calculation has a consistent Value for the Date.
+   * @return  The Date, that the User entered in the pattern DDxMMxYYYY
    * @since 1.0
    */
   private String getDate() {
-    String res = "";
-    ComboBox<String> box = componentStorer.getDayBox();
-    if (Integer.parseInt(box.getSelectionModel().getSelectedItem().replaceAll("\\.", "")) < 10) {
-      res = res.concat("0" + box.getSelectionModel().getSelectedItem());
-    } else {
-      res = res.concat("" + box.getSelectionModel().getSelectedItem());
+    /*
+     * Adds the selected Day to the String, that will be returned at the end of the Program. 
+     * If the Day is < 10 then res.length() will be 2 and a '0' has to be placed in front of the 
+     * Day, so the pattern of DDxMMxYYYY will be ensured. 
+     */
+    String res = dayBox.getSelectionModel().getSelectedItem().replace('.', 'x');
+    if (res.length() == 2) {
+      res = "0".concat(res);
     }
-    res = res.concat(getStringForMonth() + ".");
-    res = res.concat("" + componentStorer.getYear().getText().replaceAll("\\D+", "")
-        .substring(0, 4));
-    return res;
-  }
-
-  /**
-   * Returns a String, that resembles the numerical value of the selected Month in the 
-   * MonthBox. <br>
-   * E.g. Januar equals 01, Februar equals 02, etc.
-   * @return  The numerical value of the selected Month as a String.
-   * @since 1.0
-   */
-  private String getStringForMonth() {
-    ComboBox<String> box = componentStorer.getMonthBox();
-    String month = box.getSelectionModel().getSelectedItem();
-    switch (month) {
-      case "Januar": return "01";
-      case "Februar": return "02";
-      case "März": return "03";
-      case "April": return "04";
-      case "Mai": return "05";
-      case "Juni": return "06";
-      case "Juli": return "07";
-      case "August": return "08";
-      case "September": return "09";
-      case "Oktober": return "10";
-      case "November": return "11";
-      case "Dezember": return "12";
+    /*
+     * Concats the numerical value of the selected Month to the String to be returned.
+     */
+    switch (monthBox.getSelectionModel().getSelectedItem()) {
+      case "Januar": 
+        res = res.concat("01");
+        break;
+      case "Februar": 
+        res = res.concat("02");
+        break;
+      case "März": 
+        res = res.concat("03");
+        break;
+      case "April": 
+        res = res.concat("04");
+        break;
+      case "Mai": 
+        res = res.concat("05");
+        break;
+      case "Juni": 
+        res = res.concat("06");
+        break;
+      case "Juli": 
+        res = res.concat("07");
+        break;
+      case "August": 
+        res = res.concat("08");
+        break;
+      case "September": 
+        res = res.concat("09");
+        break;
+      case "Oktober": 
+        res = res.concat("10");
+        break;
+      case "November": 
+        res = res.concat("11");
+        break;
+      case "Dezember": 
+        res = res.concat("12");
+        break;
       default: 
         System.err.println("Error while parsing the Month...");
-        return "00";
+        res = res.concat("00");
+        break;
     }
+    res = res.concat("x");
+    /*
+     * Concats the Year to the String to be returned.
+     */
+    if (tfYear.getText().length() > 4) {
+      res = res.concat(tfYear.getText().substring(0, 4));
+    } else if (tfYear.getText().length() <= 0) {
+      System.err.println("Error while parsing the Year...");
+      res = res.concat("0000");
+    } else {
+      res = res.concat(tfYear.getText());
+    }
+    return res;
   }
 }

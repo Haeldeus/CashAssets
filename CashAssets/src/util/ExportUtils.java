@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -235,8 +236,8 @@ public class ExportUtils {
      * Creates a new Row. This Row will have an Info-Cell and a place, where the User can enter 
      * his signature.
      */
-    row = sheet.createRow(rowIndex);
-    sheet.addMergedRegion(new CellRangeAddress(27, 27, 1, 2));    
+    sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 2)); 
+    row = sheet.createRow(rowIndex);   
     createCell(row, 1, "Gezählt von Franz Weyher:", styles.get(STANDARD_BLACK), null, false);
     createCell(row, 3, null, styles.get(BLACK_WITH_BOTTOM_BORDER), null, false);
     createCell(row, 4, null, styles.get(BLACK_WITH_BOTTOM_BORDER), null, false);
@@ -320,14 +321,17 @@ public class ExportUtils {
    * @see XSSFRow
    * @see XSSFCellStyle
    */
-  public static void createFormulaCell(XSSFRow row, int column, String formula, 
-      XSSFCellStyle style) {
+  public static void createFormulaCell(XSSFRow row, int column, String formula, XSSFCellStyle style) {
     
     /*
      * Creates a new Cell at the given column in the given row.
      */
     XSSFCell cell = row.createCell(column);
     
+    /*
+     * Sets the Cell Type to Formula, so it doesn't display it's Data as a String, but instead 
+     * treads it as a formula.
+     */
     cell.setCellType(CellType.FORMULA);
     
     /*
@@ -335,7 +339,7 @@ public class ExportUtils {
      * created Cell.
      */
     if (formula != null) {
-      cell.setCellValue(formula);
+      cell.setCellFormula(formula);
     }
     
     /*

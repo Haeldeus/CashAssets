@@ -1,6 +1,4 @@
-package cashassets.handlers;
-
-import cashassets.ComponentStorer;
+package oldca.handlers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import oldca.ComponentStorer;
 
 /**
  * The Handler for the Calculate-Button. This Handler will calculate the Money in the Purses and 
