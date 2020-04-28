@@ -1,6 +1,6 @@
 package cashassets.listener;
 
-import cashassets.NewCashAssetsWindow;
+import cashassets.CashAssetsWindow;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
@@ -14,14 +14,14 @@ public class TextFieldTextChangedListener implements ChangeListener<String> {
   /**
    * The NewCashAssetsWindow, the TextField this Listener was added to is part of.
    */
-  private NewCashAssetsWindow primary;
+  private CashAssetsWindow primary;
   
   /**
    * The Constructor for this Listener.
    * @param primary The ExternalWindow, the TextField this Listener was added to is part of.
    * @since 1.0
    */
-  public TextFieldTextChangedListener(NewCashAssetsWindow primary) {
+  public TextFieldTextChangedListener(CashAssetsWindow primary) {
     this.primary = primary;
   }
   

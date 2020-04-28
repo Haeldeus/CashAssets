@@ -1,6 +1,6 @@
 package cashassets.handlers;
 
-import cashassets.NewCashAssetsWindow;
+import cashassets.CashAssetsWindow;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -45,7 +45,7 @@ public class ExportHandler implements EventHandler<ActionEvent> {
   /**
    * The NewCashAssetsWindow, which the MenuItem is part of.
    */
-  private NewCashAssetsWindow primary;
+  private CashAssetsWindow primary;
   
   /**
    * A Constructor for the Handler. Will set the given Stage as {@link #primaryStage}. 
@@ -53,7 +53,7 @@ public class ExportHandler implements EventHandler<ActionEvent> {
    * @param primary The NewCashAssetsWindow, which the MenuItem is part of.
    * @since 1.0
    */
-  public ExportHandler(Stage primaryStage, NewCashAssetsWindow primary) {
+  public ExportHandler(Stage primaryStage, CashAssetsWindow primary) {
     this.primaryStage = primaryStage;
     this.primary = primary;
   }

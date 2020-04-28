@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -321,7 +320,8 @@ public class ExportUtils {
    * @see XSSFRow
    * @see XSSFCellStyle
    */
-  public static void createFormulaCell(XSSFRow row, int column, String formula, XSSFCellStyle style) {
+  public static void createFormulaCell(XSSFRow row, int column, String formula, 
+      XSSFCellStyle style) {
     
     /*
      * Creates a new Cell at the given column in the given row.

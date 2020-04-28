@@ -1,6 +1,14 @@
 package cashassets.handlers;
 
+import cashassets.CashAssetsWindow;
+
 import java.util.HashMap;
+
+import javafx.event.EventHandler;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -8,21 +16,19 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import cashassets.NewCashAssetsWindow;
-
-import javafx.event.EventHandler;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 import util.ExportUtils;
 
+/**
+ * The Handler for the ExportButton in the Export Window.
+ * @author Haeldeus
+ * @version 1.0
+ */
 public class ExportButtonHandler implements EventHandler<MouseEvent> {
 
   /**
    * The NewCashAssetsWindow, that opened the Export Stage, where this Button was clicked.
    */
-  private final NewCashAssetsWindow primary;
+  private final CashAssetsWindow primary;
   
   /**
    * The boolean value that determines, if the Directory should be opened after exporting.
@@ -74,7 +80,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
    *     after exporting.
    * @since 1.0
    */
-  public ExportButtonHandler(NewCashAssetsWindow primary, boolean open, 
+  public ExportButtonHandler(CashAssetsWindow primary, boolean open, 
       ComboBox<String> dayBox, ComboBox<String> monthBox, TextField tfYear, Stage dialog) {
     this.primary = primary;
     this.open = open;
@@ -143,7 +149,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
      * Creates the Area for the Data, that was given by the User.
      */
     row = sheet.createRow(6);
-    int index = createData(sheet, row, styles, 6);
+    int index = createData(sheet, row, styles, 6) + 1;
     row = sheet.createRow(index);
     
     /*
@@ -159,8 +165,6 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     String month = monthBox.getSelectionModel().getSelectedItem();
     ExportUtils.export(workbook, "Kassenbestand", date, year, month, open);
     dialog.close();
-    
-    System.out.println("TODO");
   }
   
   /**
@@ -176,43 +180,139 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
    */
   private int createData(XSSFSheet sheet, XSSFRow row, 
       HashMap<Integer, XSSFCellStyle> styles, int index) {
+    /*
+     * Storing the Index to be returned in a new Integer. Also checks, if the simple layout was 
+     * used in the primary Window.
+     */
     int newIndex = index;
     boolean simple = primary.isSimple();
     
+    /*
+     * The header Data for the Table.
+     */
     String[] headerData = {"Einheit", "Stück", "Betrag"};
+    /*
+     * Creates the header.
+     */
     for (int i = 0; i < 6; i++) {
       ExportUtils.createCell(row, i + 1, headerData[i % 3], 
           styles.get(ExportUtils.RED_WITH_BORDERS), null, false);
     }
     
+    /*
+     * Creates the Table. Also stores the id of each possible coin and Bill. The factors Array is 
+     * used, when the simple Design was used to create Formulas, so the User can enter the values 
+     * of the coins afterwards. 
+     */
     newIndex++;
     String[] billIds = {"5€:", "10€:", "20€:", "50€:", "100€:", "200€:", "500€:"};
     String[] coinIds = {"1ct:", "2ct:", "5ct:", "10ct:", "20ct:", "50ct:", "1€:", "2€:"};
     double[] factors = {0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2};
     for (int i = 0; i <= 7; i++) {
+      /*
+       * Creates the Row in the Sheet for the current row in the table.
+       */
       row = sheet.createRow(newIndex);
+      /*
+       * Creates the first Cell. This is always the ID of the coin only.
+       */
       ExportUtils.createCell(row, 1, coinIds[i], styles.get(ExportUtils.BLACK_WITH_BORDERS), null, 
           false);
+      /*
+       * If the simple design wasn't used, we can fetch the data from the Fields in the primary 
+       * Window.
+       */
       if (!simple) {
         ExportUtils.createCell(row, 2, primary.getCoinFields().get(i).getText(), 
             styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
-        ExportUtils.createCell(row, 3, primary.getCoinFieldRes().get(i).getText(), 
+        ExportUtils.createCell(row, 3, primary.getCoinFieldRes().get(i).getText().substring(2), 
             styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+        /*
+         * If the simple design was used, default values will be printed in the second column of 
+         * the table. The third column will contain a formula, so the values can be entered 
+         * afterwards and this column shows the correct amount of money with that coin.
+         */
       } else {
         ExportUtils.createCell(row, 2, "0", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, 
             false);
         ExportUtils.createFormulaCell(row, 3, "C" + (index + 2 + i) + "*" + factors[i]
             + "&\"€\"" , styles.get(ExportUtils.BLACK_WITH_BORDERS));
       }
-      ExportUtils.createCell(row, 4, billIds[i], styles.get(ExportUtils.BLACK_WITH_BORDERS), 
-          null, false);
-      ExportUtils.createCell(row, 5, primary.getBillFields().get(i).getText(), 
-          styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
-      ExportUtils.createCell(row, 3, primary.getBillFieldRes().get(i).getText(), 
-          styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+      /*
+       * Creates the Cells for the Bills. These will be entered in both designs, so we can 
+       * simply fetch them from the primary Window. Since primary.getBillFields().size() == 7, 
+       * we have to check, if i is < 7 to prevent an ArrayIndexOutOfBoundsException. If i == 7,
+       * empty Cells with Border will be created.
+       */
+      if (i < 7) {
+        ExportUtils.createCell(row, 4, billIds[i], styles.get(ExportUtils.BLACK_WITH_BORDERS), 
+            null, false);
+        ExportUtils.createCell(row, 5, primary.getBillFields().get(i).getText(), 
+            styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+        ExportUtils.createCell(row, 6, primary.getBillFieldRes().get(i).getText().substring(2), 
+            styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+      } else {
+        ExportUtils.createCell(row, 4, "", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+        ExportUtils.createCell(row, 5, "", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+        ExportUtils.createCell(row, 6, "", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+      }
       
       newIndex++;
     }
+    /*
+     * Creates the Row where the Sums are displayed.
+     */
+    row = sheet.createRow(newIndex);
+    ExportUtils.createCell(row, 2, "Kleingeld:", styles.get(ExportUtils.STANDARD_BLACK), null, 
+        false);
+    ExportUtils.createCell(row, 3, primary.getLabels().get(primary.coinageSumId).getText(), 
+        styles.get(ExportUtils.STANDARD_BLACK), null, false);
+    ExportUtils.createCell(row, 5, "Scheine:", styles.get(ExportUtils.STANDARD_BLACK), null, false);
+    ExportUtils.createCell(row, 6, primary.getLabels().get(primary.billsSumId).getText(), 
+        styles.get(ExportUtils.STANDARD_BLACK), null, false);
+    newIndex += 2;
+    
+    /*
+     * Creates the Row where the amount of coinage needed is displayed as well as the total Sum.
+     */
+    row = sheet.createRow(newIndex);
+    ExportUtils.createCell(row, 2, "Muss Kleingeld:", styles.get(ExportUtils.STANDARD_BLACK), null, 
+        false);
+    ExportUtils.createCell(row, 3, primary.getLabels().get(primary.coinageNeededId).getText(), 
+        styles.get(ExportUtils.STANDARD_BLACK), null, false);
+    ExportUtils.createCell(row, 5, "Gesamtsumme:", styles.get(ExportUtils.STANDARD_RED), null, 
+        false);
+    ExportUtils.createCell(row, 6, primary.getLabels().get(primary.totalSumId).getText(), 
+        styles.get(ExportUtils.STANDARD_BLACK), null, false);
+    newIndex += 2;
+    
+    /*
+     * Creates the Row where the difference in coinage is displayed as well as the cash needed, 
+     * that was calculated by the register's system.
+     */
+    row = sheet.createRow(newIndex);
+    ExportUtils.createCell(row, 2, "Differenz Kleingeld:", styles.get(ExportUtils.STANDARD_BLACK), 
+        null, false);
+    ExportUtils.createCell(row, 3, primary.getLabels().get(primary.diffCoinageId).getText(), 
+        styles.get(ExportUtils.STANDARD_BLACK), styles.get(ExportUtils.STANDARD_RED), true);
+    ExportUtils.createCell(row, 5, "Kassenschnitt Bar:", styles.get(ExportUtils.STANDARD_BLACK), 
+        null, false);
+    ExportUtils.createCell(row, 6, primary.getLabels().get(primary.cashNeededId).getText(), 
+        styles.get(ExportUtils.STANDARD_BLACK), null, false);
+    newIndex += 2;
+    
+    /*
+     * Creates the Row, where the Tip sum is displayed.
+     */
+    row = sheet.createRow(newIndex);
+    ExportUtils.createCell(row, 5, "Rest Tip:", styles.get(ExportUtils.STANDARD_BLACK), null, 
+        false);
+    ExportUtils.createCell(row, 6, primary.getLabels().get(primary.tipSumId).getText(), 
+        styles.get(ExportUtils.STANDARD_BLACK), styles.get(ExportUtils.STANDARD_RED), true);
+    
+    /*
+     * Returns the index of the Row below the last entry in the table.
+     */
     return newIndex + 1;
   }
   

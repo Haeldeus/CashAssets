@@ -741,4 +741,13 @@ public class CashAssetsWindow extends Application {
     }
     return false;
   }
+  
+  /**
+   * Just for Testing.
+   * @param args  Unused.
+   * @since 1.0
+   */
+  public static void main(String[] args) {
+    CashAssetsWindow.launch(args);
+  }
 }

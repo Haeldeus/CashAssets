@@ -46,7 +46,7 @@ import javafx.stage.Stage;
 
 import util.Util;
 
-public class NewCashAssetsWindow extends Application {
+public class CashAssetsWindow extends Application {
 
   private boolean simple;
   
@@ -64,25 +64,27 @@ public class NewCashAssetsWindow extends Application {
   
   private HashMap<String, Label> labels;
   
-  public static final String COINAGE_SUM = "COINAGE_SUM";
+  /**
+   * The String identifier for the coinage sum Label.
+   */
+  public final String coinageSumId = "COINAGE_SUM";
   
-  public static final String BILLS_SUM = "BILLS_SUM";
+  public final String billsSumId = "BILLS_SUM";
   
-  public static final String TOTAL_SUM = "TOTAL_SUM";
+  public final String totalSumId = "TOTAL_SUM";
   
-  public static final String COINAGE_NEEDED = "COINAGE_NEEDED";
+  public final String coinageNeededId = "COINAGE_NEEDED";
   
-  public static final String DIFF_COINAGE = "DIFF_COINAGE";
+  public final String diffCoinageId = "DIFF_COINAGE";
   
-  public static final String COINAGE_SUM_CALCULATED = "COINAGE_SUM_CALCULATED";
+  public final String coinageSumCalculatedId = "COINAGE_SUM_CALCULATED";
   
-  public static final String CASH_NEEDED = "CASH_NEEDED";
+  public final String cashNeededId = "CASH_NEEDED";
   
-  public static final String TIP_SUM = "TIP_SUM";
+  public final String tipSumId = "TIP_SUM";
   
-  public NewCashAssetsWindow() {
+  public CashAssetsWindow() {
     this.simple = checkSimple();
-    simple = true;
     this.coinFields = new ArrayList<TextField>();
     this.billFields = new ArrayList<TextField>();
     this.coinFieldRes = new ArrayList<Label>();
@@ -283,7 +285,7 @@ public class NewCashAssetsWindow extends Application {
     
     Label coinageSum = new Label("0,00€");
     small.add(coinageSum, 1, 0);
-    labels.put(COINAGE_SUM, coinageSum);
+    labels.put(coinageSumId, coinageSum);
     
     grid.add(small, 0, rowIndex);
     GridPane.setColumnSpan(small, 2);
@@ -298,7 +300,7 @@ public class NewCashAssetsWindow extends Application {
     
     Label billSum = new Label("0,00€");
     small.add(billSum, 1, 0);
-    labels.put(BILLS_SUM, billSum);
+    labels.put(billsSumId, billSum);
     
     grid.add(small, 4, rowIndex);
     GridPane.setColumnSpan(small, 2);
@@ -313,7 +315,7 @@ public class NewCashAssetsWindow extends Application {
     
     Label totalSum = new Label("0,00€");
     small.add(totalSum, 1, 0);
-    labels.put(TOTAL_SUM, totalSum);
+    labels.put(totalSumId, totalSum);
     
     grid.add(small, 2, rowIndex);
     GridPane.setColumnSpan(small, 2);
@@ -332,7 +334,7 @@ public class NewCashAssetsWindow extends Application {
     
     Label coinageNeeded = new Label("0,00€");
     grid.add(coinageNeeded, 2, rowIndex);
-    labels.put(COINAGE_NEEDED, coinageNeeded);
+    labels.put(coinageNeededId, coinageNeeded);
     
     id = new Label("Kleingeld bereinigt:");
     grid.add(id, 3, rowIndex);
@@ -340,7 +342,7 @@ public class NewCashAssetsWindow extends Application {
     
     Label coinageSumCalculated = new Label("0,00€");
     grid.add(coinageSumCalculated, 5, rowIndex);
-    labels.put(COINAGE_SUM_CALCULATED, coinageSumCalculated);
+    labels.put(coinageSumCalculatedId, coinageSumCalculated);
     
     rowIndex++;
     
@@ -350,7 +352,7 @@ public class NewCashAssetsWindow extends Application {
     
     Label diffCoinage = new Label("0,00€");
     grid.add(diffCoinage, 2, rowIndex);
-    labels.put(DIFF_COINAGE, diffCoinage);
+    labels.put(diffCoinageId, diffCoinage);
     
     id = new Label("Kassenschnitt:");
     grid.add(id, 3, rowIndex);
@@ -358,7 +360,7 @@ public class NewCashAssetsWindow extends Application {
     
     Label cashNeeded = new Label("0,00€");
     grid.add(cashNeeded, 5, rowIndex);
-    labels.put(CASH_NEEDED, cashNeeded);
+    labels.put(cashNeededId, cashNeeded);
     
     rowIndex++;
     
@@ -368,7 +370,7 @@ public class NewCashAssetsWindow extends Application {
     
     Label tipSum = new Label("0,00€");
     grid.add(tipSum, 5, rowIndex);
-    labels.put(TIP_SUM, tipSum);
+    labels.put(tipSumId, tipSum);
   }
   
   private int fillInputGrid(GridPane grid, Stage primaryStage) {
@@ -627,7 +629,13 @@ public class NewCashAssetsWindow extends Application {
       }
     }
     cashNeeded.setText(str.replace('.', ','));
-    BigDecimal cashNeededDec = new BigDecimal(str.replace(',', '.'));
+    double value;
+    try {
+      value = Double.parseDouble(cashNeeded.getText().replace(',', '.'));
+    } catch (NumberFormatException nfe) {
+      value = 0;
+    }
+    BigDecimal cashNeededDec = new BigDecimal(value);
     cashNeededDec = cashNeededDec.setScale(2, RoundingMode.DOWN);   
     
     /*
@@ -666,25 +674,25 @@ public class NewCashAssetsWindow extends Application {
     /*
      * Updates all Labels to show their values.
      */
-    labels.get(BILLS_SUM).setText(bills.toString().replace('.', ',') + "€");
-    labels.get(COINAGE_SUM).setText(coinage.toString().replace('.', ',') + "€");
-    labels.get(TOTAL_SUM).setText(totalEuros.toString().replace('.', ',') + "€");
-    labels.get(COINAGE_NEEDED).setText(coinNecessity + ",00€");
-    labels.get(DIFF_COINAGE).setText(coinageDiff.toString().replace('.', ',') + "€");
-    labels.get(COINAGE_SUM_CALCULATED).setText(revenueWithTips.toString().replace('.', ',') + "€");
-    labels.get(CASH_NEEDED).setText(cashNeededDec.toString().replace('.', ',') + "€");
-    labels.get(TIP_SUM).setText(tips.toString().replace('.', ',') + "€");
+    labels.get(billsSumId).setText(bills.toString().replace('.', ',') + "€");
+    labels.get(coinageSumId).setText(coinage.toString().replace('.', ',') + "€");
+    labels.get(totalSumId).setText(totalEuros.toString().replace('.', ',') + "€");
+    labels.get(coinageNeededId).setText(coinNecessity + ",00€");
+    labels.get(diffCoinageId).setText(coinageDiff.toString().replace('.', ',') + "€");
+    labels.get(coinageSumCalculatedId).setText(revenueWithTips.toString().replace('.', ',') + "€");
+    labels.get(cashNeededId).setText(cashNeededDec.toString().replace('.', ',') + "€");
+    labels.get(tipSumId).setText(tips.toString().replace('.', ',') + "€");
     
     /*
      * Compares the coinage difference BigDecimal to 0 to check if it's negative or positive. If 
      * it's negative, the Label will display it's Text in red, else in normal black.
      */
     if (coinageDiff.compareTo(new BigDecimal("0.0")) == -1) {
-      labels.get(DIFF_COINAGE).getStyleClass().clear();
-      labels.get(DIFF_COINAGE).getStyleClass().addAll("minusLabel");
+      labels.get(diffCoinageId).getStyleClass().clear();
+      labels.get(diffCoinageId).getStyleClass().addAll("minusLabel");
     } else {
-      labels.get(DIFF_COINAGE).getStyleClass().clear();
-      labels.get(DIFF_COINAGE).getStyleClass().addAll("label");
+      labels.get(diffCoinageId).getStyleClass().clear();
+      labels.get(diffCoinageId).getStyleClass().addAll("label");
     }
 
     /*
@@ -692,11 +700,11 @@ public class NewCashAssetsWindow extends Application {
      * it's negative, the Label will display it's Text in red, else in normal black.
      */
     if (tips.compareTo(new BigDecimal("0.0")) < 0) {
-      labels.get(TIP_SUM).getStyleClass().clear();
-      labels.get(TIP_SUM).getStyleClass().addAll("minusLabel");
+      labels.get(tipSumId).getStyleClass().clear();
+      labels.get(tipSumId).getStyleClass().addAll("minusLabel");
     } else {
-      labels.get(TIP_SUM).getStyleClass().clear();
-      labels.get(TIP_SUM).getStyleClass().addAll("label");
+      labels.get(tipSumId).getStyleClass().clear();
+      labels.get(tipSumId).getStyleClass().addAll("label");
     }
   }
   
@@ -781,10 +789,6 @@ public class NewCashAssetsWindow extends Application {
    */
   public HashMap<String, Label> getLabels() {
     return labels;
-  }
-
-  public static void main(String[] args) {
-    NewCashAssetsWindow.launch(args);
   }
   
 }

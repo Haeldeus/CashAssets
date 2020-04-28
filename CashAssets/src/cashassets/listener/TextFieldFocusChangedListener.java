@@ -1,6 +1,6 @@
 package cashassets.listener;
 
-import cashassets.NewCashAssetsWindow;
+import cashassets.CashAssetsWindow;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,7 +21,7 @@ public class TextFieldFocusChangedListener implements ChangeListener<Boolean> {
   /**
    * The NewCashAssetsWindow, the TextField this Listener was added to is part of.
    */
-  private NewCashAssetsWindow primary;
+  private CashAssetsWindow primary;
   
   /**
    * The Constructor for this Listener.
@@ -29,7 +29,7 @@ public class TextFieldFocusChangedListener implements ChangeListener<Boolean> {
    * @param primary The NewCashAssetsWindow, the TextField is part of.
    * @since 1.0
    */
-  public TextFieldFocusChangedListener(TextField tf, NewCashAssetsWindow primary) {
+  public TextFieldFocusChangedListener(TextField tf, CashAssetsWindow primary) {
     this.tf = tf;
     this.primary = primary;
   }
