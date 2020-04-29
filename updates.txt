@@ -1,50 +1,51 @@
 #Begin Updates File
-0.95 Änderungen und Erweiterungen
+0.95 Ã„nderungen und Erweiterungen
 - Kassenbestands-Rechner umdesignt
 - Beim Export sollte nun ein Bereich richtigerweise aus zwei statt einer Zelle bestehen.
-- Wenn beim Export des Kassenbestands das simplere Design benutzt wurde, werden nun Formeln für das Kleingeld in die Excel Tabelle geschrieben, um das nachträgliche Einfügen der Anzahl pro Münze zu ermöglichen bzw. zu vereinfachen.
-- In allen Export Fenstern ist es nun möglich mit Enter den Export auszuführen und mit Escape den Export abzubrechen.
+- Wenn beim Export des Kassenbestands das simplere Design benutzt wurde, werden nun Formeln fÃ¼r das Kleingeld in die Excel Tabelle geschrieben, um das nachtrÃ¤gliche EinfÃ¼gen der Anzahl pro MÃ¼nze zu ermÃ¶glichen bzw. zu vereinfachen.
+- In allen Export Fenstern ist es nun mÃ¶glich mit Enter den Export auszufÃ¼hren und mit Escape den Export abzubrechen.
+- Shortcuts im HauptmenÃ¼ hinzugefÃ¼gt.
 #New Line#
 #New Line#
-0.94 Änderungen und Erweiterungen
-- Außentheken-Rechner fertiggestellt.
-- Tastenkombinationen hinzugefügt. Quasi alle Menü-Optionen haben nun einen Shortcut.
-- Möglichkeit hinzugefügt, Formeln in die Excel-Tabelle hinzuzufügen, statt nur Text Einträge. Dies wird möglich sein, sobald der Rechner für den Bar-Kassenschnitt umdesignt wurde.
-- Durch das drücken von Strg + Pfeiltaste kann nun ebenfalls zwischen den TextFeldern gewechselt werden.
-- "Name/Vorname" in "Name, Vorname" geändert, was offiziellen Dokumenten entspricht.
-- Der Export von der Berechnung des Tips ist nun an die Norm der anderen Exports angepasst, indem eine leere Zeile an die richtige Stelle eingefügt wurde.
+0.94 Ã„nderungen und Erweiterungen
+- AuÃŸentheken-Rechner fertiggestellt.
+- Tastenkombinationen hinzugefÃ¼gt. Quasi alle MenÃ¼-Optionen haben nun einen Shortcut.
+- MÃ¶glichkeit hinzugefÃ¼gt, Formeln in die Excel-Tabelle hinzuzufÃ¼gen, statt nur Text EintrÃ¤ge. Dies wird mÃ¶glich sein, sobald der Rechner fÃ¼r den Bar-Kassenschnitt umdesignt wurde.
+- Durch das drÃ¼cken von Strg + Pfeiltaste kann nun ebenfalls zwischen den TextFeldern gewechselt werden.
+- "Name/Vorname" in "Name, Vorname" geÃ¤ndert, was offiziellen Dokumenten entspricht.
+- Der Export von der Berechnung des Tips ist nun an die Norm der anderen Exports angepasst, indem eine leere Zeile an die richtige Stelle eingefÃ¼gt wurde.
 #New Line#
 #New Line#
-0.93 Änderungen und Erweiterungen
+0.93 Ã„nderungen und Erweiterungen
 #New Line#
 - Tip-Rechner fertiggestellt.
-- Änderung der Monatsanzeige im Kassenbestands-Fenster von Zahlen zu Namen.
+- Ã„nderung der Monatsanzeige im Kassenbestands-Fenster von Zahlen zu Namen.
 - Performance-Verbesserungen beim Export der Kassenbestands-Daten.
 #New Line#
 #New Line#
-0.921 Änderungen und Erweiterungen
+0.921 Ã„nderungen und Erweiterungen
 #New Line#
 - Der Export der Dateien ist nun in Ordner strukturiert.
-- Designänderung im Kassenbestands-Fenster: Statt "Gezählt" zeigt das Label nun "Geldbörsen" an.
+- DesignÃ¤nderung im Kassenbestands-Fenster: Statt "GezÃ¤hlt" zeigt das Label nun "GeldbÃ¶rsen" an.
 - Berechnung im Kassenbestand sollte nun korrekt sein.
 #New Line#
 #New Line#
-0.92 Änderungen und Erweiterungen
+0.92 Ã„nderungen und Erweiterungen
 #New Line#
 - Automatische Markierung der Eingabe, sobald ein TextFeld angeklickt wird.
 - Tip-Rechner in die Hauptanwendung integriert.
-- Die Suche nach Updates bzw. das Öffnen dieses News-Fensters sollte nun nach 5 Sekunden abgebrochen werden, falls keine Verbindung zur Seite hergestellt werden kann.
-- Im Kassenbestand-Fenster ist die Eingabe des Kassenschnitts nun in einem einzigen Feld möglich, statt in Euro und Cent aufgeteilt.
-- Wenn Enter gedrückt wird, während ein Textfeld ausgewählt ist wird nun automatisch das nächste TextFeld ausgewählt.
-- Der Reset-Button setzt nun das komplette Fenster, inklusive der Ergebnis-Anzeigen, zurück.
-- Wenn per Update-Button eine neue Version gefunden wird, leitet das Klicken der Anzeige direkt zum Download der neuen Version anstatt zur Versions-Übersicht.
+- Die Suche nach Updates bzw. das Ã–ffnen dieses News-Fensters sollte nun nach 5 Sekunden abgebrochen werden, falls keine Verbindung zur Seite hergestellt werden kann.
+- Im Kassenbestand-Fenster ist die Eingabe des Kassenschnitts nun in einem einzigen Feld mÃ¶glich, statt in Euro und Cent aufgeteilt.
+- Wenn Enter gedrÃ¼ckt wird, wÃ¤hrend ein Textfeld ausgewÃ¤hlt ist wird nun automatisch das nÃ¤chste TextFeld ausgewÃ¤hlt.
+- Der Reset-Button setzt nun das komplette Fenster, inklusive der Ergebnis-Anzeigen, zurÃ¼ck.
+- Wenn per Update-Button eine neue Version gefunden wird, leitet das Klicken der Anzeige direkt zum Download der neuen Version anstatt zur Versions-Ãœbersicht.
 #New Line#
 #New Line#
-0.91 Änderungen und Erweiterungen
+0.91 Ã„nderungen und Erweiterungen
 #New Line#
-- Nachtmodus hinzugefügt
-- Export-Button minimal verändert. Hintergrund ist nun transparent
+- Nachtmodus hinzugefÃ¼gt
+- Export-Button minimal verÃ¤ndert. Hintergrund ist nun transparent
 - Settings-Datei verschoben
 - Tip-Rechner angefangen, jedoch noch nicht in die Hauptanwendung integriert
-- Changelog-Fenster hinzugefügt
+- Changelog-Fenster hinzugefÃ¼gt
 #End Updates File
