@@ -1,9 +1,8 @@
 #Begin Version File
 Current
-0.95
+0.94
 
 Old
-0.94
 0.93
 0.921
 0.92
