@@ -1,4 +1,12 @@
 #Begin Updates File
+0.95 Änderungen und Erweiterungen
+- Kassenbestands-Rechner umdesignt
+- Beim Export sollte nun ein Bereich richtigerweise aus zwei statt einer Zelle bestehen.
+- Wenn beim Export des Kassenbestands das simplere Design benutzt wurde, werden nun Formeln für das Kleingeld in die Excel Tabelle geschrieben, um das nachträgliche Einfügen der Anzahl pro Münze zu ermöglichen bzw. zu vereinfachen.
+- In allen Export Fenstern ist es nun möglich mit Enter den Export auszuführen und mit Escape den Export abzubrechen.
+- Shortcuts im Hauptmenü hinzugefügt.
+#New Line#
+#New Line#
 0.94 Änderungen und Erweiterungen
 - Außentheken-Rechner fertiggestellt.
 - Tastenkombinationen hinzugefügt. Quasi alle Menü-Optionen haben nun einen Shortcut.
