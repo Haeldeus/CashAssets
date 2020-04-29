@@ -20,6 +20,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -153,7 +156,6 @@ public class ExportHandler implements EventHandler<ActionEvent> {
     lowGrid.add(cancel, 1, 0);
     GridPane.setHgrow(cancel, Priority.ALWAYS);
     
-    
     /*
      * Adds all Panes to the BorderPane.
      */
@@ -163,6 +165,30 @@ public class ExportHandler implements EventHandler<ActionEvent> {
      * Basic Scene settings.
      */
     Scene dialogScene = new Scene(bp, 250, 100);
+    /*
+     * Adds an EventHandler, that fires Events for the Export Button or Cancel Button, in case 
+     * Enter or Escape was pressed.
+     */
+    dialogScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+      @Override
+      public void handle(KeyEvent arg0) {
+        /*
+         * Checks, if the current input is the enter Key.
+         */
+        if (arg0.getCode() == KeyCode.ENTER) {
+          export.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, 
+              MouseButton.PRIMARY, 1, false, false, false, false, true, false, false, 
+              false, false, false, null));
+          /*
+           * Checks, if the current input is the Escape Key.
+           */
+        } else if (arg0.getCode() == KeyCode.ESCAPE) {
+          cancel.fireEvent(new MouseEvent(MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, 
+              MouseButton.PRIMARY, 1, false, false, false, false, true, false, false, 
+              false, false, false, null));
+        }
+      }     
+    });
     dialogScene.getStylesheets().add(Util.getControlStyle());
     dialog.setScene(dialogScene);
     dialog.setResizable(false);

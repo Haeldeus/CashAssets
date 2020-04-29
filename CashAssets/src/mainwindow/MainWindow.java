@@ -28,6 +28,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -106,11 +109,13 @@ public class MainWindow extends Application {
     /*
      * Adds a Menu Bar to the Scene.
      */
-    MenuBar menu = new MenuBar();
     final Menu settingsMenu = new Menu("Settings");
     final MenuItem settingsItem = new MenuItem("Settings");
+    settingsItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, 
+        KeyCombination.SHIFT_DOWN));
     settingsItem.setOnAction(new SettingsHandler(primaryStage));
     settingsMenu.getItems().addAll(settingsItem);
+    MenuBar menu = new MenuBar();
     menu.getMenus().addAll(settingsMenu);
     
     /*
@@ -118,6 +123,8 @@ public class MainWindow extends Application {
      */
     final Menu newsMenu = new Menu("News");
     final MenuItem newsItem = new MenuItem("Änderungen");
+    newsItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, 
+        KeyCombination.SHIFT_DOWN));
     newsItem.setOnAction(new EventHandler<ActionEvent>() {
       @Override
       public void handle(ActionEvent arg0) {
