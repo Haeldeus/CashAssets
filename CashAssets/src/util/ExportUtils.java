@@ -235,8 +235,8 @@ public class ExportUtils {
      * Creates a new Row. This Row will have an Info-Cell and a place, where the User can enter 
      * his signature.
      */
-    row = sheet.createRow(rowIndex);
-    sheet.addMergedRegion(new CellRangeAddress(27, 27, 1, 2));    
+    sheet.addMergedRegion(new CellRangeAddress(rowIndex, rowIndex, 1, 2)); 
+    row = sheet.createRow(rowIndex);   
     createCell(row, 1, "Gezählt von Franz Weyher:", styles.get(STANDARD_BLACK), null, false);
     createCell(row, 3, null, styles.get(BLACK_WITH_BOTTOM_BORDER), null, false);
     createCell(row, 4, null, styles.get(BLACK_WITH_BOTTOM_BORDER), null, false);
@@ -328,6 +328,10 @@ public class ExportUtils {
      */
     XSSFCell cell = row.createCell(column);
     
+    /*
+     * Sets the Cell Type to Formula, so it doesn't display it's Data as a String, but instead 
+     * treads it as a formula.
+     */
     cell.setCellType(CellType.FORMULA);
     
     /*
@@ -335,7 +339,7 @@ public class ExportUtils {
      * created Cell.
      */
     if (formula != null) {
-      cell.setCellValue(formula);
+      cell.setCellFormula(formula);
     }
     
     /*

@@ -1,60 +1,154 @@
 package cashassets;
 
-import cashassets.handlers.CalcButtonHandler;
-import cashassets.handlers.EditButtonHandler;
-import cashassets.handlers.ExportButtonHandler;
-import cashassets.handlers.ResetButtonHandler;
+import cashassets.handlers.ExportHandler;
+import cashassets.handlers.KeyEventHandler;
+import cashassets.listener.TextFieldFocusChangedListener;
+import cashassets.listener.TextFieldTextChangedListener;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import util.DayComboBoxKeyHandler;
-import util.MonthComboBoxKeyHandler;
+
 import util.Util;
 
 /**
- * The Class, that will build and display the Main Window of the Application.
+ * The Window, where the User can calculate the total amount of money in the purses.
  * @author Haeldeus
  * @version 1.0
  */
 public class CashAssetsWindow extends Application {
-    
+
+  /**
+   * Determines, if the simple design should be used.
+   */
+  private boolean simple;
+  
+  /**
+   * All TextFields, where the User can enter the values for each coin counted.
+   */
+  private ArrayList<TextField> coinFields;
+  
+  /**
+   * All TextFields, where the User can enter the values for each bill counted.
+   */
+  private ArrayList<TextField> billFields;
+  
+  /**
+   * All Labels, where the amount of Money is displayed, that was counted using the 
+   * corresponding coins.
+   */
+  private ArrayList<Label> coinFieldRes;
+  
+  /**
+   * All Labels, where the amount of Money is displayed, that was counted using the 
+   * corresponding bills.
+   */
+  private ArrayList<Label> billFieldRes;
+  
+  /**
+   * The TextField, where the User can enter the amount of Money needed, that was calculated 
+   * by the register's system.
+   */
+  private TextField cashNeeded;
+  
+  /**
+   * The TextField, where the User can enter the amount of purses counted.
+   */
+  private TextField purses;
+  
+  /**
+   * All Labels, that can be altered by the Application via {@link #calc()}.
+   */
+  private HashMap<String, Label> labels;
+  
+  /**
+   * The String identifier for the coinage sum Label.
+   */
+  public final String coinageSumId = "COINAGE_SUM";
+  
+  /**
+   * The String identifier for the bills sum Label.
+   */
+  public final String billsSumId = "BILLS_SUM";
+  
+  /**
+   * The String identifier for the total sum Label.
+   */
+  public final String totalSumId = "TOTAL_SUM";
+  
+  /**
+   * The String identifier for the coinage needed Label.
+   */
+  public final String coinageNeededId = "COINAGE_NEEDED";
+  
+  /**
+   * The String identifier for the Label, which shows the difference in coinage needed and coinage 
+   * in the purses.
+   */
+  public final String diffCoinageId = "DIFF_COINAGE";
+  
+  /**
+   * The String identifier for the Label, which shows the amount of money after the coinage 
+   * difference is equalized.
+   */
+  public final String coinageSumCalculatedId = "COINAGE_SUM_CALCULATED";
+  
+  /**
+   * The String identifier for the cash needed Label.
+   */
+  public final String cashNeededId = "CASH_NEEDED";
+  
+  /**
+   * The String identifier for the tip sum Label.
+   */
+  public final String tipSumId = "TIP_SUM";
+  
+  /**
+   * The Constructor for this Window. Checks, if the simple design should be used and instantiates 
+   * all Lists and the HashMap.
+   * @since 1.0
+   */
+  public CashAssetsWindow() {
+    this.simple = checkSimple();
+    this.coinFields = new ArrayList<TextField>();
+    this.billFields = new ArrayList<TextField>();
+    this.coinFieldRes = new ArrayList<Label>();
+    this.billFieldRes = new ArrayList<Label>();
+    this.labels = new HashMap<String, Label>();
+  }
+  
   @Override
   public void start(Stage primaryStage) throws Exception {
     /*
@@ -68,619 +162,583 @@ public class CashAssetsWindow extends Application {
     grid.setPadding(new Insets(10, 10, 10, 10));
     
     /*
-     * Adding the Help-Button
+     * Fills the Grid with the needed TextFields and Labels.
      */
-    Image img = new Image(getClass().getResourceAsStream("/res/about.png"));
-    ImageView iw = new ImageView(img); 
-    Button help = new Button("", iw);
-    /*
-     * Adding an EventHandler that handles clicking this Button.
-     */
-    help.setOnAction(new EventHandler<ActionEvent>() {
-
-      @Override
-      public void handle(ActionEvent arg0) {
-        final Stage dialog = new Stage();
-        dialog.initModality(Modality.NONE);
-        dialog.initOwner(primaryStage);
-        VBox dialogVbox = new VBox(20);
-        Text t = new Text("Geben Sie zunächst in die Boxen oben das Datum ein, "
-            + "von dem der Kassenschnitt erstellt werden soll." 
-            + System.lineSeparator() + "Danach die Anzahl der Münzen und Scheine, "
-            + "die jeweils gezählt wurden. Außerdem die Zahl der gezählten Geldbörsen. "
-            + System.lineSeparator() + "Danach, unter dem ersten Seperator, geben Sie "
-            + "bitte den vom Kassensystem berechneten Bar-Kassenschnitt ein. " 
-            + System.lineSeparator() + "Nun können Sie auf \"Berechnen\" drücken und das "
-            + "Programm rechnet Ihnen alle unten aufgeführten Werte aus."
-            + System.lineSeparator() + "Falls Ihnen bei der Eingabe ein Fehler unterlaufen ist, "
-            + "können Sie die Eingabe korrigieren, nachdem Sie den \"Edit\"-Button gedrückt "
-            + "haben." + System.lineSeparator() + "Mit dem \"Reset\"-Button können Sie die "
-                + "komplette Eingabe zurücksetzen." 
-            + System.lineSeparator() + "Mit dem \"Export\"-Button können Sie das "
-            + "Ergebnis in eine neue Excel-Datei übertragen lassen, die in dem Ordner, wo dieses "
-            + "Programm ausgeführt wird, erstellt wird." + System.lineSeparator() + "Dieser Button "
-            + "ist erst verfügbar, nachdem das Programm eine Berechnung ausgeführt hat.");
-        dialogVbox.getChildren().add(t);
-        Scene dialogScene = new Scene(dialogVbox, 300, 290);
-        t.setWrappingWidth(dialogScene.getWidth());
-        dialogScene.getStylesheets().add(Util.getControlStyle());
-        if (Util.checkNightmode()) {
-          t.setId("text");
-        }
-        dialog.setScene(dialogScene);
-        dialog.setResizable(false);
-        dialog.show();
-      }
-       
-    });
-    grid.add(help, 0, 0);
+    fillInfoGrid(grid, fillInputGrid(grid, primaryStage));
     
     /*
-     * Adding the Date Label
+     * Adds Handlers to all TextFields.
      */
-    Label date = new Label("Datum:");
-    grid.add(date, 2, 0);
+    addHandlers();
     
     /*
-     * Adding a Calendar to get the Current Date. This will be used in the afterwards added 
-     * ComboBoxes for the Day and Month.
+     * Updates the Tooltips for all Labels.
      */
-    Calendar cal = Calendar.getInstance(Locale.GERMANY);
-    /*
-     * Creates the ComboBox for the User to select the day for this Calculation.
-     */
-    ComboBox<String> dayBox = new ComboBox<String>();
-    for (int i = 1; i <= 31; i++) {
-      dayBox.getItems().add(i + ".");
+    for (Label lb : labels.values()) {
+      lb.setTooltip(new Tooltip(lb.getText()));
     }
-    dayBox.getSelectionModel().select(cal.get(Calendar.DAY_OF_MONTH) - 1);
-    dayBox.setOnKeyPressed(new DayComboBoxKeyHandler(dayBox));
-    dayBox.setMaxWidth(70.0);
-    /*
-     * Creates a new ComponentStorer, so this Object can store alternating Fields in it. Adds 
-     * the Daybox to this Storer.
-     */
-    ComponentStorer cs = new ComponentStorer();
-    cs.setDayBox(dayBox);
-    grid.add(dayBox, 3, 0);
     
-    /*
-     * Creates the ComboBox for the User to select the month for this Calculation.
-     */
-    ComboBox<String> monthBox = new ComboBox<String>();
-    monthBox.getItems().addAll("Januar", "Februar", "März", "April", "Mai", "Juni", 
-        "Juli", "August", "September", "Oktober", "November", "Dezember");
-    monthBox.getSelectionModel().select(cal.get(Calendar.MONTH));
-    monthBox.setOnKeyPressed(new MonthComboBoxKeyHandler(monthBox));
-    monthBox.setMaxWidth(70.0);
-    cs.setMonthBox(monthBox);
-    grid.add(monthBox, 4, 0);
+    for (Label lb : billFieldRes) {
+      lb.setTooltip(new Tooltip(lb.getText()));
+    }
     
-    /*
-     * Adds a TextField to input the Year.
-     */
-    TextField year = new TextField("" + cal.get(Calendar.YEAR));
-    year.setMaxWidth(50.0);
-    cs.setYear(year);
-    grid.add(year, 5, 0);
-
-    /*
-     * Checks, if the simple design should be used.
-     */
-    boolean simple = checkSimple();
-    
-    /*
-     * Creates the Export Button.
-     */
-    Image img2 = new Image(getClass().getResourceAsStream("/res/export.png"));
-    ImageView imageview = new ImageView(img2);
-    Button export = new Button("Export", imageview);
-    export.setDisable(true);
-    export.addEventFilter(MouseEvent.MOUSE_RELEASED, new ExportButtonHandler(cs, simple, 
-        checkOpen()));
-    grid.add(export, 7, 0);
-    
-    /*
-     * Creates String-Arrays with the Text for the Labels as content.
-     * This is used to create these Labels in a for-Loop to save some space.
-     */
-    final String[] coinLabelText = new String[] {"1ct:", "2ct:", "5ct:", "10ct:", 
-        "20ct:", "50ct:", "1€:", "2€:"};
-    final String[] billLabelText = new String[] {"5€:", "10€:", "20€:", "50€:", 
-        "100€:", "200€:", "500€:", "Geldbörsen:"};
-    
-    /*
-     * Creates some Arrays where the created Labels and Textfields, that can be altered 
-     * by the User, can be stored into.
-     */
-    Label[] resultLabelCoin = new Label[8];
-    TextField[] coinTfs = new TextField[8];
-    TextField[] billTfs = new TextField[7];
-    Label[] resultLabelBill = new Label[7];
-    
-    /*
-     * Creates all needed TextFields and Labels for the user to input the counted Money.
-     */
-    for (int i = 0; i <= 7; i++) {
-      if (!simple) {
-        Label coinLabel = new Label(coinLabelText[i]);
-        grid.add(coinLabel, 0, i + 1);
-        TextField coinTf = new TextField("0");
-        coinTf.setTooltip(new Tooltip("Geben Sie hier die Anzahl der " 
-            + coinLabelText[i].replaceAll(":", "") + "-Münzen ein."));
-        coinTf.setMaxWidth(50.0);
-        coinTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
-          @Override
-          public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldP, Boolean newP) {
-            if (!oldP && newP) {
-              Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                  coinTf.selectAll();
-                }              
-              });
-            }
-          }
-        });
-        coinTfs[i] = coinTf;
-        grid.add(coinTf, 1, i + 1);
-        Label resLabelCoin = new Label("=");
-        resultLabelCoin[i] = resLabelCoin;
-        resLabelCoin.setMinWidth(65.0);
-        resLabelCoin.setMaxWidth(65.0);
-        grid.add(resLabelCoin, 2, i + 1);
-      } else if (i == 7) {
-        Label coinLabel = new Label("Kleingeld:");
-        grid.add(coinLabel, 0, i + 1);
-        TextField coinTf = new TextField("0");
-        coinTf.setTooltip(new Tooltip("Geben Sie hier die Summe des Kleingelds ein"));
-        coinTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
-          @Override
-          public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldP, Boolean newP) {
-            if (!oldP && newP) {
-              Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                  coinTf.selectAll();
-                }              
-              });
-            }
-          }
-        });
-        coinTfs[i] = coinTf;
-        grid.add(coinTf, 1, i + 1);
-        GridPane.setColumnSpan(coinTf, 2);
-        Label resLabelCoin = new Label("=");
-        resultLabelCoin[i] = resLabelCoin;
-        resLabelCoin.setMinWidth(65.0);
-        resLabelCoin.setMaxWidth(65.0);
-        grid.add(resLabelCoin, 3, i + 1);
-      } else {
-        TextField empty = new TextField("0");
-        coinTfs[i] = empty;
-        Label lbEmpty = new Label("= 0,00€");
-        resultLabelCoin[i] = lbEmpty;
-      }
-      Label billLabel = new Label(billLabelText[i]);
-      grid.add(billLabel, 4, i + 1);
-      TextField billTf = new TextField("0");
-      billTf.setMaxWidth(50.0);
-      billTf.setTooltip(new Tooltip("Geben Sie hier die Anzahl der " 
-          + billLabelText[i].replaceAll(":", "") + "-Scheine ein."));
-      billTf.focusedProperty().addListener(new ChangeListener<Boolean>() {
-        @Override
-        public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldP, Boolean newP) {
-          if (!oldP && newP) {
-            Platform.runLater(new Runnable() {
-              @Override
-              public void run() {
-                billTf.selectAll();
-              }              
-            });
-          }
-        }
-      });
-      if (i == 7) {
-        billTf.getStyleClass().add("purseTF");
-        billTf.setTooltip(new Tooltip("Geben Sie hier die Anzahl der gezählten Geldbörsen ein."));
-        cs.setPurseTextField(billTf);
-      }
-      if (i < 7) {
-        billTfs[i] = billTf;
-        Label resLabelBill = new Label("=");
-        resultLabelBill[i] = resLabelBill;
-        resLabelBill.setMinWidth(65.0);
-        resLabelBill.setMaxWidth(65.0);
-        grid.add(resLabelBill, 6, i + 1);
-      }
-      grid.add(billTf, 5, i + 1);
+    for (Label lb : coinFieldRes) {
+      lb.setTooltip(new Tooltip(lb.getText()));
     }
     
     /*
-     * Stores all needed Components in the ComponentStorer, so they can be updated by the Buttons 
-     * later on.
+     * Creates a Menu for exporting the Data into a File. This has to be done down here, since 
+     * this uses the staffGrid.
      */
-    cs.setCoinResults(resultLabelCoin);
-    cs.setBillsResults(resultLabelBill);
-    cs.setCoinTextFields(coinTfs);
-    cs.setBillsTextFields(billTfs);
-    cs.setExportButton(export);
-    
-    /*
-     * Creates a Separator to separate the input of the Money and the Cash Necessity.
-     */
-    final Separator sep1 = new Separator();
-    sep1.setValignment(VPos.CENTER);
-    GridPane.setConstraints(sep1, 0, 1);
-    GridPane.setColumnSpan(sep1, 11);
-    grid.add(sep1, 0, 9);
-    
-    /*
-     * Creates the Area for the Cash Necessity.
-     */
-    Label cashNecessity = new Label("Kassenschnitt Bar:");
-    if (!simple) {
-      cashNecessity.setMinWidth(120);
-      GridPane.setColumnSpan(cashNecessity, 2);
-    } else {
-      GridPane.setColumnSpan(cashNecessity, 3);
-    }
-    grid.add(cashNecessity, 0, 10);
-    
-    TextField cashNecessityEuro = new TextField("0");
-    cashNecessityEuro.focusedProperty().addListener(new ChangeListener<Boolean>() {
-      @Override
-      public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldP, Boolean newP) {
-        if (!oldP && newP) {
-          Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-              cashNecessityEuro.selectAll();
-            }              
-          });
-        }
-      }
-    });
-    grid.add(cashNecessityEuro, 2, 10);
-    GridPane.setColumnSpan(cashNecessityEuro, 2);
-    
-    Label labelCashCent = new Label("€");
-    grid.add(labelCashCent, 4, 10);
-    
-    /*
-     * Adds the needed Components to the ComponentStorer.
-     */
-    cs.setCashNecessityEuroTextField(cashNecessityEuro);
-    
-    /*
-     * Adds a Reset Button to reset all TextFields and Labels to their original value.
-     */
-    Button reset = new Button("Reset");
-    reset.setMaxSize(1000, 1000);
-    GridPane.setColumnSpan(reset, 2);
-    GridPane.setFillHeight(reset, true);
-    GridPane.setFillWidth(reset, true);
-    reset.addEventFilter(MouseEvent.MOUSE_RELEASED, new ResetButtonHandler(cs));
-    cs.setResetButton(reset);
-    grid.add(reset, 7, 10);
-    
-    /*
-     * Creates a second Separator to separate the Cash Necessity Area from the Area of the 
-     * calculated Money Results.
-     */
-    final Separator sep2 = new Separator();
-    sep2.setValignment(VPos.CENTER);
-    GridPane.setConstraints(sep2, 0, 1);
-    GridPane.setColumnSpan(sep2, 11);
-    grid.add(sep2, 0, 11);
-    
-    /*
-     * All Labels for the calculated Values of the Money to be stored in.
-     */
-    Label coinage = new Label("Kleingeld:");
-    GridPane.setColumnSpan(coinage, 2);
-    grid.add(coinage, 0, 12);
-    
-    Label coinageSum = new Label("0,00€");
-    cs.setCoinSumLabel(coinageSum);
-    grid.add(coinageSum, 2, 12);
-    
-    Label bills = new Label("Scheine:");
-    GridPane.setColumnSpan(bills, 2);
-    grid.add(bills, 4, 12);
-    
-    Label billSum = new Label("0,00€");
-    cs.setBillSumLabel(billSum);
-    grid.add(billSum, 6, 12);
-    
-    Label total = new Label("Gesamt:");
-    GridPane.setColumnSpan(total, 2);
-    grid.add(total, 0, 13);
-    
-    Label totalSum = new Label("0,00€");
-    cs.setSumLabel(totalSum);
-    grid.add(totalSum, 2, 13);
-    
-    /*
-     * A last Separator to separate the Money-Info Area from the advanced Information Area.
-     */
-    final Separator sep3 = new Separator();
-    sep3.setValignment(VPos.CENTER);
-    GridPane.setConstraints(sep3, 0, 1);
-    GridPane.setColumnSpan(sep3, 11);
-    grid.add(sep3, 0, 14);
-    
-    /*
-     * Adds all Labels for the advanced Information to be stored in.
-     */
-    Label coinageNecessity = new Label("Muss Kleingeld:");
-    GridPane.setColumnSpan(coinageNecessity, 2);
-    grid.add(coinageNecessity, 0, 15);
-    
-    Label coinageNecessityLabel = new Label("0,00€");
-    cs.setCoinNecessityLabel(coinageNecessityLabel);
-    grid.add(coinageNecessityLabel, 2, 15);
-    
-    Label coinageCleared = new Label("Kleingeld bereinigt:");
-    GridPane.setColumnSpan(coinageCleared, 2);
-    grid.add(coinageCleared, 4, 15);
-    
-    Label coinageClearedLabel = new Label("0,00€");
-    cs.setCoinCleanedLabel(coinageClearedLabel);
-    grid.add(coinageClearedLabel, 6, 15);
-    
-    Label coinageDifference = new Label("Differenz Kleingeld:");
-    if (simple) {
-      coinageDifference.setText("Diff. Kleingeld:");
-      coinageDifference.setTooltip(new Tooltip("Differenz Kleingeld"));
-    }
-    coinageDifference.setMinWidth(150.0);
-    GridPane.setColumnSpan(coinageDifference, 2);
-    grid.add(coinageDifference, 0, 16);
-    
-    Label coinDifferenceLabel = new Label("0,00€");
-    cs.setCoinDifferenceLabel(coinDifferenceLabel);
-    grid.add(coinDifferenceLabel, 2, 16);
-    
-    Label cashNecessityLow = new Label("Kassenschnitt:");
-    GridPane.setColumnSpan(cashNecessityLow, 2);
-    grid.add(cashNecessityLow, 4, 16);
-    
-    Label cashNecessitySum = new Label("0,00€");
-    cs.setCashNecessityLabel(cashNecessitySum);
-    grid.add(cashNecessitySum, 6, 16);
-    
-    Label tipSum = new Label("Rest Tip:");
-    GridPane.setColumnSpan(tipSum, 2);
-    grid.add(tipSum, 4, 17);
-    
-    Label tipSumLabel = new Label("0,00€");
-    cs.setTipSumLabel(tipSumLabel);
-    grid.add(tipSumLabel, 6, 17);
-    
-    /*
-     * Creates the Button for the User to press to calculate all Information from the given input.
-     */
-    Button calc = new Button("Berechne");
-    calc.setMaxSize(1000, 1000);
-    GridPane.setColumnSpan(calc, 4);
-    GridPane.setRowSpan(calc, 2);
-    GridPane.setFillHeight(calc, true);
-    GridPane.setFillWidth(calc, true);
-    calc.setOnMouseClicked(new CalcButtonHandler(cs, simple));
-    grid.add(calc, 0, 20);
-    
-    /*
-     * Creates a Button that allows the User to edit his Input after calculating with a set of 
-     * given values.
-     */
-    Button edit = new Button("Edit");
-    edit.setMaxSize(1000, 1000);
-    GridPane.setColumnSpan(edit, 4);
-    GridPane.setRowSpan(edit, 2);
-    GridPane.setFillHeight(edit, true);
-    GridPane.setFillWidth(edit, true);
-    edit.setOnMouseClicked(new EditButtonHandler(cs));
-    grid.add(edit, 4, 20);
+    final Menu exportMenu = new Menu("Export");
+    final MenuItem exportItem = new MenuItem("Export...");
+    exportItem.setAccelerator(new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN, 
+        KeyCombination.SHIFT_DOWN));
+    exportItem.setOnAction(new ExportHandler(primaryStage, this));
+    exportMenu.getItems().addAll(exportItem);
+    MenuBar menu = new MenuBar();
+    menu.getMenus().addAll(exportMenu);
     
     /*
      * Adds a BorderPane to the Scene, so the Grid will always be displayed at the Top of the Scene.
      */
     BorderPane bp = new BorderPane();
-    bp.setTop(grid);
-    
-    /*
-     * Updates the ToolTips for all Labels in the Application.
-     */
-    cs.updateToolTips();
-    
-    addKeyHandlers(cs, simple);
+    bp.setTop(menu);
+    bp.setCenter(grid);
     
     /*
      * Sets the Size of the Scene, it's restrictions and the Stylesheet. Afterwards, it displays 
      * the primaryStage to the User.
      */
-    Scene scene = new Scene(bp, 500, 550);
+    Scene scene = new Scene(bp, 450, 550);
     scene.getStylesheets().add(Util.getControlStyle());
     primaryStage.setScene(scene);
-    primaryStage.setMinHeight(595.0);
-    primaryStage.setMinWidth(615.0);
     primaryStage.show();
   }
 
   /**
-   * Adds KeyEvent Handlers to all TextFields, so they change to the TF below them, whenever the 
-   * Enter-Key is pressed.
-   * @param cs  The ComponentStorer, where all TextFields are stored. The Method accesses the TFs 
-   *     from there.
-   * @param simple  The boolean Value, if the simple Design is used. Depending on this Value, the 
-   *     sequence of selected TextFields is different.
+   * Adds all Handlers to all TextFields.
    * @since 1.0
+   * @see KeyEventHandler
+   * @see TextFieldFocusChangedListener
+   * @see TextFieldTextChangedListener
    */
-  private void addKeyHandlers(ComponentStorer cs, boolean simple) {  
+  private void addHandlers() {
     /*
-     * The KeyCombinations for switching the TextFields with Control + Arrow
+     * Since the BillFields are always added to the Window, regardless of the design used, we can 
+     * add the FocusChangedListener and TextChangedListener to all of them without checking for 
+     * the design.
      */
-    final KeyCombination kcUp = new KeyCodeCombination(KeyCode.UP, KeyCombination.CONTROL_DOWN);
-    final KeyCombination kcDown = new KeyCodeCombination(KeyCode.DOWN, KeyCombination.CONTROL_DOWN);
-    final KeyCombination kcRight = new KeyCodeCombination(KeyCode.RIGHT, 
-        KeyCombination.CONTROL_DOWN);
-    final KeyCombination kcLeft = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.CONTROL_DOWN);
+    for (TextField tf : billFields) {
+      tf.focusedProperty().addListener(new TextFieldFocusChangedListener(tf, this, false));
+      tf.textProperty().addListener(new TextFieldTextChangedListener(this));
+    }
     
     /*
-     * Assigning KeyHandlers to each TextField.
+     * Adds the Listener to the cashNeeded and purses TextField.
+     */
+    cashNeeded.focusedProperty().addListener(new TextFieldFocusChangedListener(cashNeeded, this, 
+        true));
+    cashNeeded.textProperty().addListener(new TextFieldTextChangedListener(this));
+    purses.focusedProperty().addListener(new TextFieldFocusChangedListener(purses, this, false));
+    purses.textProperty().addListener(new TextFieldTextChangedListener(this));
+    
+    /*
+     * Adds the KeyEventHandler to all Fields.
      */
     if (simple) {
-      cs.getYear().setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getCoinTextFields()[7].requestFocus();
-          } else if (kcDown.match(event)) {
-            cs.getBillsTextFields()[0].requestFocus();
-          }
-        }     
-      });
+      /*
+       * Adds the FocusChanged and TextChanged Listener to the first coinField TextField.
+       */
+      coinFields.get(0).focusedProperty().addListener(new TextFieldFocusChangedListener(
+          coinFields.get(0), this, true));
+      coinFields.get(0).textProperty().addListener(new TextFieldTextChangedListener(this));
+      /*
+       * Adds the KeyEventHandler to all TextFields. Since every Field has different Fields to jump 
+       * to when pressing Ctrl + Arrow, this has to be done separately.
+       */
+      coinFields.get(0).setOnKeyPressed(new KeyEventHandler(billFields.get(0), cashNeeded, 
+          billFields.get(0), null, billFields.get(3)));
+      billFields.get(0).setOnKeyPressed(new KeyEventHandler(billFields.get(1), coinFields.get(0), 
+          billFields.get(1), null, billFields.get(4)));
+      billFields.get(1).setOnKeyPressed(new KeyEventHandler(billFields.get(2), billFields.get(0), 
+          billFields.get(2), null, billFields.get(5)));
+      billFields.get(2).setOnKeyPressed(new KeyEventHandler(billFields.get(3), billFields.get(1), 
+          cashNeeded, null, billFields.get(6)));
+      billFields.get(3).setOnKeyPressed(new KeyEventHandler(billFields.get(4), purses, 
+          billFields.get(4), coinFields.get(0), null));
+      billFields.get(4).setOnKeyPressed(new KeyEventHandler(billFields.get(5), billFields.get(3), 
+          billFields.get(5), billFields.get(0), null));
+      billFields.get(5).setOnKeyPressed(new KeyEventHandler(billFields.get(6), billFields.get(4), 
+          billFields.get(6), billFields.get(1), null));
+      billFields.get(6).setOnKeyPressed(new KeyEventHandler(cashNeeded, billFields.get(5), purses, 
+          billFields.get(2), null));
+      cashNeeded.setOnKeyPressed(new KeyEventHandler(purses, billFields.get(2), coinFields.get(0), 
+          null, purses));
+      purses.setOnKeyPressed(new KeyEventHandler(coinFields.get(0), billFields.get(6), 
+          billFields.get(3), cashNeeded, null));
     } else {
-      cs.getYear().setOnKeyPressed(new EventHandler<KeyEvent>() {
-        @Override
-        public void handle(KeyEvent event) {
-          if (event.getCode() == KeyCode.ENTER) {
-            cs.getCoinTextFields()[0].requestFocus();
-          } else if (kcDown.match(event)) {
-            cs.getBillsTextFields()[0].requestFocus();
-          }
-        }     
-      });
-    }
-    
-    for (int i = 0; i <= 7; i++) {
-      final int j = i;
-      if (i == 0) {
-        if (!simple) {
-          cs.getCoinTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-              if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
-                cs.getCoinTextFields()[j + 1].requestFocus();
-              } else if (kcUp.match(event)) {
-                cs.getCoinTextFields()[cs.getCoinTextFields().length - 1].requestFocus();
-              } else if (kcRight.match(event)) {
-                cs.getBillsTextFields()[j].requestFocus();
-              }
-            }     
-          });
-        }
-        
-        cs.getBillsTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
-          @Override
-          public void handle(KeyEvent event) {
-            if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
-              cs.getBillsTextFields()[j + 1].requestFocus();
-            } else if (kcUp.match(event)) {
-              cs.getPurseTextField().requestFocus();
-            } else if (kcLeft.match(event)) {
-              if (!simple) {
-                cs.getCoinTextFields()[j].requestFocus();
-              }
-            }
-          }     
-        });
-      } else if (i == 7) {
-        cs.getCoinTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
-          @Override
-          public void handle(KeyEvent event) {
-            if (event.getCode() == KeyCode.ENTER) {
-              cs.getBillsTextFields()[0].requestFocus();
-            } else if (kcUp.match(event)) {
-              cs.getCoinTextFields()[j - 1].requestFocus();
-            } else if (kcDown.match(event)) {
-              cs.getCoinTextFields()[0].requestFocus();
-            } else if (kcRight.match(event)) {
-              cs.getPurseTextField().requestFocus();
-            }
-          }     
-        });
-        
-      } else {
-        cs.getCoinTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
-          @Override
-          public void handle(KeyEvent event) {
-            if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
-              cs.getCoinTextFields()[j + 1].requestFocus();
-            } else if (kcUp.match(event)) {
-              cs.getCoinTextFields()[j - 1].requestFocus();
-            } else if (kcRight.match(event)) {
-              cs.getBillsTextFields()[j].requestFocus();
-            }
-          }     
-        });
-        
-        if (i == 6) {
-          cs.getBillsTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-              if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
-                cs.getPurseTextField().requestFocus();
-              } else if (kcUp.match(event)) {
-                cs.getBillsTextFields()[j - 1].requestFocus();
-              } else if (kcLeft.match(event)) {
-                if (!simple) {
-                  cs.getCoinTextFields()[j].requestFocus();
-                }
-              }
-            }     
-          });
+      /*
+       * If the simple design wasn't used, we have multiple coin TextFields, so we have to assign 
+       * all Listener and the Handler to each of them.
+       */
+      for (int i = 0; i < coinFields.size(); i++) {
+        TextField tf = coinFields.get(i);
+        /*
+         * Adds the Change Listener.
+         */
+        tf.focusedProperty().addListener(new TextFieldFocusChangedListener(tf, this, false));
+        tf.textProperty().addListener(new TextFieldTextChangedListener(this));
+        /*
+         * Adds the KeyEventHandler to all TextFields. Since only the first and the last one are 
+         * different from the others, we only have to specify where to jump from them. Every other 
+         * Handler can be configured using i as jump index.
+         */
+        if (i == 0) {
+          tf.setOnKeyPressed(new KeyEventHandler(coinFields.get(i + 1), cashNeeded, 
+              coinFields.get(i + 1), null, billFields.get(i)));
+        } else if (i > 0 && i < coinFields.size() - 1) {
+          tf.setOnKeyPressed(new KeyEventHandler(coinFields.get(i + 1), coinFields.get(i - 1), 
+              coinFields.get(i + 1), null, billFields.get(i)));
         } else {
-          cs.getBillsTextFields()[i].setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-              if (event.getCode() == KeyCode.ENTER || kcDown.match(event)) {
-                cs.getBillsTextFields()[j + 1].requestFocus();
-              } else if (kcUp.match(event)) {
-                cs.getBillsTextFields()[j - 1].requestFocus();
-              } else if (kcLeft.match(event)) {
-                if (!simple) {
-                  cs.getCoinTextFields()[j].requestFocus();
-                }
-              }
-            }     
-          });
+          tf.setOnKeyPressed(new KeyEventHandler(billFields.get(0), coinFields.get(i - 1), 
+              cashNeeded, null, null));
         }
       }
+      
+      /*
+       * Adds the KeyEventHandler to all bill TextFields. Similar to the coin TextFields, we only 
+       * have to specify the first and last one, every other can be configured by using i as jump 
+       * index.
+       */
+      for (int i = 0; i < billFields.size(); i++) {
+        TextField tf = billFields.get(i);
+        if (i == 0) {
+          tf.setOnKeyPressed(new KeyEventHandler(billFields.get(i + 1), purses, 
+              billFields.get(i + 1), coinFields.get(i), null));
+        } else if (i > 0 && i < billFields.size() - 1) {
+          tf.setOnKeyPressed(new KeyEventHandler(billFields.get(i + 1), billFields.get(i - 1), 
+              billFields.get(i + 1), coinFields.get(i), null));
+        } else {
+          tf.setOnKeyPressed(new KeyEventHandler(cashNeeded, billFields.get(i - 1), 
+              purses, coinFields.get(i), null));
+        }       
+      }
+      /*
+       * Adds the KeyEventHandler to the cashNeeded and the purses TextField.
+       */
+      cashNeeded.setOnKeyPressed(new KeyEventHandler(purses, coinFields.get(coinFields.size() - 1), 
+          coinFields.get(0), null, purses));
+      purses.setOnKeyPressed(new KeyEventHandler(coinFields.get(0), 
+          billFields.get(billFields.size() - 1), billFields.get(0), cashNeeded, null));
     }
+  }
+  
+  /**
+   * Fills the Part of the Grid, where the Information for the User is displayed using Labels, that 
+   * can be altered by the Application.
+   * @param grid  The GridPane, where the Labels will be added to.
+   * @param rowIndex  The index of the Row, where the function will start to add Labels to.
+   * @since 1.0
+   */
+  private void fillInfoGrid(GridPane grid, int rowIndex) {
+    /*
+     * Adds the Row, where the Sums are displayed for each type of money (coins and bills). This is 
+     * done by using smaller Grids for each Sum, which contain a describing Label as well as a 
+     * Label to display the Sum. 
+     */
+    GridPane small = new GridPane();
+    small.setAlignment(Pos.CENTER);
+    small.setHgap(1);
     
-    cs.getPurseTextField().setOnKeyPressed(new EventHandler<KeyEvent>() {
-      @Override
-      public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-          cs.getCashNecessityEuroTextField().requestFocus();
-        } else if (kcDown.match(event)) {
-          cs.getBillsTextFields()[0].requestFocus();
-        } else if (kcUp.match(event)) {
-          cs.getBillsTextFields()[cs.getBillsTextFields().length - 1].requestFocus();
-        } else if (kcLeft.match(event)) {
-          cs.getCoinTextFields()[7].requestFocus();
-        }
-      }      
-    });
+    Label id = new Label("Münzgeld:");
+    small.add(id, 0, 0);
+    GridPane.setHalignment(id, HPos.CENTER);
     
-    cs.getCashNecessityEuroTextField().setOnKeyPressed(new EventHandler<KeyEvent>() {
-      @Override
-      public void handle(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-          cs.getYear().requestFocus();
-        } else if (kcUp.match(event) || kcLeft.match(event)) {
-          cs.getCoinTextFields()[7].requestFocus();
-        } else if (kcDown.match(event)) {
-          if (!simple) {
-            cs.getCoinTextFields()[0].requestFocus();
+    Label coinageSum = new Label("0,00€");
+    small.add(coinageSum, 1, 0);
+    labels.put(coinageSumId, coinageSum);
+    
+    grid.add(small, 0, rowIndex);
+    GridPane.setColumnSpan(small, 2);
+    
+    small = new GridPane();
+    small.setAlignment(Pos.CENTER);
+    small.setHgap(1);
+    
+    id = new Label("Scheine:");
+    small.add(id, 0, 0);
+    GridPane.setHalignment(id, HPos.CENTER);
+    
+    Label billSum = new Label("0,00€");
+    small.add(billSum, 1, 0);
+    labels.put(billsSumId, billSum);
+    
+    grid.add(small, 4, rowIndex);
+    GridPane.setColumnSpan(small, 2);
+    
+    small = new GridPane();
+    small.setAlignment(Pos.CENTER);
+    small.setHgap(1);
+    
+    id = new Label("Gesamt:");
+    small.add(id, 0, 0);
+    GridPane.setHalignment(id, HPos.CENTER);
+    
+    Label totalSum = new Label("0,00€");
+    small.add(totalSum, 1, 0);
+    labels.put(totalSumId, totalSum);
+    
+    grid.add(small, 2, rowIndex);
+    GridPane.setColumnSpan(small, 2);
+    
+    /*
+     * Increments the rowIndex to allow the creation of a new Row.
+     */
+    rowIndex++;
+    
+    /*
+     * Adds a Separator to the Grid.
+     */
+    Separator sep = new Separator();
+    grid.add(sep, 0, rowIndex);
+    GridPane.setColumnSpan(sep, 6);
+    
+    /*
+     * Increments the rowIndex to allow the creation of a new Row.
+     */
+    rowIndex++;
+    
+    /*
+     * Adds the Row to the Grid, where the amount of coinage needed and the sum of money after 
+     * equalizing the coinage Difference is displayed.
+     */
+    id = new Label("Muss Kleingeld:");
+    grid.add(id, 0, rowIndex);
+    GridPane.setColumnSpan(id, 2);
+    
+    Label coinageNeeded = new Label("0,00€");
+    grid.add(coinageNeeded, 2, rowIndex);
+    labels.put(coinageNeededId, coinageNeeded);
+    
+    id = new Label("Kleingeld bereinigt:");
+    grid.add(id, 3, rowIndex);
+    GridPane.setColumnSpan(id, 2);
+    
+    Label coinageSumCalculated = new Label("0,00€");
+    grid.add(coinageSumCalculated, 5, rowIndex);
+    labels.put(coinageSumCalculatedId, coinageSumCalculated);
+    
+    /*
+     * Increments the rowIndex to allow the creation of a new Row.
+     */
+    rowIndex++;
+    
+    /*
+     * Adds the Row to the Grid, where the Difference in coinage and the amount of cash needed, 
+     * that was calculated by the register's system, is displayed.
+     */
+    id = new Label("Differenz Kleingeld:");
+    grid.add(id, 0, rowIndex);
+    GridPane.setColumnSpan(id, 2);
+    
+    Label diffCoinage = new Label("0,00€");
+    grid.add(diffCoinage, 2, rowIndex);
+    labels.put(diffCoinageId, diffCoinage);
+    
+    id = new Label("Kassenschnitt:");
+    grid.add(id, 3, rowIndex);
+    GridPane.setColumnSpan(id, 2);
+    
+    Label cashNeeded = new Label("0,00€");
+    grid.add(cashNeeded, 5, rowIndex);
+    labels.put(cashNeededId, cashNeeded);
+    
+    /*
+     * Increments the rowIndex to allow the creation of a new Row.
+     */
+    rowIndex++;
+    
+    /*
+     * Adds the Row to the Grid, where the total Sum of Tips left in the purses is displayed.
+     */
+    id = new Label("Rest Tip:");
+    grid.add(id, 3, rowIndex);
+    GridPane.setColumnSpan(id, 2);
+    
+    Label tipSum = new Label("0,00€");
+    grid.add(tipSum, 5, rowIndex);
+    labels.put(tipSumId, tipSum);
+  }
+  
+  /**
+   * Fills the Part of the Grid, where the User can enter the values for each coin and bill, that 
+   * were counted in the purses.
+   * @param grid The GridPane, this Area will be added to.
+   * @param primaryStage  The Stage, that will display the Grid.
+   * @return  An Integer, that describes the Row in the Grid below the added Area.
+   * @since 1.0
+   */
+  private int fillInputGrid(GridPane grid, Stage primaryStage) {
+    /*
+     * Adds Columns to the GridPane, so they can be configured.
+     */
+    for (int i = 0; i <= 5; i++) {
+      grid.getColumnConstraints().add(new ColumnConstraints());
+    }
+    /*
+     * Configures the Width for all columns, so they match the wanted design.
+     */
+    grid.getColumnConstraints().get(0).setMinWidth(60);
+    grid.getColumnConstraints().get(0).setMaxWidth(100);
+    grid.getColumnConstraints().get(1).setMaxWidth(60);
+    grid.getColumnConstraints().get(2).setMinWidth(100);
+    grid.getColumnConstraints().get(3).setMinWidth(60);
+    grid.getColumnConstraints().get(3).setMaxWidth(100);
+    grid.getColumnConstraints().get(4).setMaxWidth(60);
+    grid.getColumnConstraints().get(5).setMinWidth(100);
+    
+    
+    /*
+     * Identifiers for all types of coins and bills.
+     */
+    String[] billIds = {"5€:", "10€:", "20€:", "50€:", "100€:", "200€:", "500€:"};
+    String[] coinIds = {"1ct:", "2ct:", "5ct:", "10ct:", "20ct:", "50ct:", "1€:", "2€:"};
+    /*
+     * Creates an index for the Row, so the lower area, which is the same for both design 
+     * patterns, can be created out of the if statement.
+     */
+    int rowIndex;
+    if (simple) {
+      /*
+       * Creates the Input Area for the simple design. This looks like the following:
+       * |-------|     |-------|
+       * |Coinage|     |  50€  |
+       * |-------|     |-------|
+       * 
+       * |-------|     |-------|
+       * |   5€  |     |  100€ |
+       * |-------|     |-------|
+       * 
+       * |-------|     |-------|
+       * |  10€  |     |  200€ |
+       * |-------|     |-------|
+       * 
+       * |-------|     |-------|
+       * |  20€  |     |  500€ |
+       * |-------|     |-------|
+       */
+      for (int i = 0; i <= 1; i++) {
+        for (int k = 0; k <= 3; k++) {
+          Label identifier;
+          TextField tf = new TextField("0");
+          Label result = new Label("= 0,00€");
+          if (i == k && k == 0) {
+            identifier = new Label("Kleingeld:");
+            tf.setTooltip(new Tooltip("Geben Sie hier die Anteil an Kleingeld ein."));
+            coinFields.add(0, tf);
+            coinFieldRes.add(0, result);
+            grid.add(identifier, 0, 0);
+            grid.add(tf, 1, 0);
+            grid.add(result, 2, 0);
+          } else {
+            int index = 4 * i + (k - 1);
+            identifier = new Label(billIds[index]);
+            tf.setTooltip(new Tooltip("Geben sie hier die Anzahl an " + billIds[index].replace(":", 
+                "") + "-Scheinen ein."));
+            billFields.add(index, tf);
+            billFieldRes.add(index, result);
+            grid.add(identifier, 3 * i, k);
+            grid.add(tf, 3 * i + 1, k);
+            grid.add(result, 3 * i + 2, k);
           }
-        } else if (kcRight.match(event)) {
-          cs.getPurseTextField().requestFocus();
         }
-      }      
+      }
+      /*
+       * Since we used 4 Rows (0 - 3), rowIndex will be set to 4, which is the index of the first 
+       * empty row below the Area.
+       */
+      rowIndex = 4;
+      
+      /*
+       * Sets the minimum Height and Width for the Stage.
+       */
+      primaryStage.setMinHeight(450.0);
+      primaryStage.setMinWidth(615.0);
+      primaryStage.setHeight(450);
+    } else {
+      /*
+       * Creates the Input Area for the extended design. This looks like the following:
+       * |-------|     |-------|
+       * |  1ct  |     |   5€  |
+       * |-------|     |-------|
+       * 
+       * |-------|     |-------|
+       * |  2ct  |     |  10€  |
+       * |-------|     |-------|
+       * 
+       * |-------|     |-------|
+       * |  5ct  |     |  20€  |
+       * |-------|     |-------|
+       * 
+       * |-------|     |-------|
+       * |  10ct |     |  50€  |
+       * |-------|     |-------|
+       * 
+       * |-------|     |-------|
+       * |  20ct |     |  100€ |
+       * |-------|     |-------|
+       * 
+       * |-------|     |-------|
+       * |  50ct |     |  200€ |
+       * |-------|     |-------|
+       * 
+       * |-------|     |-------|
+       * |   1€  |     |  500€ |
+       * |-------|     |-------|
+       * 
+       * |-------|
+       * |   2€  |
+       * |-------|
+       */
+      for (int i = 0; i <= 7; i++) {
+        Label id = new Label(coinIds[i]);
+        grid.add(id, 0, i);
+        
+        TextField tf = new TextField("0");
+        tf.setTooltip(new Tooltip("Geben sie hier die Anzahl an " + coinIds[i] 
+            + "-Münzen ein."));
+        grid.add(tf, 1, i);
+        coinFields.add(i, tf);
+        
+        Label res = new Label("= 0,00€");
+        grid.add(res, 2, i);
+        coinFieldRes.add(i, res);
+        
+        if (i < 7) {
+          id = new Label(billIds[i]);
+          grid.add(id, 3, i);
+          
+          tf = new TextField("0");
+          tf.setTooltip(new Tooltip("Geben sie hier die Anzahl an " + billIds[i] 
+              + "-Scheinen ein."));
+          grid.add(tf, 4, i);
+          billFields.add(i, tf);
+          
+          res = new Label("= 0,00€");
+          grid.add(res, 5, i);
+          billFieldRes.add(i, res);
+        }
+      }
+      
+      /*
+       * Since we used 8 Rows for the Input Area, rowIndex is set to 8.
+       */
+      rowIndex = 8;
+      
+      /*
+       * Sets the minimum Height and Width for the Stage.
+       */
+      primaryStage.setMinHeight(550.0);
+      primaryStage.setMinWidth(615.0);
+      primaryStage.setHeight(550);
+    }
+    /*
+     * Adds a Separator to the Grid below the Input Area for the coins and bills.
+     */
+    Separator sep = new Separator();
+    grid.add(sep, 0, rowIndex);
+    GridPane.setColumnSpan(sep, 6);
+    
+    /*
+     * Increments rowIndex to allow a creation of a new Row.
+     */
+    rowIndex++;
+    
+    /*
+     * Adds the Row, where the User can enter the amount of Money needed, that was calculated by 
+     * the register's system, as well as the amount of purses counted. At the end of the Row, there 
+     * will be a Button to fully reset the input.
+     */
+    Label id = new Label("Kassenschnitt Bar:");
+    grid.add(id, 0, rowIndex);
+    GridPane.setColumnSpan(id, 2);
+    
+    GridPane caGrid = new GridPane();
+    caGrid.setHgap(5);
+    cashNeeded = new TextField("0,00");
+    caGrid.add(cashNeeded, 0, 0);
+    Label euro = new Label("€");
+    euro.setMaxWidth(25);
+    caGrid.add(euro, 1, 0);
+    
+    grid.add(caGrid, 2, rowIndex);
+    
+    id = new Label("Geldbörsen:");
+    grid.add(id, 3, rowIndex);
+    purses = new TextField("0");
+    purses.getStyleClass().add("purseTF");
+    grid.add(purses, 4, rowIndex);
+    
+    /*
+     * Adds the Button to the Row. This will have an unique EventHandler for when the User clicked 
+     * it, as well as a special Font, since if the standard Font would be used, this Button would 
+     * be to wide for the Column it is placed in.
+     */
+    Button btReset = new Button("Reset (Doppelklick)");
+    btReset.setStyle("-fx-font: 10 Tahoma; -fx-font-weight: bold;");
+    btReset.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent event) {
+        /*
+         * To prevent Missclicks, this Button only resets the Input, if it was doubleclicked.
+         */
+        if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+          for (TextField tf : coinFields) {
+            tf.setText("0");
+          }
+          for (TextField tf : billFields) {
+            tf.setText("0");
+          }
+        }
+      }       
     });
+    grid.add(btReset, 5, rowIndex);
+    
+    /*
+     * Increments rowIndex to allow a creation of a new Row.
+     */
+    rowIndex++;
+    
+    /*
+     * Adds a Separator below the Input Area for cashNeeded and purses.
+     */
+    sep = new Separator();
+    grid.add(sep, 0, rowIndex);
+    GridPane.setColumnSpan(sep, 6);
+    
+    /*
+     * Increments rowIndex to allow a creation of a new Row.
+     */
+    rowIndex++;
+    
+    /*
+     * Adds a second Separator below the other one to indicate, that the input area for the User 
+     * is above and below these separators, the Application will display its calculations.
+     */
+    sep = new Separator();
+    grid.add(sep, 0, rowIndex);
+    GridPane.setColumnSpan(sep, 6);
+    
+    /*
+     * Increments rowIndex, so the index of the Row below the newly created Area will be returned..
+     */
+    rowIndex++;
+    
+    /*
+     * Returns rowIndex.
+     */
+    return rowIndex;
   }
   
   /**
@@ -689,6 +747,10 @@ public class CashAssetsWindow extends Application {
    * @since 1.0
    */
   private boolean checkSimple() {
+    /*
+     * Opens the File for the Settings and checks, if the Simple design should be used, which is 
+     * specified in the first row.
+     */
     Path path = Paths.get("data/Settings.stg");
     FileReader fr;
     try {
@@ -713,33 +775,361 @@ public class CashAssetsWindow extends Application {
   }
   
   /**
-   * Checks, if the Directory should be opened after exporting.
-   * @return  The boolean value, if the Directory should be opened.
+   * Calculates the current input.
    * @since 1.0
    */
-  private boolean checkOpen() {
-    Path path = Paths.get("data/Settings.stg");
-    FileReader fr;
-    try {
-      fr = new FileReader(path.toString());
-      BufferedReader br = new BufferedReader(fr);
-      br.readLine();
-      String s = br.readLine();
-      StringTokenizer st = new StringTokenizer(s, "=");
-      st.nextToken();
-      br.close();
-      return st.nextToken().trim().equals("1");
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (NullPointerException e) {
+  public void calc() {
+    /*
+     * A BigDecimal for the coinage Money.
+     */
+    BigDecimal coinage;
+    /*
+     * If the simple design was used, the total coinage money is already entered in the first 
+     * TextField of coinFields.
+     */
+    if (simple) {
       /*
-       * This happens, if there is no String to be tokenized by st. In this case there 
-       * is no Setting for this and false will be returned by default.
+       * Resets the Style of the TextField, since it might be altered in case a wrong input was 
+       * given before.
        */
-      e.printStackTrace();
+      coinFields.get(0).getStyleClass().clear();
+      coinFields.get(0).getStyleClass().addAll("text-field","text-input");
+      /*
+       *Gets the Text of the coinage Field and replaces all Non-Digits. 
+       */
+      String str = coinFields.get(0).getText();
+      str = str.replaceAll("[\\D&&[^,]&&[^\\.]]", "");
+      /*
+       * If there are more than 1 chars that equal '.' or ',' then make the TextField red to show 
+       * that there was an Error in the input. This will also cancel the operation.
+       */
+      int count = 0;
+      for (char c : str.toCharArray()) {
+        if (c == '.' || c == ',') {
+          count++;
+        }
+        if (count > 1) {
+          coinFields.get(0).getStyleClass().clear();
+          coinFields.get(0).getStyleClass().addAll("text-field","text-input", "wrongTF");
+          return;
+        }
+      }
+      /*
+       * Sets the Text of the TextField and sets coinage to the input if it was correct or 0.00 if 
+       * not.
+       */
+      coinFields.get(0).setText(str.replace('.', ','));
+      String s = str.replace(',', '.').trim();
+      if (s.equals("") || s == null) {
+        s = "0.00";
+      }
+      coinage = new BigDecimal(s);
+      coinage = coinage.setScale(2, RoundingMode.DOWN);
+      coinFieldRes.get(0).setText("= " + coinage.toString().replace('.', ',') + "€");
+      /*
+       * If the extended Design was used, we have to calculate the coinage money by using every 
+       * TextField for the coins.
+       */
+    } else {
+      coinage = new BigDecimal("0.00");
+      /*
+       * Iterates over each TextField to add it to coinage.
+       */
+      for (int i = 0; i <= 7; i++) {
+        /*
+         * Creates an Integer, where the entered value can be stored in, as well as a String, 
+         * which stores the Text entered in TextField with all nondigits removed.
+         */
+        int value;
+        String str = coinFields.get(i).getText();
+        str = str.replaceAll("[\\D]", "");
+        /*
+         * Parses the Text of the TextField to an Integer.
+         */
+        try {
+          value = Integer.parseInt(str);
+        } catch (NumberFormatException nfe) {
+          value = 0;
+        }
+        /*
+         * Stores the result of amount*factor for this TextField in a new BigDecimal, sets it scale 
+         * to 2 to prevent too long floating points and adds it to coinage. Afterwards, the 
+         * corresponding Label will display the amount of Money for this coin.
+         */
+        BigDecimal tmp = new BigDecimal(value * getCoinFactor(i));
+        tmp = tmp.setScale(2, RoundingMode.DOWN);
+        coinage = coinage.add(tmp);
+        coinFieldRes.get(i).setText("= " + tmp.toString().replace('.', ',') + "€");
+      }
+      /*
+       * Sets the Scale of coinage to 2 to prevent too long floating points.
+       */
+      coinage = coinage.setScale(2, RoundingMode.DOWN);
     }
-    return false;
+    
+    /*
+     * Adds all billsFields to a new BigDecimal in the same way as the coinFields to coinage in 
+     * the extended design.
+     */
+    BigDecimal bills = new BigDecimal("0.00");
+    for (int i = 0; i <= 6; i++) {
+      int value;
+      String str = billFields.get(i).getText();
+      str = str.replaceAll("[\\D]", "");
+      try {
+        value = Integer.parseInt(str);
+      } catch (NumberFormatException nfe) {
+        value = 0;
+      }
+      BigDecimal tmp = new BigDecimal(value * getBillFactor(i));
+      tmp = tmp.setScale(2, RoundingMode.DOWN);
+      bills = bills.add(tmp);
+      billFieldRes.get(i).setText("= " + tmp.toString().replace('.', ',') + "€");
+    }
+    bills = bills.setScale(2, RoundingMode.DOWN);
+    
+    /*
+     * Resets the Style of the cashNeeded TextField, if it was altered before to show a false input.
+     */
+    cashNeeded.getStyleClass().clear();
+    cashNeeded.getStyleClass().addAll("text-field","text-input");
+    /*
+     *Gets the Text of the coinage Field and replaces all Non-Digits. 
+     */
+    String str = cashNeeded.getText();
+    str = str.replaceAll("[\\D&&[^,]&&[^\\.]]", "");
+    /*
+     * If there are more than 1 chars that equal '.' or ',' then make the TextField red to show 
+     * that there was an Error in the input. This will also cancel the operation.
+     */
+    int count = 0;
+    for (char c : str.toCharArray()) {
+      if (c == '.' || c == ',') {
+        count++;
+      }
+      if (count > 1) {
+        cashNeeded.getStyleClass().clear();
+        cashNeeded.getStyleClass().addAll("text-field","text-input", "wrongTF");
+        return;
+      }
+    }   
+    
+    /*
+     * Sets the Text of cashNeeded.
+     */
+    cashNeeded.setText(str.replace('.', ','));
+    
+    /*
+     * Stores the value of cashNeeded in a new BigDecimal.
+     */
+    double value;
+    try {
+      value = Double.parseDouble(str.replace(',', '.'));
+    } catch (NumberFormatException nfe) {
+      value = 0;
+    }
+    BigDecimal cashNeededDec = new BigDecimal(value);
+    cashNeededDec = cashNeededDec.setScale(2, RoundingMode.DOWN);   
+    
+    /*
+     * Calculates the amount of coinage, that has to be in each purse and was in it beforehand.
+     */
+    int coinNecessity;
+    try {
+      coinNecessity = Integer.parseInt(purses.getText()) * 25;
+    } catch (NumberFormatException nfe) {
+      coinNecessity = 0;
+    }
+    
+    /*
+     * Creates a new BigDecimal to calculate the difference between the coinage in the purses and 
+     * the amount of needed coinage.
+     */
+    BigDecimal coinageDiff = coinage.subtract(new BigDecimal(coinNecessity));
+    
+    /*
+     * There is a given discrepancy of coinage of 25€. When counting the purses, this discrepancy 
+     * will be fixed, by taking the amount of Euro from the Bill Money. So we have to subtract the 
+     * coin Difference from the billMoney. The result will be displayed in the belonging Label.
+     */
+    BigDecimal revenueWithTips = bills.add(coinageDiff);
+    
+    /*
+     * Calculates the tip in the Purses by subtracting Cash Necessity from the revenue calculated 
+     * before.
+     */
+    BigDecimal tips = revenueWithTips.subtract(cashNeededDec);
+    
+    /*
+     * A new BigDecimal for the total amount of Money in the purses.
+     */
+    BigDecimal totalEuros = coinage.add(bills);
+    /*
+     * Updates all Labels to show their values.
+     */
+    labels.get(billsSumId).setText(bills.toString().replace('.', ',') + "€");
+    labels.get(coinageSumId).setText(coinage.toString().replace('.', ',') + "€");
+    labels.get(totalSumId).setText(totalEuros.toString().replace('.', ',') + "€");
+    labels.get(coinageNeededId).setText(coinNecessity + ",00€");
+    labels.get(diffCoinageId).setText(coinageDiff.toString().replace('.', ',') + "€");
+    labels.get(coinageSumCalculatedId).setText(revenueWithTips.toString().replace('.', ',') + "€");
+    labels.get(cashNeededId).setText(cashNeededDec.toString().replace('.', ',') + "€");
+    labels.get(tipSumId).setText(tips.toString().replace('.', ',') + "€");
+    
+    /*
+     * Updates the Tooltips for all Labels.
+     */
+    for (Label lb : labels.values()) {
+      lb.setTooltip(new Tooltip(lb.getText()));
+    }
+    
+    for (Label lb : billFieldRes) {
+      lb.setTooltip(new Tooltip(lb.getText()));
+    }
+    
+    for (Label lb : coinFieldRes) {
+      lb.setTooltip(new Tooltip(lb.getText()));
+    }
+    /*
+     * Compares the coinage difference BigDecimal to 0 to check if it's negative or positive. If 
+     * it's negative, the Label will display it's Text in red, else in normal black.
+     */
+    if (coinageDiff.compareTo(new BigDecimal("0.0")) == -1) {
+      labels.get(diffCoinageId).getStyleClass().clear();
+      labels.get(diffCoinageId).getStyleClass().addAll("minusLabel");
+    } else {
+      labels.get(diffCoinageId).getStyleClass().clear();
+      labels.get(diffCoinageId).getStyleClass().addAll("label");
+    }
+
+    /*
+     * Compares the Tip Sum BigDecimal to 0 to check if it's negative or positive. If 
+     * it's negative, the Label will display it's Text in red, else in normal black.
+     */
+    if (tips.compareTo(new BigDecimal("0.0")) < 0) {
+      labels.get(tipSumId).getStyleClass().clear();
+      labels.get(tipSumId).getStyleClass().addAll("minusLabel");
+    } else {
+      labels.get(tipSumId).getStyleClass().clear();
+      labels.get(tipSumId).getStyleClass().addAll("label");
+    }
   }
+  
+  /**
+   * Returns the Factor for the bill with the given index. If index isn't in the Interval [0,6], 
+   * 0 will be returned as default.
+   * @param index The index of the factor to be returned.
+   * @return  The Factor for the given index.
+   * @since 1.0
+   */
+  private int getBillFactor(int index) {
+    switch (index) {
+      case 0: return 5;
+      case 1: return 10;
+      case 2: return 20;
+      case 3: return 50;
+      case 4: return 100;
+      case 5: return 200;
+      case 6: return 500;
+      default: return 0; 
+    }
+  }
+  
+  /**
+   * Returns the Factor for the coin with the given index. If index isn't in the Interval [0,7], 
+   * 0 will be returned as default.
+   * @param index The index of the factor to be returned.
+   * @return  The Factor for the given index.
+   * @since 1.0
+   */
+  private double getCoinFactor(int index) {
+    switch (index) {
+      case 0: return 0.01;
+      case 1: return 0.02;
+      case 2: return 0.05;
+      case 3: return 0.1;
+      case 4: return 0.2;
+      case 5: return 0.5;
+      case 6: return 1;
+      case 7: return 2;
+      default: return 0;
+    }
+  }
+  
+  /**
+   * Returns, if the simple design is used.
+   * @return {@code true}, if the simple design is used, {@code false} if the extended design is 
+   *     used.
+   * @since 1.0
+   */
+  public boolean isSimple() {
+    return simple;
+  }
+
+  /**
+   * Returns {@link #coinFields}, an ArrayList of all TextFields used for the coins.
+   * @return All TextFields, where the User entered the amount of coins as an ArrayList.
+   * @since 1.0
+   */
+  public ArrayList<TextField> getCoinFields() {
+    return coinFields;
+  }
+
+  /**
+   * Returns {@link #billFields}, an ArrayList of all TextFields used for the bills.
+   * @return All TextFields, where the User entered the amount of bills as an ArrayList.
+   * @since 1.0
+   */
+  public ArrayList<TextField> getBillFields() {
+    return billFields;
+  }
+
+  /**
+   * Returns {@link #coinFieldRes}, an ArrayList of all Labels used for the coins values.
+   * @return All Labels, where the Application entered the value of the amount of each coin.
+   * @since 1.0
+   */
+  public ArrayList<Label> getCoinFieldRes() {
+    return coinFieldRes;
+  }
+
+  /**
+   * Returns {@link #billFieldRes}, an ArrayList of all Labels used for the bills values.
+   * @return All Labels, where the Application entered the value of the amount of each bill.
+   * @since 1.0
+   */
+  public ArrayList<Label> getBillFieldRes() {
+    return billFieldRes;
+  }
+
+  /**
+   * Returns {@link #cashNeeded}, the TextField, where the User entered the amount of cash needed, 
+   * that was calculated by the register's system.
+   * @return The TextField, where the User entered the amount of cash needed.
+   * @since 1.0
+   */
+  public TextField getCashNeeded() {
+    return cashNeeded;
+  }
+
+  /**
+   * Returns {@link #purses}, the TextField, where the User entered the amount of purses counted.
+   * @return The TextField, where the User entered the amount of purses counted.
+   * @since 1.0
+   */
+  public TextField getPurses() {
+    return purses;
+  }
+
+  /**
+   * Returns all Labels, that might be altered by the Application. These Labels are the ones, that 
+   * display the results of the calculations done in {@link #calc()}. To access the Labels use 
+   * {@link #coinageSumId} etc.
+   * @return All alterable Labels as a HashMap of String, Label.
+   * @since 1.0
+   */
+  public HashMap<String, Label> getLabels() {
+    return labels;
+  }
+  
 }
