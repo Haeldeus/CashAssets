@@ -3,6 +3,7 @@ package monthlybalance;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -23,6 +24,8 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import monthlybalance.handlers.ExportHandler;
+import monthlybalance.listener.TextFieldFocusChangedListener;
+import monthlybalance.listener.TextFieldTextChangedListener;
 import util.Util;
 
 /**
@@ -36,6 +39,16 @@ public class MBalanceWindow extends Application {
    * The TextFields for the amount of registers as an ArrayList.
    */
   private ArrayList<TextField> registerFields;
+  
+  /**
+   * The TextFields for the amount of stored rouleaus as an ArrayList.
+   */
+  private ArrayList<TextField> rouleauFields;
+  
+  /**
+   * The Labels, where the Sum for each rouleau can be displayed in as an ArrayList.
+   */
+  private ArrayList<Label> rouleauLabels;
   
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -87,9 +100,8 @@ public class MBalanceWindow extends Application {
    */
   private ArrayList<Tab> getTabs() {
     ArrayList<Tab> res = new ArrayList<Tab>();
-    Tab tabRegisters = getRegisterTab();
-    res.add(tabRegisters);
-    
+    res.add(getRegisterTab());
+    res.add(getRouleauTab());
     return res;
   }
   
@@ -174,13 +186,129 @@ public class MBalanceWindow extends Application {
     registerTab.setContent(grid);
     return registerTab;
   }
-
+  
   /**
-   * Returns the registerFields, that were created in {@link #getRegisterTab()}
+   * Creates and returns the Rouleau Tab for the TabPane.
+   * @return  A new Tab, that contains all Nodes needed for the User to enter the rouleaus.
+   * @since 1.0
+   */
+  private Tab getRouleauTab() {
+    /*
+     * Creates a new ArrayList, where the TextFields can be stored in.
+     */
+    rouleauFields = new ArrayList<TextField>();
+    /*
+     * Creates a new ArrayList, where the Labels can be stored in.
+     */
+    rouleauLabels = new ArrayList<Label>();
+    /*
+     * Creates a GridPane to display all Nodes for this Tab.
+     */
+    GridPane grid = new GridPane();
+    grid.setAlignment(Pos.CENTER);
+    grid.setHgap(10);
+    grid.setVgap(10);
+    grid.setPadding(new Insets(10, 10, 10, 10));
+    
+    /*
+     * Adds Columns to the GridPane, so they can be configured.
+     */
+    for (int i = 0; i <= 5; i++) {
+      grid.getColumnConstraints().add(new ColumnConstraints());
+      grid.getColumnConstraints().get(i).setHalignment(HPos.CENTER);
+    }
+    /*
+     * Configures the Width for all columns, so they match the wanted design.
+     */
+    grid.getColumnConstraints().get(0).setMinWidth(60);
+    grid.getColumnConstraints().get(1).setMaxWidth(60);
+    grid.getColumnConstraints().get(2).setMinWidth(50);
+    grid.getColumnConstraints().get(2).setMaxWidth(50);
+    grid.getColumnConstraints().get(3).setMinWidth(50);
+    grid.getColumnConstraints().get(3).setMaxWidth(50);
+    grid.getColumnConstraints().get(4).setMinWidth(80);
+    grid.getColumnConstraints().get(4).setMaxWidth(80);
+    grid.getColumnConstraints().get(5).setMinWidth(50);
+    
+    /*
+     * The Values for the Cells with given Content. This makes the creation easier.
+     */
+    String[] rouleauBase = {"0,10€", "0,20€", "0,50€", "1€", "2€"};
+    String[] rouleauCoinAmount = {"(40x)", "(40x)", "(40x)", "(25x)", "(25x)"};
+    String[] rouleauSum = {"4€", "8€", "20€", "25€", "50€"};
+    
+    /*
+     * Creates the first Row, where basic Information is displayed.
+     */
+    Label lbChange = new Label("Wechselgeld:");
+    grid.add(lbChange, 0, 0);
+    
+    Label lbRoleau = new Label("Rollen:");
+    grid.add(lbRoleau, 1, 0);
+    
+    Label lbAmount = new Label("Anzahl:");
+    grid.add(lbAmount, 3, 0);
+    
+    /*
+     * Creates the Area, where the User can enter the amount of each rouleau,
+     */
+    for (int i = 0; i < 5; i++) {
+      Label lbCoinAmount = new Label(rouleauCoinAmount[i]);
+      grid.add(lbCoinAmount, 0, i + 1);
+      
+      Label lbRouleauBase = new Label(rouleauBase[i]);
+      grid.add(lbRouleauBase, 1, i + 1);
+      
+      Label lbRouleauSum = new Label(rouleauSum[i]);
+      grid.add(lbRouleauSum, 2, i + 1);
+      
+      TextField tfAmount = new TextField();
+      tfAmount.focusedProperty().addListener(new TextFieldFocusChangedListener(tfAmount, this));
+      tfAmount.textProperty().addListener(new TextFieldTextChangedListener(this));
+      grid.add(tfAmount, 3, i + 1);
+      rouleauFields.add(tfAmount);
+      
+      Label lbSum = new Label("Summe:");
+      grid.add(lbSum, 4, i + 1);
+      
+      Label lbSumDisplay = new Label("0,00€");
+      grid.add(lbSumDisplay, 5, i + 1);
+      rouleauLabels.add(lbSumDisplay);
+    }
+    
+    /*
+     * Creates a new Tab to store the GridPane and returns it.
+     */
+    Tab rouleauTab = new Tab();
+    rouleauTab.setText("Geldrollen");
+    rouleauTab.setContent(grid);
+    return rouleauTab;
+  }
+  
+  public void calc() {
+    //TODO
+    System.out.println("Calced");
+  }
+  
+  /**
+   * Returns the registerFields, that were created in {@link #getRegisterTab()}.
    * @return The TextFields for the Registers as an ArrayList.
    * @since 1.0
    */
   public ArrayList<TextField> getRegisterFields() {
     return registerFields;
+  }
+
+  /**
+   * Returns the rouleauFields, that were created in {@link #getRouleauTab()}.
+   * @return The TextFields for the rouleaus as an ArrayList.
+   * @since 1.0
+   */
+  public ArrayList<TextField> getRouleauFields() {
+    return rouleauFields;
+  }
+
+  public ArrayList<Label> getRouleauLabels() {
+    return rouleauLabels;
   }
 }

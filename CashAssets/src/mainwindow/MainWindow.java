@@ -263,8 +263,6 @@ public class MainWindow extends Application {
     grid.add(btExternal, 1, 0);
     
     /*
-<<<<<<< Updated upstream
-=======
      * Creates a Button to launch the Window for the monthly Balance.
      */
     Button btMonthlyBalance = new Button("Endabrechnung (Monat)");
@@ -291,8 +289,7 @@ public class MainWindow extends Application {
     grid.add(btMonthlyBalance, 1, 1);
     
     /*
->>>>>>> Stashed changes
-     * Creates a disabled Button to fill the Scene and inform the User, that additions are possible.
+     * Creates disabled Buttons to fill the Scene and inform the User, that additions are possible.
      */
     Button btTodo = new Button("Mögliche Ergänzungen");
     btTodo.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
@@ -301,7 +298,17 @@ public class MainWindow extends Application {
     GridPane.setFillWidth(btTodo, true);
     GridPane.setVgrow(btTodo, Priority.ALWAYS);
     GridPane.setHgrow(btTodo, Priority.ALWAYS);
-    grid.add(btTodo, 1, 1);
+    grid.add(btTodo, 2, 0);
+    
+    
+    btTodo = new Button("Mögliche Ergänzungen");
+    btTodo.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+    btTodo.setDisable(true);
+    GridPane.setFillHeight(btTodo, true);
+    GridPane.setFillWidth(btTodo, true);
+    GridPane.setVgrow(btTodo, Priority.ALWAYS);
+    GridPane.setHgrow(btTodo, Priority.ALWAYS);
+    grid.add(btTodo, 2, 1);
     
     /*
      * Adds a BorderPane to the Scene, so the Grid will always be displayed at the right Place.
