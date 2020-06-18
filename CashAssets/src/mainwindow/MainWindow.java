@@ -53,7 +53,7 @@ public class MainWindow extends Application {
   /**
    * The Current version of the Application.
    */
-  private final double version = 0.95;
+  private final double version = 0.951;
   
   /**
    * The instance of this Class. Used for the {@link UpdateTask}.
@@ -263,6 +263,18 @@ public class MainWindow extends Application {
     grid.add(btExternal, 1, 0);
     
     /*
+     * Creates a Button to launch the Window for the monthly Balance.
+     */
+    Button btMonthlyBalance = new Button("Endabrechnung (Monat)");
+    btMonthlyBalance.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+    btMonthlyBalance.setDisable(true);
+    GridPane.setFillHeight(btMonthlyBalance, true);
+    GridPane.setFillWidth(btMonthlyBalance, true);
+    GridPane.setVgrow(btMonthlyBalance, Priority.ALWAYS);
+    GridPane.setHgrow(btMonthlyBalance, Priority.ALWAYS);
+    grid.add(btMonthlyBalance, 1, 1);
+    
+    /*
      * Creates a disabled Button to fill the Scene and inform the User, that additions are possible.
      */
     Button btTodo = new Button("Mögliche Ergänzungen");
@@ -272,7 +284,16 @@ public class MainWindow extends Application {
     GridPane.setFillWidth(btTodo, true);
     GridPane.setVgrow(btTodo, Priority.ALWAYS);
     GridPane.setHgrow(btTodo, Priority.ALWAYS);
-    grid.add(btTodo, 1, 1);
+    grid.add(btTodo, 2, 0);
+    
+    btTodo = new Button("Mögliche Ergänzungen");
+    btTodo.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+    btTodo.setDisable(true);
+    GridPane.setFillHeight(btTodo, true);
+    GridPane.setFillWidth(btTodo, true);
+    GridPane.setVgrow(btTodo, Priority.ALWAYS);
+    GridPane.setHgrow(btTodo, Priority.ALWAYS);
+    grid.add(btTodo, 2, 1);
     
     /*
      * Adds a BorderPane to the Scene, so the Grid will always be displayed at the right Place.
