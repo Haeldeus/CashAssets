@@ -263,6 +263,35 @@ public class MainWindow extends Application {
     grid.add(btExternal, 1, 0);
     
     /*
+<<<<<<< Updated upstream
+=======
+     * Creates a Button to launch the Window for the monthly Balance.
+     */
+    Button btMonthlyBalance = new Button("Endabrechnung (Monat)");
+    btMonthlyBalance.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent arg0) {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        try {
+          new monthlybalance.MBalanceWindow().start(stage);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }      
+      }    
+    });
+    /*
+     * Ensures, that the Button for the new Window will scale with the Scene's size.
+     */
+    btMonthlyBalance.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+    GridPane.setFillHeight(btMonthlyBalance, true);
+    GridPane.setFillWidth(btMonthlyBalance, true);
+    GridPane.setVgrow(btMonthlyBalance, Priority.ALWAYS);
+    GridPane.setHgrow(btMonthlyBalance, Priority.ALWAYS);
+    grid.add(btMonthlyBalance, 1, 1);
+    
+    /*
+>>>>>>> Stashed changes
      * Creates a disabled Button to fill the Scene and inform the User, that additions are possible.
      */
     Button btTodo = new Button("Mögliche Ergänzungen");
