@@ -26,7 +26,7 @@ import util.ExportUtils;
 public class ExportButtonHandler implements EventHandler<MouseEvent> {
 
   /**
-   * The NewCashAssetsWindow, that opened the Export Stage, where this Button was clicked.
+   * The CashAssetsWindow, that opened the Export Stage, where this Button was clicked.
    */
   private final CashAssetsWindow primary;
   
