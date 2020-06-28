@@ -323,8 +323,8 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
         String inputData = "";
         String resultData = "";
         if (i <= 5) {
-          inputData = primary.getCoinTfs()[5 - i].getText();
-          resultData = primary.getResultLabelCoin()[5 - i].getText().substring(2);
+          inputData = primary.getCoinTfs()[2 + i].getText();
+          resultData = primary.getResultLabelCoin()[2 + i].getText().substring(2);
           ExportUtils.createCell(row, 4, coinData[i], styles.get(ExportUtils.BLACK_WITH_BORDERS), 
               null, false);
         } else {
@@ -343,9 +343,9 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
         int j = i == 7 ? 7 : 6;
         ExportUtils.createCell(row, 1, billData[i], styles.get(ExportUtils.BLACK_WITH_BORDERS), 
             null, false);
-        ExportUtils.createCell(row, 2, primary.getCoinTfs()[j].getText(), 
+        ExportUtils.createCell(row, 2, primary.getCoinTfs()[7 - j].getText(), 
             styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
-        ExportUtils.createCell(row, 3, primary.getResultLabelCoin()[j].getText().substring(2), 
+        ExportUtils.createCell(row, 3, primary.getResultLabelCoin()[7 - j].getText().substring(2), 
             styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
         ExportUtils.createCell(row, 4, "", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
         ExportUtils.createCell(row, 5, "", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);

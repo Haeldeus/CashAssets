@@ -124,8 +124,8 @@ public class ExternalWindow extends Application {
      * Creates String-Arrays with the Text for the Labels as content.
      * This is used to create these Labels in a for-Loop to save some space.
      */
-    final String[] coinLabelText = new String[] {"1ct:", "2ct:", "5ct:", "10ct:", 
-        "20ct:", "50ct:", "1€:", "2€:"};
+    final String[] coinLabelText = new String[] {"2€:", "1€:", "50ct:", "20ct:", 
+        "10ct:", "5ct:", "2ct:", "1ct:"};
     final String[] billLabelText = new String[] {"5€:", "10€:", "20€:", "50€:", 
         "100€:", "200€:", "500€:"};
     
@@ -467,21 +467,21 @@ public class ExternalWindow extends Application {
   private BigDecimal getFactor(int index) {
     switch (index) {
       case 0: 
-        return new BigDecimal("0.01");
-      case 1:
-        return new BigDecimal("0.02");
-      case 2:
-        return new BigDecimal("0.05");
-      case 3:
-        return new BigDecimal("0.10");
-      case 4:
-        return new BigDecimal("0.20");
-      case 5:
-        return new BigDecimal("0.50");
-      case 6:
-        return new BigDecimal("1.00");
-      case 7:
         return new BigDecimal("2.00");
+      case 1:
+        return new BigDecimal("1.00");
+      case 2:
+        return new BigDecimal("0.50");
+      case 3:
+        return new BigDecimal("0.20");
+      case 4:
+        return new BigDecimal("0.10");
+      case 5:
+        return new BigDecimal("0.05");
+      case 6:
+        return new BigDecimal("0.02");
+      case 7:
+        return new BigDecimal("0.01");
       case 8:
         return new BigDecimal("5.00");
       case 9:
