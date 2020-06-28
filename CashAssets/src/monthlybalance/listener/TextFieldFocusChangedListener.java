@@ -1,0 +1,68 @@
+package monthlybalance.listener;
+
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.TextField;
+import monthlybalance.MBalanceWindow;
+
+/**
+ * The Listener, that listens to focus changes for all TextFields.
+ * @author Haeldeus
+ * @version 1.0
+ */
+public class TextFieldFocusChangedListener implements ChangeListener<Boolean> {
+
+  /**
+   * The TextField, this Listener was added to.
+   */
+  private TextField tf;
+  
+  /**
+   * The MBalanceWindow, the TextField this Listener was added to is part of.
+   */
+  private MBalanceWindow primary;
+  
+  /**
+   * The Constructor for this Listener.
+   * @param tf  The TextField, this Listener was added to.
+   * @param primary The MBalanceWindow, the TextField is part of.
+   * @since 1.0
+   */
+  public TextFieldFocusChangedListener(TextField tf, MBalanceWindow primary) {
+    this.tf = tf;
+    this.primary = primary;
+  }
+  
+  @Override
+  public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldP, Boolean newP) {
+    /*
+     * Calculates the current input, if the Focus is lost.
+     */
+    if (oldP && !newP) {
+      /*
+       * Replaces all non numerical characters from the Text in the TextField except for '.' 
+       * and ','.
+       */
+      tf.setText(tf.getText().replaceAll("[\\D]", "").trim());
+      if (tf.getText().equals("") || tf.getText() == null) {
+        tf.setText("0");
+      }
+      /*
+       * Calculates the current input.
+       */
+      primary.calc();
+      /*
+       * Selects the Text in this TextField, if the Focus is gained.
+       */
+    } else if (!oldP && newP) {
+      Platform.runLater(new Runnable() {
+        @Override
+        public void run() {
+          tf.selectAll();
+        }        
+      });
+    }
+  }
+
+}

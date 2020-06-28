@@ -122,7 +122,7 @@ public class MainWindow extends Application {
      * Adds the News Item to the MenuBar
      */
     final Menu newsMenu = new Menu("News");
-    final MenuItem newsItem = new MenuItem("Änderungen");
+    final MenuItem newsItem = new MenuItem("Ã„nderungen");
     newsItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, 
         KeyCombination.SHIFT_DOWN));
     newsItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -137,7 +137,7 @@ public class MainWindow extends Application {
           Platform.runLater(new Runnable() {
             @Override
             public void run() {
-              showUpdate("Zeitüberschreitung");
+              showUpdate("ZeitÃ¼berschreitung");
             }         
           });
           task.cancel();
@@ -238,7 +238,7 @@ public class MainWindow extends Application {
     /*
      * Creates a new Button to launch the External Register Application.
      */
-    Button btExternal = new Button("Außentheken-Bestand");
+    Button btExternal = new Button("AuÃŸentheken-Bestand");
     btExternal.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent arg0) {
@@ -266,8 +266,22 @@ public class MainWindow extends Application {
      * Creates a Button to launch the Window for the monthly Balance.
      */
     Button btMonthlyBalance = new Button("Endabrechnung (Monat)");
+    btMonthlyBalance.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent arg0) {
+        Stage stage = new Stage();
+        stage.initModality(Modality.APPLICATION_MODAL);
+        try {
+          new monthlybalance.MBalanceWindow().start(stage);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }      
+      }    
+    });
+    /*
+     * Ensures, that the Button for the new Window will scale with the Scene's size.
+     */
     btMonthlyBalance.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-    btMonthlyBalance.setDisable(true);
     GridPane.setFillHeight(btMonthlyBalance, true);
     GridPane.setFillWidth(btMonthlyBalance, true);
     GridPane.setVgrow(btMonthlyBalance, Priority.ALWAYS);
@@ -275,9 +289,9 @@ public class MainWindow extends Application {
     grid.add(btMonthlyBalance, 1, 1);
     
     /*
-     * Creates a disabled Button to fill the Scene and inform the User, that additions are possible.
+     * Creates disabled Buttons to fill the Scene and inform the User, that additions are possible.
      */
-    Button btTodo = new Button("Mögliche Ergänzungen");
+    Button btTodo = new Button("MÃ¶gliche ErgÃ¤nzungen");
     btTodo.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     btTodo.setDisable(true);
     GridPane.setFillHeight(btTodo, true);
@@ -286,7 +300,7 @@ public class MainWindow extends Application {
     GridPane.setHgrow(btTodo, Priority.ALWAYS);
     grid.add(btTodo, 2, 0);
     
-    btTodo = new Button("Mögliche Ergänzungen");
+    btTodo = new Button("MÃ¶gliche ErgÃ¤nzungen");
     btTodo.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     btTodo.setDisable(true);
     GridPane.setFillHeight(btTodo, true);
