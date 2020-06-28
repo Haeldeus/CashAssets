@@ -53,7 +53,7 @@ public class MainWindow extends Application {
   /**
    * The Current version of the Application.
    */
-  private final double version = 0.951;
+  private final double version = 0.96;
   
   /**
    * The instance of this Class. Used for the {@link UpdateTask}.
@@ -122,7 +122,7 @@ public class MainWindow extends Application {
      * Adds the News Item to the MenuBar
      */
     final Menu newsMenu = new Menu("News");
-    final MenuItem newsItem = new MenuItem("Ã„nderungen");
+    final MenuItem newsItem = new MenuItem("Änderungen");
     newsItem.setAccelerator(new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN, 
         KeyCombination.SHIFT_DOWN));
     newsItem.setOnAction(new EventHandler<ActionEvent>() {
@@ -137,7 +137,7 @@ public class MainWindow extends Application {
           Platform.runLater(new Runnable() {
             @Override
             public void run() {
-              showUpdate("ZeitÃ¼berschreitung");
+              showUpdate("Zeitüberschreitung");
             }         
           });
           task.cancel();
@@ -238,7 +238,7 @@ public class MainWindow extends Application {
     /*
      * Creates a new Button to launch the External Register Application.
      */
-    Button btExternal = new Button("AuÃŸentheken-Bestand");
+    Button btExternal = new Button("Außentheken-Bestand");
     btExternal.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent arg0) {
@@ -291,7 +291,7 @@ public class MainWindow extends Application {
     /*
      * Creates disabled Buttons to fill the Scene and inform the User, that additions are possible.
      */
-    Button btTodo = new Button("MÃ¶gliche ErgÃ¤nzungen");
+    Button btTodo = new Button("Mögliche Ergänzungen");
     btTodo.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     btTodo.setDisable(true);
     GridPane.setFillHeight(btTodo, true);
@@ -300,7 +300,7 @@ public class MainWindow extends Application {
     GridPane.setHgrow(btTodo, Priority.ALWAYS);
     grid.add(btTodo, 2, 0);
     
-    btTodo = new Button("MÃ¶gliche ErgÃ¤nzungen");
+    btTodo = new Button("Mögliche Ergänzungen");
     btTodo.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     btTodo.setDisable(true);
     GridPane.setFillHeight(btTodo, true);

@@ -1,5 +1,9 @@
 -#Begin Updates File
-
+0.96 Änderungen und Erweiterungen
+#New Line#
+- Monatsabrechnung hinzugefügt.
+#New Line#
+#New Line#
 0.951 Änderungen und Erweiterungen
 #New Line#
 - Anordnung der Münzfelder im Außentheken Fenster verändert. Diese sind nun von oben groß nach unten klein angeordnet.
