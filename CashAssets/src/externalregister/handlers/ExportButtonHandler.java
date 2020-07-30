@@ -205,9 +205,9 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     
     index++;
     row = sheet.createRow(index);
-    ExportUtils.createCell(row, 0, "50 x 2€", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
+    ExportUtils.createCell(row, 0, "25 x 2€", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
         null, false);
-    ExportUtils.createCell(row, 1, "100€", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+    ExportUtils.createCell(row, 1, "50€", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
     for (int i = 4; i <= 7; i ++) {
       ExportUtils.createCell(row, i, "", styles.get(ExportUtils.BLACK_WITH_BOTTOM_BORDER), null, 
           false);
@@ -215,21 +215,21 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     
     index++;
     row = sheet.createRow(index);
-    ExportUtils.createCell(row, 0, "50 x 1€", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
-        null, false);
-    ExportUtils.createCell(row, 1, "50€", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
-    
-    index++;
-    row = sheet.createRow(index);
-    ExportUtils.createCell(row, 0, "50 x 50ct", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
+    ExportUtils.createCell(row, 0, "25 x 1€", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
         null, false);
     ExportUtils.createCell(row, 1, "25€", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
     
     index++;
     row = sheet.createRow(index);
-    ExportUtils.createCell(row, 0, "60 x 20ct", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
+    ExportUtils.createCell(row, 0, "30 x 50ct", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
         null, false);
-    ExportUtils.createCell(row, 1, "12€", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+    ExportUtils.createCell(row, 1, "15€", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+    
+    index++;
+    row = sheet.createRow(index);
+    ExportUtils.createCell(row, 0, "25 x 20ct", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
+        null, false);
+    ExportUtils.createCell(row, 1, "5€", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
     sheet.addMergedRegion(new CellRangeAddress(index, index, 3, 4));
     ExportUtils.createCell(row, 3, "Gezählt von Franz Weyher:", 
         styles.get(ExportUtils.STANDARD_BLACK), null, false);
@@ -240,16 +240,16 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     
     index++;
     row = sheet.createRow(index);
-    ExportUtils.createCell(row, 0, "50 x 10ct", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
+    ExportUtils.createCell(row, 0, "20 x 10ct", styles.get(ExportUtils.BLACK_WITH_BORDERS), 
         null, false);
-    ExportUtils.createCell(row, 1, "5€", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
+    ExportUtils.createCell(row, 1, "2€", styles.get(ExportUtils.BLACK_WITH_BORDERS), null, false);
     
     index++;
     row = sheet.createRow(index);
     ExportUtils.createCell(row, 0, "", styles.get(ExportUtils.RED_WITH_BORDERS), null, false);
     ExportUtils.createCell(row, 1, "", styles.get(ExportUtils.RED_WITH_BORDERS), null, false);
     sheet.addMergedRegion(new CellRangeAddress(index, index, 0, 1));
-    ExportUtils.createCell(row, 0, "Kassenbestand insgesamt: 462€", 
+    ExportUtils.createCell(row, 0, "Kassenbestand insgesamt: 367€", 
         styles.get(ExportUtils.RED_WITH_BORDERS), null, false);
     ExportUtils.createCell(row, 3, "Mitarbeiter:", styles.get(ExportUtils.STANDARD_BLACK), null, 
         false);
@@ -395,7 +395,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     row = sheet.createRow(newIndex);
     ExportUtils.createCell(row, 5, "Minus Kassenbestand:", 
         styles.get(ExportUtils.RED_WITH_BORDERS_WRAPPING), null, false);
-    ExportUtils.createCell(row, 6, "- 462,00€", styles.get(ExportUtils.RED_WITH_BORDERS), null, 
+    ExportUtils.createCell(row, 6, "- 367,00€", styles.get(ExportUtils.RED_WITH_BORDERS), null, 
         false);
     newIndex++;
     /*

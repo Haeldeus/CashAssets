@@ -53,7 +53,7 @@ public class MainWindow extends Application {
   /**
    * The Current version of the Application.
    */
-  private final double version = 0.96;
+  private final double version = 0.961;
   
   /**
    * The instance of this Class. Used for the {@link UpdateTask}.

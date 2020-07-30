@@ -1,4 +1,9 @@
 -#Begin Updates File
+0.961 Änderungen und Erweiterungen
+#New Line#
+- Kassenbestand der Außentheke mit neuen Werten versehen.
+#New Line#
+#New Line#
 0.96 Änderungen und Erweiterungen
 #New Line#
 - Monatsabrechnung hinzugefügt.

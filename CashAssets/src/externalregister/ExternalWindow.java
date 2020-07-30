@@ -332,7 +332,7 @@ public class ExternalWindow extends Application {
      */
     Label startMoney = new Label("Minus Kassenbestand:");
     smallGrid.add(startMoney, 0, 1);
-    Label startMoneySum = new Label("-462,00€");
+    Label startMoneySum = new Label("-367,00€");
     startMoneySum.getStyleClass().clear();
     startMoneySum.getStyleClass().addAll("minusLabel");
     smallGrid.add(startMoneySum, 1, 1);
@@ -342,7 +342,7 @@ public class ExternalWindow extends Application {
      */
     Label revenue = new Label("Einnahmen");
     smallGrid.add(revenue, 0, 2);
-    revenueSum = new Label("-462,00€");
+    revenueSum = new Label("-367,00€");
     revenueSum.getStyleClass().clear();
     revenueSum.getStyleClass().addAll("minusLabel");
     smallGrid.add(revenueSum, 1, 2);
@@ -439,7 +439,7 @@ public class ExternalWindow extends Application {
      * Creates final variations of the BigDecimals, so their values can be entered into the Labels.
      */
     final BigDecimal totalRes = totalSum;
-    final BigDecimal revenueRes = totalSum.subtract(new BigDecimal("462.00"));
+    final BigDecimal revenueRes = totalSum.subtract(new BigDecimal("367.00"));
     Platform.runLater(new Runnable() {
       @Override
       public void run() {
