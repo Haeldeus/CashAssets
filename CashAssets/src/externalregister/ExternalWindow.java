@@ -242,6 +242,8 @@ public class ExternalWindow extends Application {
               coinTfs[j + 1].requestFocus();
             } else if (kcUp.match(event)) {
               coinTfs[j - 1].requestFocus();
+            } else if (kcRight.match(event)) {
+              billTfs[j].requestFocus();
             }
           }     
         });

@@ -1,4 +1,9 @@
--#Begin Updates File
+#Begin Updates File
+0.962 Änderungen und Erweiterungen
+#New Line#
+- Fehler bei einem Shortcut im Außentheken-Rechner behoben.
+#New Line#
+#New Line#
 0.961 Änderungen und Erweiterungen
 #New Line#
 - Kassenbestand der Außentheke mit neuen Werten versehen.

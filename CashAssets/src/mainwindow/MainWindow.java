@@ -2,6 +2,7 @@ package mainwindow;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
@@ -414,6 +415,12 @@ public class MainWindow extends Application {
     primaryStage.setMinHeight(270);
     primaryStage.setMinWidth(620);
     primaryStage.show();
+    
+    File f = new File("Version.txt");
+    FileWriter fw = new FileWriter(f);
+    fw.write("" + this.version);
+    fw.close();
+    System.out.println(System.getProperty("user.dir"));
   }
   
   /**
