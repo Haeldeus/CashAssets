@@ -2,6 +2,8 @@ package mainwindow;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
@@ -53,7 +55,7 @@ public class MainWindow extends Application {
   /**
    * The Current version of the Application.
    */
-  private final double version = 0.961;
+  private final double version = 0.962;
   
   /**
    * The instance of this Class. Used for the {@link UpdateTask}.
@@ -95,6 +97,7 @@ public class MainWindow extends Application {
   
   @Override
   public void start(Stage primaryStage) throws Exception {
+    writeVersion();
     /*
      * Basic Scenery Settings.
      */
@@ -414,6 +417,12 @@ public class MainWindow extends Application {
     primaryStage.setMinHeight(270);
     primaryStage.setMinWidth(620);
     primaryStage.show();
+    
+    File f = new File("Version.txt");
+    FileWriter fw = new FileWriter(f);
+    fw.write("" + this.version);
+    fw.close();
+    System.out.println(System.getProperty("user.dir"));
   }
   
   /**
@@ -423,6 +432,26 @@ public class MainWindow extends Application {
    */
   public double getVersion() {
     return version;
+  }
+  
+  /**
+   * Writes the version into a new TextFile in the current working directory.
+   * @since 1.0
+   */
+  private void writeVersion() {
+    String path = Paths.get("").toAbsolutePath().toString();
+    try {
+      int index = path.lastIndexOf(File.separator + "app");
+      if (index >= 0) {
+        path = path.substring(0, index);
+      }
+      path = path.concat(File.separator + "app" + File.separator + "Kassenhelfer" + File.separator);
+      FileWriter fw = new FileWriter(path + "Version.txt");
+      fw.write("" + version);
+      fw.close(); 
+    } catch (IOException e) {
+      //Nothing to do.
+    } 
   }
 
   /**
