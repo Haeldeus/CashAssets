@@ -2,24 +2,35 @@
 0.962 Änderungen und Erweiterungen
 #New Line#
 - Fehler bei einem Shortcut im Außentheken-Rechner behoben.
+
+- Erste Vorbereitungen, dieses Programm in einen eigenen Launcher einzubetten.
+
 #New Line#
 #New Line#
+
 0.961 Änderungen und Erweiterungen
 #New Line#
 - Kassenbestand der Außentheke mit neuen Werten versehen.
+
 #New Line#
 #New Line#
+
 0.96 Änderungen und Erweiterungen
 #New Line#
 - Monatsabrechnung hinzugefügt.
+
 #New Line#
 #New Line#
+
 0.951 Änderungen und Erweiterungen
 #New Line#
 - Anordnung der Münzfelder im Außentheken Fenster verändert. Diese sind nun von oben groß nach unten klein angeordnet.
+
 - Button für die monatliche Abrechnung hinzugefügt. Noch ohne Funktion.
+
 #New Line#
 #New Line#
+
 0.95 Änderungen und Erweiterungen
 
 #New Line#
