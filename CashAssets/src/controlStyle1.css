@@ -1,0 +1,23 @@
+.root {
+  -fx-font: 11px Tahoma;
+  -fx-font-weight: bold;
+}
+.purseTF {
+  -fx-control-inner-background: yellow;
+}
+.disabledTF {
+  -fx-control-inner-background: lightgray;
+}
+.enabledTF {
+  -fx-control-inner-background: white;
+}
+.minusLabel {
+  -fx-text-fill: red;
+}
+.wrongTF {
+  -fx-control-inner-background: red;
+}
+.label {
+}
+.button {
+}

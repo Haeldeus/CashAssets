@@ -14,7 +14,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -417,12 +416,6 @@ public class MainWindow extends Application {
     primaryStage.setMinHeight(270);
     primaryStage.setMinWidth(620);
     primaryStage.show();
-    
-    File f = new File("Version.txt");
-    FileWriter fw = new FileWriter(f);
-    fw.write("" + this.version);
-    fw.close();
-    System.out.println(System.getProperty("user.dir"));
   }
   
   /**
