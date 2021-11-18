@@ -141,7 +141,7 @@ public class ExportButtonHandler implements EventHandler<MouseEvent> {
     ExportUtils.createDateCells(row, 4, styles.get(ExportUtils.STANDARD_BLACK), 
         getDate().replaceAll("x", "\\."));
     
-    /**
+    /*
      * Creates the Area, where the total Sum of Tip is displayed, as well as the Tip per Hour 
      * worked.
      */
