@@ -1,4 +1,15 @@
 #Begin Updates File
+0.97 Änderungen und Erweiterungen
+#New Line#
+- In neuem Launcher eingebettet.
+
+- Update Button und Label entfernt.
+
+- Exports werden nun im Hauptordner gespeichert.
+
+#New Line#
+#New Line#
+
 0.962 Änderungen und Erweiterungen
 #New Line#
 - Fehler bei einem Shortcut im Außentheken-Rechner behoben.

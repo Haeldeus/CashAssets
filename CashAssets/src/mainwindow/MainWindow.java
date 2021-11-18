@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
@@ -18,7 +19,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -27,8 +27,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -41,7 +41,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mainwindow.handlers.SettingsHandler;
 import mainwindow.tasks.NewsTask;
-import mainwindow.tasks.UpdateTask;
 import util.Util;
 
 /**
@@ -54,10 +53,10 @@ public class MainWindow extends Application {
   /**
    * The Current version of the Application.
    */
-  private final double version = 0.962;
+  private final double version = 0.97;
   
   /**
-   * The instance of this Class. Used for the {@link UpdateTask}.
+   * The instance of this Class. Used for the {@link NewsTask}.
    */
   private final MainWindow me;
   
@@ -91,7 +90,24 @@ public class MainWindow extends Application {
    * @since 1.0
    */
   public static void main(String[] args) {
-    launch(args);
+    try {
+      String path = Paths.get("").toAbsolutePath().toString();
+      int index = path.lastIndexOf(File.separator + "app");
+      /*
+       * Erases the last "app"-String from the Path and everything after that.
+       */
+      if (index >= 0) {
+        path = path.substring(0, index);
+      }
+      path = path.concat(File.separator + "Logs" + File.separator);
+      File f = new File(path);
+      f.mkdir();
+      System.setOut(new PrintStream(new File(path + "CashAssetsLogFile.txt")));
+      System.setErr(new PrintStream(new File(path + "CashAssetsErrorLogs.txt")));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    MainWindow.launch(args);
   }
   
   @Override
@@ -107,6 +123,7 @@ public class MainWindow extends Application {
     grid.setHgap(10);
     grid.setVgap(10);
     grid.setPadding(new Insets(10, 10, 10, 10));
+    primary.getIcons().add(new Image("/res/Icon.png"));
    
     /*
      * Adds a Menu Bar to the Scene.
@@ -330,76 +347,6 @@ public class MainWindow extends Application {
     version.setMaxHeight(15.0);
     bp2.setLeft(version);
     BorderPane.setMargin(version, insets);
-    
-    /*
-     * Creates the Response Label to display responses from the Version Check.
-     */
-    response = new Label("");
-    response.setMaxHeight(15.0);
-    response.setMinWidth(250.0);
-    
-    /*
-     * Creates a GridPane that contains the ProgressBar and Response Label used for the Version 
-     * Check.
-     */
-    GridPane gp = new GridPane();
-    gp.add(response, 1, 0);
-    GridPane.setHalignment(response, HPos.CENTER);
-    
-    /*
-     * Creates the ProgressBar to display the Progress of the Version Check.
-     */
-    ProgressBar bar = new ProgressBar();
-    bar.setVisible(false);
-    gp.add(bar, 0, 0);
-    
-    /*
-     * Adds the new GridPane to the lower BorderPane.
-     */
-    bp2.setRight(gp);
-    
-    /*
-     * Creates a new Button for the Version Check and adds a Handler.
-     */
-    Button btCheck = new Button("Update");
-    btCheck.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent arg0) {
-        /*
-         * Displays the ProgressBar and the Response Label.
-         */
-        bar.setVisible(true);
-        response.setText("Suche nach Updates..."); 
-        /*
-         * Creates a new Update Task for the Version Check.
-         */
-        UpdateTask task = new UpdateTask(bar, me);
-        /*
-         * Binds the ProhressBar to the progress of the Task.
-         */
-        bar.progressProperty().bind(task.progressProperty());
-        /*
-         * Starts the Task in a new Thread.
-         */
-        new Thread(task).start();
-        new Thread(() -> {
-          try {
-            Thread.sleep(5000);  
-          } catch (InterruptedException e) {
-            //Testing Purposes, shouldn't be called.
-            e.printStackTrace();
-          }
-          task.cancel();
-        }).start();
-      }
-    });
-    
-    /*
-     * Adds the Button to the lower BorderPane and sets it's alignment.
-     */
-    btCheck.setMaxHeight(15.0);
-    bp2.setCenter(btCheck);
-    BorderPane.setAlignment(btCheck, Pos.CENTER_LEFT);
     
     /*
      * Adds the lower BorderPane to the total Pane.

@@ -379,10 +379,20 @@ public class ExportUtils {
   public static void export(XSSFWorkbook workbook, String directoryName, String date, String year, 
       String month, boolean open) {
     try {
+      String path = Paths.get("").toAbsolutePath().toString();
+      int index = path.lastIndexOf(File.separator + "app");
+      /*
+       * Erases the last "app"-String from the Path and everything after that.
+       */
+      if (index >= 0) {
+        path = path.substring(0, index);
+      }
       /*
        * Checks, if the Directory already exists. If not, this creates all necessary Folders.
        */
-      File directory = new File(directoryName + File.separator + year + File.separator + month);
+      File directory = new File(path + File.separator + directoryName + File.separator + year 
+          + File.separator + month);
+      String filePath = directory.getAbsolutePath();
       if (!directory.exists()) {
         directory.mkdirs();
       }
@@ -391,8 +401,7 @@ public class ExportUtils {
        * The Excel-Sheet will be called the same as the Date replacing the Dots in the "official" 
        * representation with an x to match OS-naming patterns.
        */
-      String s = directoryName + File.separator + year + File.separator + month + File.separator;
-      s = s.concat(date + ".xlsx");
+      String s = filePath + File.separator + date + ".xlsx";
       
       /*
        * Creates a new Path to the potential new File.
