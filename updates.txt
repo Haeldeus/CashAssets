@@ -1,4 +1,11 @@
 #Begin Updates File
+0.971 Änderungen und Erweiterungen
+#New Line#
+- Fehler bei der Versionsnummer behoben, die dazu führte, dass die neue Version nicht vom Launcher erkannt wurde.
+
+#New Line#
+#New Line#
+
 0.97 Änderungen und Erweiterungen
 #New Line#
 - In neuem Launcher eingebettet.

@@ -41,6 +41,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mainwindow.handlers.SettingsHandler;
 import mainwindow.tasks.NewsTask;
+import tool.LoggingTool;
 import util.Util;
 
 /**
@@ -53,7 +54,7 @@ public class MainWindow extends Application {
   /**
    * The Current version of the Application.
    */
-  private final double version = 0.97;
+  private final double version = 0.971;
   
   /**
    * The instance of this Class. Used for the {@link NewsTask}.
@@ -112,6 +113,7 @@ public class MainWindow extends Application {
   
   @Override
   public void start(Stage primaryStage) throws Exception {
+    LoggingTool.log(getClass(), LoggingTool.getLineNumber(), "Using Version: " + version);
     writeVersion();
     /*
      * Basic Scenery Settings.
@@ -386,6 +388,8 @@ public class MainWindow extends Application {
         path = path.substring(0, index);
       }
       path = path.concat(File.separator + "app" + File.separator + "Kassenhelfer" + File.separator);
+      LoggingTool.log(getClass(), LoggingTool.getLineNumber(), "Writing Version at: " 
+          + path + "Version.txt");
       FileWriter fw = new FileWriter(path + "Version.txt");
       fw.write("" + version);
       fw.close(); 
